@@ -17,7 +17,6 @@ Element Class
 # ==============================================================================
 import numpy as np
 from numba import jit
-from scipy.optimize import root
 
 # ==============================================================================
 # Extension modules
@@ -75,11 +74,34 @@ class Element(object):
 
         return N[:, : self.numNodes] @ nodeCoords
 
-    def getParamCoord(self, realCoords, nodeCoords):
-        resFunc = lambda xParam: self.getRealCoord(np.array([xParam]), nodeCoords).flatten() - realCoords
-        jacFunc = lambda xParam: self.getJacobian(np.array([xParam]), nodeCoords)[0]
-        sol = root(resFunc, x0=np.zeros(self.numDim), jac=jacFunc)
-        return sol.x
+    def getParamCoord(self, realCoords, nodeCoords, maxIter=4):
+        """Find the parametric coordinates within an element corresponding to a point in real space
+
+        Note this function only currently works for finding the parametric coordinates of one point inside one element
+
+        Parameters
+        ----------
+        realCoords : array of length numDim
+            Real coordinates to find the paranmetric coordinates of
+        nodeCoords : numNode x numDim array
+            Element node real coordinates
+        maxIter : int, optional
+            Maximum number of search iterations, by default 4
+
+        Returns
+        -------
+        x : array of length numDim
+            Parametric coordinates of the desired point
+        """
+        x = np.zeros(self.numDim)
+        for i in range(maxIter):
+            res = realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
+            if np.sum(res ** 2) < 1e-6:
+                break
+            else:
+                jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
+                x += np.linalg.solve(jacT, res)
+        return x
 
     def getJacobian(self, paramCoords, nodeCoords):
         """Get the element Jacobians at a set of parametric coordinates
