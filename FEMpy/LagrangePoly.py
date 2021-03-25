@@ -148,6 +148,11 @@ if __name__ == "__main__":
 
     x = np.array([np.linspace(-1.0, 1.0, 4)])
     y = -np.ones_like(x)
+    # Call functions so they get jit compiled
+    LagrangePoly1d(x, 2)
+    LagrangePoly1dDeriv(x, 2)
+    LagrangePoly2d(x, y, 2)
+    LagrangePoly2dDeriv(x, y, 2)
     startTime = time.time()
     for i in range(1000):
         print(LagrangePoly1d(x, 2), "\n")
