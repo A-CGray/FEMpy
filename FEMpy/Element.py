@@ -35,6 +35,19 @@ def makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
     return BMat
 
 
+@jit(nopython=True, cache=True)
+def _bodyForceInt(F, N):
+    # Compute N^T fb at each point, it's complicated because things are not the right shape
+    nP = np.shape(F)[0]
+    nD = np.shape(F)[1]
+    nN = np.shape(N)[1]
+    Fb = np.zeros((nP, nN, nD))
+    for p in range(nP):
+        for d in range(nD):
+            Fb[p, :, d] = (F[p, d] * N[p]).T
+    return Fb
+
+
 class Element(object):
     def __init__(self, numNodes, numDimensions, numDisplacements=None):
         """Instantiate an Element object
@@ -176,8 +189,9 @@ class Element(object):
             [description]
         """
         NPrimeParam = self.getShapeFunctionDerivs(paramCoords)
-        J = self.getJacobian(paramCoords, nodeCoords)
-        return np.linalg.inv(J) @ NPrimeParam
+        # The Jacobian is NPrimeParam * nodeCoords so we don't need to waste time recomputing NPrimeParam inside the
+        # getJacobian function
+        return np.linalg.inv(NPrimeParam @ nodeCoords) @ NPrimeParam
 
     def getBMat(self, paramCoords, nodeCoords, constitutive):
         """Compute the element B matrix at a set of parametric coordinates
@@ -290,16 +304,8 @@ class Element(object):
         # Transform parametric to real coordinates in order to compute body force components
         realCoord = self.getRealCoord(paramCoord, nodeCoords)
         F = f(realCoord)
-
-        # Compute N^T fb at each point, it's complicated because things are not the right shape
-        nP = np.shape(F)[0]
-        nD = np.shape(F)[1]
-        nN = np.shape(N)[1]
-        Fb = np.zeros((nP, nN, nD))
-        for p in range(nP):
-            for d in range(nD):
-                Fb[p, :, d] = (F[p, d] * N[p]).T
-        return (Fb.T * detJ).T
+        Fb = _bodyForceInt(F, N)
+        return detJ * Fb
 
 
 if __name__ == "__main__":
