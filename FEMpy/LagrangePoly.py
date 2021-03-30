@@ -87,7 +87,7 @@ def LagrangePoly2d(x, y, n):
     x : array of length nP (0D, nPx1 or 1xnP)
         x coordinates of points to compute polynomial values at, should be between -1 and 1
     y : array of length nP (0D, nPx1 or 1xnP)
-        y coordinates of points to compute polynomial values at, should be between -1 and 1s
+        y coordinates of points to compute polynomial values at, should be between -1 and 1
     n : int
         Number of Lagrange polynomials, in 2d, there are n nodes in each direction, giving n^2, n-1 order polynomials
 
@@ -148,15 +148,15 @@ if __name__ == "__main__":
 
     x = np.array([np.linspace(-1.0, 1.0, 4)])
     y = -np.ones_like(x)
-    # Call functions so they get jit compiled
-    LagrangePoly1d(x, 2)
-    LagrangePoly1dDeriv(x, 2)
-    LagrangePoly2d(x, y, 2)
-    LagrangePoly2dDeriv(x, y, 2)
+    # Call functions so they get jit compiled and we can check their output
+    print(LagrangePoly1d(x, 3), "\n")
+    print(LagrangePoly1dDeriv(x, 3), "\n")
+    print(LagrangePoly2d(x, y, 3), "\n")
+    print(LagrangePoly2dDeriv(x, y, 3), "\n\n\n")
     startTime = time.time()
     for i in range(1000):
-        print(LagrangePoly1d(x, 2), "\n")
-        print(LagrangePoly1dDeriv(x, 2), "\n")
-        print(LagrangePoly2d(x, y, 2), "\n")
-        print(LagrangePoly2dDeriv(x, y, 2), "\n\n\n")
+        LagrangePoly1d(x, 3)
+        LagrangePoly1dDeriv(x, 3)
+        LagrangePoly2d(x, y, 3)
+        LagrangePoly2dDeriv(x, y, 3)
     print(time.time() - startTime)
