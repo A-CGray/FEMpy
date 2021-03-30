@@ -127,7 +127,7 @@ if __name__ == "__main__":
     # ==============================================================================
     # Plot shape functions
     # ==============================================================================
-    n = 21
+    n = 101
     psi, eta = np.meshgrid(np.linspace(-1.0, 1.0, n), np.linspace(-1.0, 1.0, n))
     N = serendipityShapeFuncs(psi.flatten(), eta.flatten())
 
@@ -137,4 +137,5 @@ if __name__ == "__main__":
         ax = axes[i]
         Ni = N[:, i].reshape((n, n))
         ax.plot_surface(psi, eta, Ni, cmap=niceplots.parula_map)
+        ax.set_title(f"N{i}")
     plt.show()
