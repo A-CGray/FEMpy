@@ -217,7 +217,6 @@ class Element(object):
         """
         NPrime = self.getNPrime(paramCoords, nodeCoords)
         return makeBMat(NPrime, constitutive.LMats, constitutive.numStrain, self.numDim, self.numNodes)
-        # return np.zeros((np.shape(paramCoords)[0], self.nStrain, self.numNodes * self.numDim))
 
     def getStress(self, paramCoords, nodeCoords, constitutive, uNodes):
         BMat = self.getBMat(paramCoords, nodeCoords, constitutive)

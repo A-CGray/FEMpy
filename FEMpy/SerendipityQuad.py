@@ -21,6 +21,7 @@ from numba import njit
 # ==============================================================================
 # Extension modules
 # ==============================================================================
+from .QuadElement import QuadElement
 
 
 @njit(cache=True)
@@ -100,6 +101,47 @@ def serendipityShapeFuncDerivs(x, y):
     dNdxy[:, 1, 7] = -eta * (1.0 - psi)
 
     return dNdxy
+
+
+class serendipityQuadElement(QuadElement):
+    def __init__(self, numDisplacements=2):
+        # --- Initialise a 9 noded quad and then change the number of nodes to 8 ---
+        super().__init__(order=2, numDisplacements=numDisplacements)
+        self.numNodes = 8
+        self.numDOF = self.numNodes * numDisplacements
+
+    def getShapeFunctions(self, paramCoords):
+        """Compute shape function values at a set of parametric coordinates
+
+        Parameters
+        ----------
+        paramCoords : n x nDim array
+            isoparametric coordinates, one row for each point in isoparametric space to compute the Jacobian at
+
+        Returns
+        -------
+        N : n x numNode array
+            Shape function values, N[i][j] is the value of the jth shape function at the ith point
+        """
+        return serendipityShapeFuncs(paramCoords[:, 0], paramCoords[:, 1])
+
+    def getShapeFunctionDerivs(self, paramCoords):
+        """Compute shape function derivatives at a set of parametric coordinates
+
+        These are the derivatives of the shape functions with respect to the parametric coordinates (si, eta, gamma)
+
+        Parameters
+        ----------
+        paramCoords : n x nD array
+            isoparametric coordinates, one row for each point in isoparametric space to compute the Jacobian at
+
+        Returns
+        -------
+        NPrime : n x numDim x numNode array
+            Shape function derivative values, N[i][j][k] is the value of the derivative of the kth shape function in the
+            jth direction at the ith point
+        """
+        return serendipityShapeFuncDerivs(paramCoords[:, 0], paramCoords[:, 1])
 
 
 if __name__ == "__main__":
