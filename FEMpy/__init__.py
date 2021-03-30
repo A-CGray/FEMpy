@@ -7,3 +7,4 @@ from .isoPlaneStrain import *
 from .isoPlaneStress import *
 from .LagrangePoly import *
 from .GaussQuad import *
+from .SerendipityQuad import *

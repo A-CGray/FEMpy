@@ -304,7 +304,7 @@ class Element(object):
         realCoord = self.getRealCoord(paramCoord, nodeCoords)
         F = f(realCoord)
         Fb = _bodyForceInt(F, N)
-        return detJ * Fb
+        return (Fb.T * detJ).T
 
 
 if __name__ == "__main__":
