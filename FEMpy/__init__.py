@@ -2,9 +2,13 @@ __version__ = "0.0.1"
 
 from .Element import *
 from .QuadElement import *
+from .SerendipityQuad import *
+from .Lagrange1dElement import *
 from .Constitutive import *
 from .isoPlaneStrain import *
 from .isoPlaneStress import *
+from .AxialBar import *
 from .LagrangePoly import *
 from .GaussQuad import *
-from .SerendipityQuad import *
+from .Assembly import *
+from .Dynamics import *
