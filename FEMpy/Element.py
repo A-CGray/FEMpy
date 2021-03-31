@@ -36,6 +36,18 @@ def makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
 
 
 @jit(nopython=True, cache=True)
+def makeNMat(N, numDim):
+    s = np.shape(N)
+    numPoints = s[0]
+    numShapeFunc = s[1]
+    NMat = np.zeros((numPoints, numDim, numDim * numShapeFunc))
+    for p in range(numPoints):
+        for n in range(numShapeFunc):
+            NMat[p, :, numDim * n : numDim * (n + 1)] = N[p, n] * np.eye(numDim)
+    return NMat
+
+
+@jit(nopython=True, cache=True)
 def _bodyForceInt(F, N):
     # Compute N^T fb at each point, it's complicated because things are not the right shape
     nP = np.shape(F)[0]
@@ -64,7 +76,7 @@ class Element(object):
         self.numNodes = numNodes
         self.numDim = numDimensions
         self.numDisp = numDimensions if numDisplacements is None else numDisplacements
-        self.numDOF = numNodes * numDisplacements
+        self.numDOF = numNodes * self.numDisp
 
     def getRealCoord(self, paramCoords, nodeCoords):
         """Compute the real coordinates of a point in isoparametric space
@@ -218,9 +230,12 @@ class Element(object):
         NPrime = self.getNPrime(paramCoords, nodeCoords)
         return makeBMat(NPrime, constitutive.LMats, constitutive.numStrain, self.numDim, self.numNodes)
 
-    def getStress(self, paramCoords, nodeCoords, constitutive, uNodes):
+    def getStrain(self, paramCoords, nodeCoords, constitutive, uNodes):
         BMat = self.getBMat(paramCoords, nodeCoords, constitutive)
-        return constitutive.DMat @ BMat @ uNodes.flatten()
+        return BMat @ uNodes.flatten()
+
+    def getStress(self, paramCoords, nodeCoords, constitutive, uNodes):
+        return constitutive.DMat @ self.getStrain(paramCoords, nodeCoords, constitutive, uNodes)
 
     def getU(self, paramCoords, uNodes):
         """Compute the displacements at a set of parametric coordinates
@@ -265,6 +280,27 @@ class Element(object):
         if self.numDim == 3:
             f = lambda x1, x2, x3: self.getStiffnessIntegrand(np.array([x1, x2, x3]).T, nodeCoords, constitutive)
             return gaussQuad3d(f, n)
+
+    def getMassMat(self, nodeCoords, constitutive, n=None):
+        if n is None:
+            n = self.order + 1
+        if self.numDim == 1:
+            f = lambda x1: self.getMassIntegrand(np.array([x1]).T, nodeCoords, constitutive)
+            return gaussQuad1d(f=f, n=n)
+        if self.numDim == 2:
+            f = lambda x1, x2: self.getMassIntegrand(np.array([x1, x2]).T, nodeCoords, constitutive)
+            return gaussQuad2d(f=f, n=n)
+        if self.numDim == 3:
+            f = lambda x1, x2, x3: self.getMassIntegrand(np.array([x1, x2, x3]).T, nodeCoords, constitutive)
+            return gaussQuad3d(f, n)
+
+    def getMassIntegrand(self, paramCoords, nodeCoords, constitutive):
+        N = self.getShapeFunctions(paramCoords)
+        NMat = makeNMat(N, self.numDim)
+        J = self.getJacobian(paramCoords, nodeCoords)
+        detJ = np.linalg.det(J)
+        NTN = np.swapaxes(NMat, 1, 2) @ NMat * constitutive.rho
+        return (NTN.T * detJ).T
 
     def integrateBodyForce(self, f, nodeCoords, n=1):
         """Compute equivalent nodal forces due to body forces through numerical integration
