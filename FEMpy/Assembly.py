@@ -96,7 +96,7 @@ def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType
     # Create global stiffness mat and RHS
     # ==============================================================================
     Mat = sp.coo_matrix((MatEntries, (MatRows, MatColumns)), shape=(numNodes * numDisp, numNodes * numDisp)).tocsc()
-    RHS = sp.coo_matrix((RHSEntries, (np.zeros_like(RHSRows), RHSRows)), shape=(numNodes * numDisp, 1)).tocsc()
+    RHS = sp.coo_matrix((RHSEntries, (RHSRows, np.zeros_like(RHSRows))), shape=(numNodes * numDisp, 1)).tocsc()
 
     return Mat, RHS
 
@@ -121,7 +121,7 @@ def assembleTractions(nodeCoords, conn, element, constitutive, tractElems, tract
         FRows += elDOF[usefulDOF].tolist()
         FEntries += FLocal[usefulDOF].tolist()
 
-    FTract = sp.coo_matrix((FEntries, (np.zeros_like(FRows), FRows)), shape=(numNodes * numDisp, 1)).tocsc()
+    FTract = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsc()
     return FTract
 
 
