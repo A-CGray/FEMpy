@@ -91,3 +91,63 @@ def readTecplot(filename):
                 conn[i - (3 + numNodes), col] = int(line[col]) - 1
 
     return data, conn
+
+
+def writeTecplot(nodeCoords, data: dict, conn, filename: str, elementType=None, title=None):
+    """Write a text based tecplot file
+
+    Currently only works for meshes with one element type
+
+    Parameters
+    ----------
+    nodeCoords : numNode x numDim array
+        Node coordinates
+    data : [type]
+        [description]
+    conn : [type]
+        [description]
+    filename : [type]
+        [description]
+    """
+    numEl = np.shape(conn)[0]
+    if isinstance(conn, list):
+        Conn = np.array(conn)
+    else:
+        Conn = conn
+    numNode = np.max(Conn) + 1
+    dirs = ["X", "Y", "Z"]
+    varNames = dirs[: np.shape(nodeCoords)[1]]
+
+    # --- Combine all data into single array ---
+    dataArray = np.copy(nodeCoords)
+    for name, arr in data.items():
+        varNames.append(name)
+        dataArray = np.hstack((dataArray, arr.reshape((numNode, 1))))
+
+    if elementType is None:
+        nodePerEl = np.shape(Conn)[1]
+        if nodePerEl == 4:
+            elementType = "QUADRILATERAL"
+        elif nodePerEl == 3:
+            elementType = "TRIANGLE"
+        else:
+            raise ValueError(
+                f"Unknown element type with {nodePerEl} nodes, please supply an elementType input argument"
+            )
+
+    with open(filename, "w") as file:
+        # --- Write file header ---
+        if title is None:
+            title = "FEMpy result"
+        file.write(f"TITLE = {title}\n")
+        file.write("VARIABLES = ")
+        for name in varNames:
+            file.write(f'"{name}" ')
+        file.write("\n")
+        file.write(f"ZONE N={numNode}, E={numEl}, F=FEPOINT, ET={elementType}\n")
+
+        # --- Now write the nodal variable values, can write all in one go since we combined into a single array ---
+        np.savetxt(file, dataArray)
+
+        # --- Finally write the element connectivity ---
+        np.savetxt(file, Conn + 1, fmt="%i")
