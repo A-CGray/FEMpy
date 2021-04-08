@@ -12,3 +12,4 @@ from .LagrangePoly import *
 from .GaussQuad import *
 from .Assembly import *
 from .Dynamics import *
+from .TecplotIO import *
