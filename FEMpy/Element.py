@@ -235,7 +235,7 @@ class Element(object):
         return BMat @ uNodes.flatten()
 
     def getStress(self, paramCoords, nodeCoords, constitutive, uNodes):
-        return constitutive.DMat @ self.getStrain(paramCoords, nodeCoords, constitutive, uNodes)
+        return self.getStrain(paramCoords, nodeCoords, constitutive, uNodes) @ constitutive.DMat
 
     def getU(self, paramCoords, uNodes):
         """Compute the displacements at a set of parametric coordinates
