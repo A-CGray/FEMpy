@@ -14,3 +14,4 @@ from .Assembly import *
 from .Dynamics import *
 from .TecplotIO import *
 from .Mesh import *
+from .Smoothing import getSmoother
