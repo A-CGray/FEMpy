@@ -13,3 +13,4 @@ from .GaussQuad import *
 from .Assembly import *
 from .Dynamics import *
 from .TecplotIO import *
+from .Mesh import *
