@@ -11,6 +11,7 @@ Matrix and Vector Assembly Procedures
 # ==============================================================================
 # Standard Python modules
 # ==============================================================================
+from collections.abc import Iterable
 
 # ==============================================================================
 # External Python modules
@@ -40,6 +41,11 @@ def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType
     RHSLocal = np.zeros(element.numDOF)
     RHS = np.zeros(element.numDOF * numEl)
 
+    if isinstance(constitutive, Iterable):
+        ConList = constitutive
+    else:
+        ConList = [constitutive] * numEl
+
     if matType.lower() == "stiffness":
         matFunc = element.getStiffnessMat
     elif matType.lower() == "mass":
@@ -51,7 +57,7 @@ def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType
         elNodeCoords = nodeCoords[elNodes]
 
         # --- Compute the local  matrix ---
-        localMat[:] = matFunc(elNodeCoords, constitutive)
+        localMat[:] = matFunc(elNodeCoords, ConList[e])
 
         RHSLocal[:] = 0.0
 
@@ -109,12 +115,17 @@ def assembleTractions(nodeCoords, conn, element, constitutive, tractElems, tract
     FEntries = []
     FLocal = np.zeros(element.numDOF)
 
+    if isinstance(constitutive, Iterable):
+        ConList = constitutive
+    else:
+        ConList = [constitutive] * len(tractElems)
+
     for i in range(len(tractElems)):
         e = tractElems[i]
         elNodes = conn[e]
         elDOF = (np.array([numDisp * elNodes]).T + np.arange(numDisp)).flatten()
         elNodeCoords = nodeCoords[elNodes]
-        FLocal[:] = element.integrateTraction(tractFunc, elNodeCoords, constitutive, edges=tractEdges[i], n=2).flatten()
+        FLocal[:] = element.integrateTraction(tractFunc, elNodeCoords, ConList[i], edges=tractEdges[i], n=2).flatten()
 
         # Add traction force entries that aren't zero and aren't at nodes where displacement is known
         usefulDOF = np.argwhere(np.logical_and(np.isnan(knownStates[elDOF]), FLocal != 0.0)).flatten()
@@ -130,6 +141,11 @@ def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownS
     numEl = np.shape(conn)[0]
     numDisp = element.numDisp
 
+    if isinstance(constitutive, Iterable):
+        ConList = constitutive
+    else:
+        ConList = [constitutive] * numEl
+
     FRows = []
     FEntries = []
     FLocal = np.zeros(element.numDOF)
@@ -137,7 +153,7 @@ def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownS
         elNodes = conn[e]
         elDOF = (np.array([numDisp * elNodes]).T + np.arange(numDisp)).flatten()
         elNodeCoords = nodeCoords[elNodes]
-        FLocal[:] = element.integrateBodyForce(forceFunc, elNodeCoords, constitutive, n=n).flatten()
+        FLocal[:] = element.integrateBodyForce(forceFunc, elNodeCoords, ConList[e], n=n).flatten()
 
         # Add traction force entries that aren't zero and aren't at nodes where displacement is known
         usefulDOF = np.argwhere(np.logical_and(np.isnan(knownStates[elDOF]), FLocal != 0.0)).flatten()
