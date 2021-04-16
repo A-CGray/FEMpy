@@ -7,6 +7,7 @@ from .Lagrange1dElement import *
 from .Constitutive import *
 from .isoPlaneStrain import *
 from .isoPlaneStress import *
+from .OrthoPlaneStress import *
 from .AxialBar import *
 from .LagrangePoly import *
 from .GaussQuad import *
@@ -15,3 +16,4 @@ from .Dynamics import *
 from .TecplotIO import *
 from .Mesh import *
 from .Smoothing import getSmoother
+from .Utils import *
