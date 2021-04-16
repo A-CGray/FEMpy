@@ -27,7 +27,14 @@ from scipy.sparse import csc_matrix
 def getSmoother(intPointParamCoords, element, conn):
     """Generate a function which converts integration point values to nodal values using global smoothing
 
-    [extended_summary]
+    Given integration point values f_int, the smoother solves an over/underdetermined system of equations to find the
+    nodal values which would best recover f_int through interpolation:
+
+    M * f_node = f_int
+
+    The least squares solution is:
+
+    f_node = (M^T * M)^-1 * M^T * F_int
 
     Parameters
     ----------
@@ -36,8 +43,12 @@ def getSmoother(intPointParamCoords, element, conn):
 
     Returns
     -------
-    [type]
-        [description]
+    smoother : function
+        A function which performs integration point to nodal value smoothing using a pre-factorized least-squares solution (a.k.a should be very very fast)
+    MTM : Scipy CSC sparse matrix
+        The matrix M^T * M which is used to compute the least squares solution, this output is not required
+    MT : Scipy CSC sparse matrix
+        The matrix M^T which is used to compute the least squares solution, this output is not required
     """
     numIntPoints = np.shape(intPointParamCoords)[0]
     numNode = np.max(conn) + 1
