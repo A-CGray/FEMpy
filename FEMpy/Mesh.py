@@ -16,6 +16,7 @@ Mesh Utilities
 # External Python modules
 # ==============================================================================
 import numpy as np
+from numba import jit, prange
 
 # ==============================================================================
 # Extension modules
@@ -29,7 +30,7 @@ def makeNodeElsMat(Conn):
 
     Parameters
     ----------
-    Conn : array or list of lists
+    Conn : 2D iterable
         Mesh connectivity data, Conn[i][j] is the index of the jth node in the ith element
 
     Returns
@@ -99,3 +100,28 @@ def getEdgesfromNodes(nodes, conn, nodeEls, edgeInds):
         Elements.append(el)
         Edges.append(edge)
     return Elements, Edges
+
+
+@jit(nopython=True, cache=True)
+def computeElementCentroids(nodeCoords, conn):
+    """Compute element centroids
+
+    [extended_summary]
+
+    Parameters
+    ----------
+    nodeCoords : numNode x numDim array
+        Element node real coordinates
+    conn : 2D iterable
+        Mesh connectivity data, Conn[i][j] is the index of the jth node in the ith element
+
+    Returns
+    -------
+    centroids : numElement x numDim array
+        Element centroid coordinates
+    """
+    centroids = np.zeros((conn.shape[0], np.shape(nodeCoords)[1]))
+    for i in range(conn.shape[0]):
+        els = conn[i]
+        centroids[i] = 1.0 / len(els) * np.sum(nodeCoords[els], axis=0)
+    return centroids
