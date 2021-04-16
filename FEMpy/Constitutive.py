@@ -28,5 +28,5 @@ class Constitutive(object):
         self.numStress = numStress if numStress is not None else numStrain
         self.numDim = numDim if numDim is not None else numDisp
         self.numDisp = numDisp
-        self.DMat = np.zeros((self.numStrain, self.numStress))
+        # self.DMat = np.zeros((self.numStrain, self.numStress))
         self.LMats = np.zeros((self.numDim, self.numStrain, self.numDisp))
