@@ -43,4 +43,4 @@ def ksAgg(g, rho=100.0):
     """
     ng = len(g)
     maxg = np.max(g)
-    return maxg + 1.0 / rho * np.log(1.0 / ng * np.sum(np.exp(rho * (g - maxg))))
+    return maxg + 1.0 / rho * np.log(np.sum(np.exp(rho * (g - maxg))))
