@@ -162,3 +162,46 @@ def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownS
 
     FBody = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsc()
     return FBody
+
+
+def computeStresses(Element, ParamCoords, constitutive, nodeCoords, Conn, nodalDisp):
+    """Compute the stresses at a number of points inside all elements
+
+    This function assumes that all elements have the same number of stress components
+
+    Parameters
+    ----------
+    Element : FEMpy Element object
+        [description]
+    ParamCoords : numPoint x numDim array
+            isoparametric coordinates, one row for each point in isoparametric space to compute the stress at within
+            each element
+    constitutive : single or iterable of FEMpy constitutive classes
+        Constitutive class(es) for the elements, the D matrix is used for computing stresses
+    nodeCoords : numNode x numDim array
+            Element node real coordinates
+    Conn : 2D iterable
+        Mesh connectivity data, Conn[i][j] is the index of the jth node in the ith element
+    nodalDisp : numNode x numDim array
+        nodal displacements
+
+    Returns
+    -------
+    Stresses : numElement*numPoint x numStress array
+        Stresses at
+    """
+
+    numEl = np.shape(Conn)[0]
+
+    if isinstance(constitutive, Iterable):
+        ConList = constitutive
+    else:
+        ConList = [constitutive] * numEl
+    Stresses = np.zeros((4 * numEl, ConList[0].numStress))
+
+    for e in range(numEl):
+        Stresses[4 * e : 4 * (e + 1), :3] = Element.getStress(
+            ParamCoords, nodeCoords[Conn[e]], ConList[e], nodalDisp[Conn[e]]
+        )
+
+    return Stresses
