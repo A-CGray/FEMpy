@@ -90,7 +90,7 @@ def getEdgesfromNodes(nodes, conn, nodeEls, edgeInds):
             locEdgeNodes = edgeInds[j]
             edgeNodes = conn[e][locEdgeNodes]
             if all(i in nodes for i in edgeNodes):
-                if j in elEdges:
+                if e in elEdges:
                     elEdges[e].append(j)
                 else:
                     elEdges[e] = [j]
