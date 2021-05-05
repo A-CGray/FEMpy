@@ -87,7 +87,7 @@ for e in numEl:
     nodeCoords, conn = createGridMesh(e, e, warpFunc=warpFunc)
     nodeEls = fp.makeNodeElsMat(conn)
     numNodes = np.shape(nodeCoords)[0]
-    numDOFList.append(numNodes)
+    numDOFList.append(2 * numNodes)
 
     leftEdgeNodes = np.argwhere(nodeCoords[:, 0] == 0.0).flatten()
     leftEdgeDisp = 0.0
@@ -152,5 +152,5 @@ for v, name in zip(plotVars, plotVarNames):
 ax.set_xticks(numDOFList)
 ax.set_xticklabels(numDOFList)
 ax.legend(labelcolor="linecolor")
-fig.savefig("QuadElScaling.png", dpi=400)
+fig.savefig("../../Images/QuadElScaling.png", dpi=400)
 plt.show()
