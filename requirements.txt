@@ -1,0 +1,6 @@
+mkdocs
+pymdown-extensions
+mkdocs-material
+mkdocstrings
+pytkdocs[numpy-style]
+Jinja2<3.0,>=2.11
