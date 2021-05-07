@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: build docs
-        run: make docker-build
+        run: docker run fempy mkdocs build
 
       - name: Deploy docs
         uses: mhausenblas/mkdocs-deploy-gh-pages@master
