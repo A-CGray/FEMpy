@@ -19,5 +19,6 @@ setup(
         "FEMpy",
     ],
     install_requires=["numpy", "numba", "scipy"],
+    extras_require=["mkdocs", "pymdown-extensions", "mkdocs-material"],
     classifiers=["Operating System :: OS Independent", "Programming Language :: Python"],
 )

@@ -17,3 +17,6 @@ Or, if you want to make changes to the code:
 ```shell
 pip install -e .
 ```
+
+## Documentation
+View the documentation [here](https://A-Gray-94.github.io/FEMpy/)

@@ -1,6 +1,9 @@
 # VS Code config
 .vscode
 
+# Doc build output
+output/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
