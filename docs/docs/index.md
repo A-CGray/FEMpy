@@ -17,3 +17,11 @@ Or, if you want to make changes to the code:
 ```shell
 pip install -e .
 ```
+if you want to build documentation locally, make sure to install the necessary dependencies:
+```shell
+pip install -e .[docs]
+```
+And then run:
+```shell
+make build
+```
