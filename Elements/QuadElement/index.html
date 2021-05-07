@@ -36,8 +36,8 @@
       
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700%7C&display=fallback">
+        <style>:root{--md-text-font-family:"Open Sans";--md-code-font-family:""}</style>
       
     
     
@@ -393,6 +393,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.QuadElement.QuadElement.getStiffnessMat" class="md-nav__link">
+    getStiffnessMat()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.QuadElement.QuadElement.integrateBodyForce" class="md-nav__link">
     integrateBodyForce()
   </a>
@@ -402,6 +409,13 @@
         <li class="md-nav__item">
   <a href="#FEMpy.QuadElement.QuadElement.integrateTraction" class="md-nav__link">
     integrateTraction()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.QuadElement.QuadElement.tractionIntegrand" class="md-nav__link">
+    tractionIntegrand()
   </a>
   
 </li>
@@ -498,6 +512,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.QuadElement.QuadElement.getStiffnessMat" class="md-nav__link">
+    getStiffnessMat()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.QuadElement.QuadElement.integrateBodyForce" class="md-nav__link">
     integrateBodyForce()
   </a>
@@ -507,6 +528,13 @@
         <li class="md-nav__item">
   <a href="#FEMpy.QuadElement.QuadElement.integrateTraction" class="md-nav__link">
     integrateTraction()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.QuadElement.QuadElement.tractionIntegrand" class="md-nav__link">
+    tractionIntegrand()
   </a>
   
 </li>
@@ -786,6 +814,32 @@ ordering is:</p>
 
 
 
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.QuadElement.QuadElement.getStiffnessMat" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getStiffnessMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getStiffnessMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># TODO: this function should not presume the constitutive object has a thickness, what if you want to use this</span>
+    <span class="c1"># quad element for something else, like 2D heat transfer where there&#39;s no thickness</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">getStiffnessMat</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">t</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
 
   <div class="doc doc-object doc-method">
 
@@ -978,6 +1032,47 @@ force components at the ith point queried</p></td>
 
   </div>
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.QuadElement.QuadElement.tractionIntegrand" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">tractionIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">edgeNum</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">tractionIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">edgeNum</span><span class="p">):</span>
+    <span class="c1"># Compute shape functions and Jacobian determinant at parametric coordinates</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">)</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getJacobian</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
+    <span class="n">detJStar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">J</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgeFreeCoord</span><span class="p">[</span><span class="n">edgeNum</span><span class="p">],</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Transform parametric to real coordinates in order to compute body force components</span>
+    <span class="n">realCoord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRealCoord</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">realCoord</span><span class="p">)</span>
+
+    <span class="c1"># Compute N^T fb at each point, it&#39;s complicated because things are not the right shape</span>
+    <span class="n">nP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">F</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">nD</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">F</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">nN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">N</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Fb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nP</span><span class="p">,</span> <span class="n">nN</span><span class="p">,</span> <span class="n">nD</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nP</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nD</span><span class="p">):</span>
+            <span class="n">Fb</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="p">:,</span> <span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">d</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span><span class="p">[</span><span class="n">p</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">Fb</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">detJStar</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 

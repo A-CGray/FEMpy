@@ -36,8 +36,8 @@
       
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700%7C&display=fallback">
+        <style>:root{--md-text-font-family:"Open Sans";--md-code-font-family:""}</style>
       
     
     
@@ -403,6 +403,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getMassMat" class="md-nav__link">
+    getMassMat()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getShapeFunctionDerivs" class="md-nav__link">
     getShapeFunctionDerivs()
   </a>
@@ -412,6 +419,13 @@
         <li class="md-nav__item">
   <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getShapeFunctions" class="md-nav__link">
     getShapeFunctions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getStiffnessMat" class="md-nav__link">
+    getStiffnessMat()
   </a>
   
 </li>
@@ -470,6 +484,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getMassMat" class="md-nav__link">
+    getMassMat()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getShapeFunctionDerivs" class="md-nav__link">
     getShapeFunctionDerivs()
   </a>
@@ -479,6 +500,13 @@
         <li class="md-nav__item">
   <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getShapeFunctions" class="md-nav__link">
     getShapeFunctions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getStiffnessMat" class="md-nav__link">
+    getStiffnessMat()
   </a>
   
 </li>
@@ -577,6 +605,30 @@
 
   </div>
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Lagrange1dElement.Lagrange1dElement.getMassMat" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getMassMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getMassMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">getMassMat</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">A</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -733,6 +785,30 @@
 
   </div>
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Lagrange1dElement.Lagrange1dElement.getStiffnessMat" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getStiffnessMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getStiffnessMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">getStiffnessMat</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">A</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 

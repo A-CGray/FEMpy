@@ -36,8 +36,8 @@
       
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700%7C&display=fallback">
+        <style>:root{--md-text-font-family:"Open Sans";--md-code-font-family:""}</style>
       
     
     
@@ -367,6 +367,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.bodyForceIntegrad" class="md-nav__link">
+    bodyForceIntegrad()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.getBMat" class="md-nav__link">
     getBMat()
   </a>
@@ -376,6 +383,20 @@
         <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.getJacobian" class="md-nav__link">
     getJacobian()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getMassIntegrand" class="md-nav__link">
+    getMassIntegrand()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getMassMat" class="md-nav__link">
+    getMassMat()
   </a>
   
 </li>
@@ -411,6 +432,34 @@
         <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.getShapeFunctions" class="md-nav__link">
     getShapeFunctions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getStiffnessIntegrand" class="md-nav__link">
+    getStiffnessIntegrand()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getStiffnessMat" class="md-nav__link">
+    getStiffnessMat()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getStrain" class="md-nav__link">
+    getStrain()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getStress" class="md-nav__link">
+    getStress()
   </a>
   
 </li>
@@ -526,6 +575,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.bodyForceIntegrad" class="md-nav__link">
+    bodyForceIntegrad()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.getBMat" class="md-nav__link">
     getBMat()
   </a>
@@ -535,6 +591,20 @@
         <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.getJacobian" class="md-nav__link">
     getJacobian()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getMassIntegrand" class="md-nav__link">
+    getMassIntegrand()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getMassMat" class="md-nav__link">
+    getMassMat()
   </a>
   
 </li>
@@ -570,6 +640,34 @@
         <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.getShapeFunctions" class="md-nav__link">
     getShapeFunctions()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getStiffnessIntegrand" class="md-nav__link">
+    getStiffnessIntegrand()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getStiffnessMat" class="md-nav__link">
+    getStiffnessMat()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getStrain" class="md-nav__link">
+    getStrain()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getStress" class="md-nav__link">
+    getStress()
   </a>
   
 </li>
@@ -706,6 +804,38 @@
 
   </div>
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.bodyForceIntegrad" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">bodyForceIntegrad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">bodyForceIntegrad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">):</span>
+    <span class="c1"># Compute shape functions and Jacobian determinant at parametric coordinates</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">)</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getJacobian</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
+    <span class="n">detJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+    <span class="c1"># Transform parametric to real coordinates in order to compute body force components</span>
+    <span class="n">realCoord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRealCoord</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">realCoord</span><span class="p">)</span>
+    <span class="n">Fb</span> <span class="o">=</span> <span class="n">_bodyForceInt</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">Fb</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">detJ</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -880,6 +1010,71 @@
   </div>
 
 
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.getMassIntegrand" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getMassIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getMassIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">):</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span>
+    <span class="n">NMat</span> <span class="o">=</span> <span class="n">makeNMat</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">)</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getJacobian</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
+    <span class="n">detJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+    <span class="n">NTN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">NMat</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">NMat</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">rho</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">NTN</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">detJ</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.getMassMat" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getMassMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getMassMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">getMassIntegrand</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+        <span class="k">return</span> <span class="n">gaussQuad1d</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">getMassIntegrand</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+        <span class="k">return</span> <span class="n">gaussQuad2d</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">getMassIntegrand</span><span class="p">(</span>  <span class="c1"># noqa: E731</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">gaussQuad3d</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -1304,7 +1499,120 @@
 
 
 
+  <div class="doc doc-object doc-method">
 
+
+
+<h2 id="FEMpy.Element.Element.getStiffnessIntegrand" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getStiffnessIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getStiffnessIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">):</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getBMat</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getJacobian</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
+    <span class="n">detJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+    <span class="n">BDB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">DMat</span> <span class="o">@</span> <span class="n">B</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">BDB</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">detJ</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.getStiffnessMat" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getStiffnessMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getStiffnessMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">getStiffnessIntegrand</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+        <span class="k">return</span> <span class="n">gaussQuad1d</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">getStiffnessIntegrand</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+        <span class="k">return</span> <span class="n">gaussQuad2d</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">getStiffnessIntegrand</span><span class="p">(</span>  <span class="c1"># noqa: E731</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">gaussQuad3d</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.getStrain" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getStrain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">uNodes</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getStrain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">uNodes</span><span class="p">):</span>
+    <span class="n">BMat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getBMat</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">BMat</span> <span class="o">@</span> <span class="n">uNodes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.getStress" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getStress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">uNodes</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getStress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">uNodes</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getStrain</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">uNodes</span><span class="p">)</span> <span class="o">@</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">DMat</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 

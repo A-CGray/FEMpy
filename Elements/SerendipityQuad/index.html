@@ -36,8 +36,8 @@
       
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700%7C&display=fallback">
+        <style>:root{--md-text-font-family:"Open Sans";--md-code-font-family:""}</style>
       
     
     
@@ -384,6 +384,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.SerendipityQuad.serendipityQuadElement.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.SerendipityQuad.serendipityQuadElement.getShapeFunctionDerivs" class="md-nav__link">
     getShapeFunctionDerivs()
   </a>
@@ -456,6 +463,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.SerendipityQuad.serendipityQuadElement.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.SerendipityQuad.serendipityQuadElement.getShapeFunctionDerivs" class="md-nav__link">
     getShapeFunctionDerivs()
   </a>
@@ -507,6 +521,36 @@
 
 
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.SerendipityQuad.serendipityQuadElement.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numDisplacements</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numDisplacements</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="c1"># --- Initialise a 9 noded quad and then change the number of nodes to 8 ---</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">numDisplacements</span><span class="o">=</span><span class="n">numDisplacements</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">numDOF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span> <span class="o">*</span> <span class="n">numDisplacements</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
