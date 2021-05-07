@@ -5,6 +5,8 @@ site_url: https://a-gray-94.github.io/FEMpy
 repo_name: A-Gray-94/FEMpy
 repo_url: https://github.com/A-Gray-94/FEMpy
 theme:
+    font:
+        text: Open Sans
     name: material
     icon:
         repo: fontawesome/brands/github
@@ -70,6 +72,8 @@ plugins:
             python:
                 selection:
                     docstring_style: 'numpy'
+                rendering:
+                    show_if_no_docstring: True
 google_analytics:
   - G-CE4BXN9PR8
   - auto
