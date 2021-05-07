@@ -11,7 +11,7 @@ theme:
         accent: white
 nav:
     - Home: index.md
-    # - Markdown Addons: mkdocs-examples/addons.md
+    - Markdown Addons: mkdocs-examples/addons.md
 markdown_extensions:
     - pymdownx.superfences
     - pymdownx.progressbar
