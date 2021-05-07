@@ -20,8 +20,8 @@ docker-run-mkdocs:
 
 docker-build-mkdocs: clean
 	docker run --rm -it -v `pwd`/docs:/data fempy mkdocs build
-	# mkdir -p output/
-	# cp -r  docs/site/* output/
+	mkdir -p output/
+	cp -r  docs/site/* output/
 
 docker-publish-mkdocs:
 	docker run --rm -it -v `pwd`:/data -v "$(HOME)/.ssh":/root/.ssh fempy mkdocs gh-deploy -f docs/mkdocs.yml
