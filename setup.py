@@ -20,7 +20,14 @@ setup(
     ],
     install_requires=["numpy", "numba", "scipy"],
     extras_require={
-        "docs": ["mkdocs", "pymdown-extensions", "mkdocs-material", "mkdocstrings", "pytkdocs[numpy-style]"]
+        "docs": [
+            "mkdocs",
+            "pymdown-extensions",
+            "mkdocs-material",
+            "mkdocstrings",
+            "pytkdocs[numpy-style]",
+            "Jinja2<3.0,>=2.11",
+        ]
     },
     classifiers=["Operating System :: OS Independent", "Programming Language :: Python"],
 )
