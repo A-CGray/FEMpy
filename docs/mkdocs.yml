@@ -56,5 +56,5 @@ plugins:
                 selection:
                     docstring_style: 'numpy'
 google_analytics:
-  - UA-271705438
+  - G-CE4BXN9PR8
   - auto
