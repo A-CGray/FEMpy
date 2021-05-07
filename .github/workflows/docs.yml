@@ -1,32 +1,23 @@
 name: Publish docs via GitHub Pages
-
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
+    name: Deploy docs
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ 3.8 ]
-
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout main
+        uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: x64
+      - name: build docs
+        run: docker run fempy mkdocs build
 
-      - name: Install requirements
-        run: python3 -m pip install -r requirements.txt
-
-      - name: build
-        run: python3 -m mkdocs build
-
-      - name: Deploy 🚀
-        run: python3 -m mkdocs gh-deploy --force
+      - name: Deploy docs
+        uses: A-Gray-94/mkdocs-deploy-gh-pages@master
+        # Or use mhausenblas/mkdocs-deploy-gh-pages@nomaterial to build without the mkdocs-material theme
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CONFIG_FILE: docs/mkdocs.yml
