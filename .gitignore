@@ -2,7 +2,7 @@
 .vscode
 
 # Doc build output
-output/*
+docs/site/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
