@@ -1,4 +1,4 @@
-name: niceplots
+name: Tests
 
 on:
   push:
