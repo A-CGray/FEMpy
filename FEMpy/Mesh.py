@@ -26,7 +26,7 @@ from numba import jit
 def makeNodeElsMat(Conn):
     """Generate data structure listing elements connected to each node
 
-    [extended_summary]
+
 
     Parameters
     ----------
@@ -106,7 +106,7 @@ def getEdgesfromNodes(nodes, conn, nodeEls, edgeInds):
 def computeElementCentroids(nodeCoords, conn):
     """Compute element centroids
 
-    [extended_summary]
+
 
     Parameters
     ----------

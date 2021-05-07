@@ -59,7 +59,6 @@ class QuadElement(Element):
     def getShapeFunctions(self, paramCoords):
         """Compute shape function values at a set of parametric coordinates
 
-        [extended_summary]
 
         Parameters
         ----------
@@ -103,7 +102,6 @@ class QuadElement(Element):
     def integrateTraction(self, f, nodeCoords, constitutive, edges=[0, 1, 2, 3], n=1):
         """Compute equivalent nodal forces due to body forces through numerical integration
 
-        [extended_summary]
 
         Parameters
         ----------

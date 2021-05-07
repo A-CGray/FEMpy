@@ -28,7 +28,7 @@ from .QuadElement import QuadElement
 def serendipityShapeFuncs(x, y):
     """Compute the shape functions of an 8 node serendipity Quad element
 
-    [extended_summary]
+
 
     Parameters
     ----------
@@ -62,7 +62,7 @@ def serendipityShapeFuncs(x, y):
 def serendipityShapeFuncDerivs(x, y):
     """Compute the derivatives of the shape functions of an 8 node serendpity Quad element at a series of points in 2d space
 
-    [extended_summary]
+
 
     Parameters
     ----------
@@ -104,6 +104,8 @@ def serendipityShapeFuncDerivs(x, y):
 
 
 class serendipityQuadElement(QuadElement):
+    """An 8 noded quadratic quad element"""
+
     def __init__(self, numDisplacements=2):
         # --- Initialise a 9 noded quad and then change the number of nodes to 8 ---
         super().__init__(order=2, numDisplacements=numDisplacements)

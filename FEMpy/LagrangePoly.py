@@ -27,7 +27,7 @@ from numba import jit
 def LagrangePoly1d(x, n):
     """Compute the values of the 1d Lagrange polynomials at a series of points
 
-    [extended_summary]
+
 
     Parameters
     ----------
@@ -80,7 +80,7 @@ def LagrangePoly1dDeriv(x, n):
 def LagrangePoly2d(x, y, n):
     """Compute the derivatives of the 2d Lagrange polynomials at a series of points in 2d space
 
-    [extended_summary]
+
 
     Parameters
     ----------
@@ -112,7 +112,7 @@ def LagrangePoly2d(x, y, n):
 def LagrangePoly2dDeriv(x, y, n):
     """Compute the derivatives of the 2d Lagrange polynomials at a series of points in 2d space
 
-    [extended_summary]
+
 
     Parameters
     ----------

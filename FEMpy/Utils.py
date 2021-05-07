@@ -27,7 +27,7 @@ from numba import jit
 def ksAgg(g, rho=100.0):
     """Compute a smooth approximation to the maximum of a set of values us KS agregation
 
-    [extended_summary]
+
 
     Parameters
     ----------

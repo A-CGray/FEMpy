@@ -81,7 +81,6 @@ class Element(object):
     def getRealCoord(self, paramCoords, nodeCoords):
         """Compute the real coordinates of a point in isoparametric space
 
-        [extended_summary]
 
         Parameters
         ----------
@@ -131,7 +130,6 @@ class Element(object):
     def getJacobian(self, paramCoords, nodeCoords):
         """Get the element Jacobians at a set of parametric coordinates
 
-        [extended_summary]
 
         Parameters
         ----------
@@ -240,7 +238,6 @@ class Element(object):
     def getU(self, paramCoords, uNodes):
         """Compute the displacements at a set of parametric coordinates
 
-        [extended_summary]
 
         Parameters
         ----------
@@ -325,7 +322,6 @@ class Element(object):
     def integrateBodyForce(self, f, nodeCoords, n=1):
         """Compute equivalent nodal forces due to body forces through numerical integration
 
-        [extended_summary]
 
         Parameters
         ----------
