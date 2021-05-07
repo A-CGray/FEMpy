@@ -12,9 +12,6 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@v2
 
-      - name: build docs
-        run: docker run fempy mkdocs build
-
       - name: Deploy docs
         uses: A-Gray-94/mkdocs-deploy-gh-pages@master
         # Or use mhausenblas/mkdocs-deploy-gh-pages@nomaterial to build without the mkdocs-material theme
