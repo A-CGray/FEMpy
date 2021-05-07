@@ -1,5 +1,0 @@
-mkdocs
-pymdown-extensions
-mkdocs-material
-mkdocstrings
-pytkdocs[numpy-style]
