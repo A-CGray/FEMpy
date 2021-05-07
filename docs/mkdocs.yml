@@ -6,9 +6,24 @@ repo_name: A-Gray-94/FEMpy
 repo_url: https://github.com/A-Gray-94/FEMpy
 theme:
     name: material
+    icon:
+        repo: fontawesome/brands/github
     palette:
-        primary: blue
-        accent: white
+    - scheme: default
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
+    features:
+        - navigation.tabs
+        - navigation.tabs.sticky
+        - navigation.top
+        - navigation.tracking
+        - search.suggest
+        - search.highlight
 nav:
     - Home: index.md
     - Elements:
