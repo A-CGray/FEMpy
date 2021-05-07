@@ -25,7 +25,16 @@ from .LagrangePoly import LagrangePoly1d, LagrangePoly1dDeriv
 
 
 class Lagrange1dElement(Element):
+    """An arbitrary order 1D finite element using Lagrange polynomial shape functions"""
+
     def __init__(self, order):
+        """Initialise an arbitrary order 1D finite element
+
+        Parameters
+        ----------
+        order : int
+            Shape function polynomial order
+        """
         self.order = order
         super().__init__(numNodes=order + 1, numDimensions=1)
 
