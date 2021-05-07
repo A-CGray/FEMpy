@@ -329,6 +329,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getShapeFunctionDerivs" class="md-nav__link">
     getShapeFunctionDerivs()
   </a>
@@ -389,6 +396,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getShapeFunctionDerivs" class="md-nav__link">
     getShapeFunctionDerivs()
   </a>
@@ -427,6 +441,7 @@
 <a id="FEMpy.Lagrange1dElement.Lagrange1dElement"></a>
     <div class="doc doc-contents first">
 
+      <p>An arbitrary order 1D finite element using Lagrange polynomial shape functions</p>
 
 
 
@@ -439,6 +454,61 @@
 
 
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Lagrange1dElement.Lagrange1dElement.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Initialise an arbitrary order 1D finite element</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>order</code></td>
+        <td><code>int</code></td>
+        <td><p>Shape function polynomial order</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code></code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialise an arbitrary order 1D finite element</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    order : int</span>
+<span class="sd">        Shape function polynomial order</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">numNodes</span><span class="o">=</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">numDimensions</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
