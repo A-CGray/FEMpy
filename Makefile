@@ -7,7 +7,7 @@ run: run-mkdocs
 publish: publish-mkdocs
 
 clean:
-	rm -rf output
+	rm -rf docs/site
 
 build-docker:
 	docker build -t fempy .
@@ -20,8 +20,6 @@ docker-run-mkdocs:
 
 docker-build-mkdocs: clean
 	docker run --rm -it -v `pwd`/docs:/data fempy mkdocs build
-	mkdir -p output/
-	cp -r  docs/site/* output/
 
 docker-publish-mkdocs:
 	docker run --rm -it -v `pwd`:/data -v "$(HOME)/.ssh":/root/.ssh fempy mkdocs gh-deploy -f docs/mkdocs.yml
@@ -31,8 +29,6 @@ run-mkdocs:
 
 build-mkdocs: clean
 	mkdocs build -f docs/mkdocs.yml
-	mkdir -p output/
-	cp -r  docs/site/* output/
 
 publish-mkdocs:
 	mkdocs gh-deploy -f docs/mkdocs.yml
