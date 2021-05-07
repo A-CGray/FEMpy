@@ -21,7 +21,6 @@ import numpy as np
 # Extension modules
 # ==============================================================================
 from .Constitutive import Constitutive
-from .LagrangePoly import LagrangePoly1d, LagrangePoly1dDeriv
 
 
 class AxialBar(Constitutive):

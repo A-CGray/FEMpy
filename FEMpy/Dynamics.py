@@ -69,7 +69,7 @@ def NewmarkExplicit(MMat, KMat, Force, tStep, tf, t0=0.0, u0=None, uDot0=None):
 
     # --- Convert force to function of time if it isn't ---
     if not callable(Force):
-        ForceFunc = lambda t: Force
+        ForceFunc = lambda t: Force  # noqa: E731
     else:
         ForceFunc = Force
 

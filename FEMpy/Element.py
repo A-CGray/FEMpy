@@ -258,6 +258,22 @@ class Element(object):
         return N @ uNodes
 
     def getUPrime(self, paramCoords, nodeCoords, uNodes):
+        """Compute the displacement derivatives at a set of parametric coordinates
+
+        Parameters
+        ----------
+        paramCoords : n x numDim array
+            isoparametric coordinates, one row for each point in isoparametric space to compute the Jacobian at
+        nodeCoords : numNode x numDim array
+            Element node real coordinates
+        uNodes : numNode x numDim array
+            Nodal displacements
+
+        Returns
+        -------
+        NPrime : n x numDim x numNode array
+            [description]
+        """
         NPrime = self.getNPrime(paramCoords, nodeCoords)
         return NPrime @ uNodes
 
@@ -272,26 +288,30 @@ class Element(object):
         if n is None:
             n = self.order + 1
         if self.numDim == 1:
-            f = lambda x1: self.getStiffnessIntegrand(np.array([x1]).T, nodeCoords, constitutive)
+            f = lambda x1: self.getStiffnessIntegrand(np.array([x1]).T, nodeCoords, constitutive)  # noqa: E731
             return gaussQuad1d(f=f, n=n)
         if self.numDim == 2:
-            f = lambda x1, x2: self.getStiffnessIntegrand(np.array([x1, x2]).T, nodeCoords, constitutive)
+            f = lambda x1, x2: self.getStiffnessIntegrand(np.array([x1, x2]).T, nodeCoords, constitutive)  # noqa: E731
             return gaussQuad2d(f=f, n=n)
         if self.numDim == 3:
-            f = lambda x1, x2, x3: self.getStiffnessIntegrand(np.array([x1, x2, x3]).T, nodeCoords, constitutive)
+            f = lambda x1, x2, x3: self.getStiffnessIntegrand(  # noqa: E731
+                np.array([x1, x2, x3]).T, nodeCoords, constitutive
+            )
             return gaussQuad3d(f, n)
 
     def getMassMat(self, nodeCoords, constitutive, n=None):
         if n is None:
             n = self.order + 1
         if self.numDim == 1:
-            f = lambda x1: self.getMassIntegrand(np.array([x1]).T, nodeCoords, constitutive)
+            f = lambda x1: self.getMassIntegrand(np.array([x1]).T, nodeCoords, constitutive)  # noqa: E731
             return gaussQuad1d(f=f, n=n)
         if self.numDim == 2:
-            f = lambda x1, x2: self.getMassIntegrand(np.array([x1, x2]).T, nodeCoords, constitutive)
+            f = lambda x1, x2: self.getMassIntegrand(np.array([x1, x2]).T, nodeCoords, constitutive)  # noqa: E731
             return gaussQuad2d(f=f, n=n)
         if self.numDim == 3:
-            f = lambda x1, x2, x3: self.getMassIntegrand(np.array([x1, x2, x3]).T, nodeCoords, constitutive)
+            f = lambda x1, x2, x3: self.getMassIntegrand(  # noqa: E731
+                np.array([x1, x2, x3]).T, nodeCoords, constitutive
+            )
             return gaussQuad3d(f, n)
 
     def getMassIntegrand(self, paramCoords, nodeCoords, constitutive):
@@ -310,7 +330,8 @@ class Element(object):
         Parameters
         ----------
         f : Body force function
-            Should accept an nP x numDim array as input and output a nP x numDisp array, ie f(x)[i] returns the body force components at the ith point queried
+            Should accept an nP x numDim array as input and output a nP x numDisp array, ie f(x)[i] returns the body
+            force components at the ith point queried
         nodeCoords : numNode x numDim array
             Element node real coordinates
         n : int, optional
@@ -322,13 +343,15 @@ class Element(object):
             Equivalent nodal loads due to body force
         """
         if self.numDim == 1:
-            bodyForceFunc = lambda x1: self.bodyForceIntegrad(f, np.array([x1]).T, nodeCoords)
+            bodyForceFunc = lambda x1: self.bodyForceIntegrad(f, np.array([x1]).T, nodeCoords)  # noqa: E731
             return gaussQuad1d(bodyForceFunc, n)
         if self.numDim == 2:
-            bodyForceFunc = lambda x1, x2: self.bodyForceIntegrad(f, np.array([x1, x2]).T, nodeCoords)
+            bodyForceFunc = lambda x1, x2: self.bodyForceIntegrad(f, np.array([x1, x2]).T, nodeCoords)  # noqa: E731
             return gaussQuad2d(bodyForceFunc, n)
         if self.numDim == 3:
-            bodyForceFunc = lambda x1, x2, x3: self.bodyForceIntegrad(f, np.array([x1, x2, x3]).T, nodeCoords)
+            bodyForceFunc = lambda x1, x2, x3: self.bodyForceIntegrad(  # noqa: E731
+                f, np.array([x1, x2, x3]).T, nodeCoords
+            )
             return gaussQuad3d(bodyForceFunc, n)
 
     def bodyForceIntegrad(self, f, paramCoord, nodeCoords):
@@ -344,7 +367,7 @@ class Element(object):
 
 
 if __name__ == "__main__":
-    QuadElem = Element(numNodes=4, numDimensions=2, numStrains=3)
+    QuadElem = Element(numNodes=4, numDimensions=2, numStrain=3)
     nodecoords = np.array([[-1.0, -1.0], [1.0, -1.0], [1.0, 1.0], [-1.0, 1.0]])
     uNodes = np.array([[-1.0, -1.0], [1.0, -1.0], [1.0, 1.0], [-1.0, 1.0]])
     paramCoords = np.array([[-1.0, -1.0], [0.0, 0.0], [1.0, 1.0]])

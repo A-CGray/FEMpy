@@ -5173,7 +5173,7 @@ def gaussQuad2d(f, n, a=-1.0, b=1.0):
 
     for i in range(n[0]):
         x1 = Eta[0][i] * scale[0] + offset[0]
-        func = lambda x2: f(x1 * np.ones_like(x2), x2)
+        func = lambda x2: f(x1 * np.ones_like(x2), x2)  # noqa: E731
         intF += scale[0] * W[0][i] * gaussQuad1d(func, n[-1], a[-1], b[-1])
 
     return intF
@@ -5224,7 +5224,7 @@ def gaussQuad3d(f, n, a=-1.0, b=1.0):
         x1 = Eta[0][i] * scale[0] + offset[0]
         for j in range(n[1]):
             x2 = Eta[1][j] * scale[1] + offset[1]
-            func = lambda x3: f(x1 * np.ones_like(x3), x2 * np.ones_like(x3), x3)
+            func = lambda x3: f(x1 * np.ones_like(x3), x2 * np.ones_like(x3), x3)  # noqa: E731
             intF += totalScale * W[0][i] * W[1][j] * gaussQuad1d(func, n[-1], a[-1], b[-1])
 
     return intF

@@ -16,7 +16,7 @@ Mesh Utilities
 # External Python modules
 # ==============================================================================
 import numpy as np
-from numba import jit, prange
+from numba import jit
 
 # ==============================================================================
 # Extension modules

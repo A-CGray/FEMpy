@@ -17,7 +17,6 @@ import time
 # External Python modules
 # ==============================================================================
 import numpy as np
-from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
 import FEMpy as fp
 from numba import jit

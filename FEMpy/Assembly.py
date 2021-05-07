@@ -18,7 +18,6 @@ from collections.abc import Iterable
 # ==============================================================================
 import numpy as np
 from scipy import sparse as sp
-from numba import jit
 
 # ==============================================================================
 # Extension modules

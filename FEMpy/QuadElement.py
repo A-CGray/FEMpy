@@ -128,11 +128,11 @@ class QuadElement(Element):
         Ft = np.zeros((self.numNodes, self.numDisp))
         for e in edges:
             if self.edgeFreeCoord[e] == 0:
-                func = lambda x1: self.tractionIntegrand(
+                func = lambda x1: self.tractionIntegrand(  # noqa: E731
                     f, np.array([x1, self.edgeFixedCoord[e] * np.ones_like(x1)]).T, nodeCoords, e
                 )
             else:
-                func = lambda x2: self.tractionIntegrand(
+                func = lambda x2: self.tractionIntegrand(  # noqa: E731
                     f, np.array([self.edgeFixedCoord[e] * np.ones_like(x2), x2]).T, nodeCoords, e
                 )
             Ft += gaussQuad1d(func, n)
