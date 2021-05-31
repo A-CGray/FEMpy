@@ -35,7 +35,7 @@ def serendipityShapeFuncs(x, y):
     x : array of length nP (0D, nPx1 or 1xnP)
         x coordinates of points to compute polynomial values at, should be between -1.0 and 1.0
     y : array of length nP (0D, nPx1 or 1xnP)
-        y coordinates of points to compute polynomial values at, should be between -1.0 and 1s
+        y coordinates of points to compute polynomial values at, should be between -1.0 and 1.0
 
     Returns
     -------
@@ -104,7 +104,7 @@ def serendipityShapeFuncDerivs(x, y):
 
 
 class serendipityQuadElement(QuadElement):
-    """An 8 noded quadratic quad element"""
+    """An 8 noded quadratic quad element, also known as a seredipity quad"""
 
     def __init__(self, numDisplacements=2):
         # --- Initialise a 9 noded quad and then change the number of nodes to 8 ---
