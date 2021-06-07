@@ -100,8 +100,8 @@ def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType
     # ==============================================================================
     # Create global stiffness mat and RHS
     # ==============================================================================
-    Mat = sp.coo_matrix((MatEntries, (MatRows, MatColumns)), shape=(numNodes * numDisp, numNodes * numDisp)).tocsc()
-    RHS = sp.coo_matrix((RHSEntries, (RHSRows, np.zeros_like(RHSRows))), shape=(numNodes * numDisp, 1)).tocsc()
+    Mat = sp.coo_matrix((MatEntries, (MatRows, MatColumns)), shape=(numNodes * numDisp, numNodes * numDisp)).tocsr()
+    RHS = sp.coo_matrix((RHSEntries, (RHSRows, np.zeros_like(RHSRows))), shape=(numNodes * numDisp, 1)).tocsr()
 
     return Mat, RHS
 
@@ -131,7 +131,7 @@ def assembleTractions(nodeCoords, conn, element, constitutive, tractElems, tract
         FRows += elDOF[usefulDOF].tolist()
         FEntries += FLocal[usefulDOF].tolist()
 
-    FTract = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsc()
+    FTract = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsr()
     return FTract
 
 
@@ -159,7 +159,7 @@ def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownS
         FRows += elDOF[usefulDOF].tolist()
         FEntries += FLocal[usefulDOF].tolist()
 
-    FBody = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsc()
+    FBody = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsr()
     return FBody
 
 
