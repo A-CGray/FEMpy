@@ -113,7 +113,7 @@ for e in numEl:
 
         assemblyTime = time.time() - forceIntTime - startTime
 
-        u = spsolve(K, RHS + FTract + FBody)
+        u = spsolve(K, RHS + FTract + FBody, factorize=False)
         # u = u.reshape(len(u) // 2, 2)
 
         solveTime = time.time() - startTime - assemblyTime - forceIntTime
