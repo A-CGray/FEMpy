@@ -17,7 +17,7 @@ import time
 # External Python modules
 # ==============================================================================
 import numpy as np
-from scipy.sparse.linalg import spsolve
+from pypardiso import spsolve
 import FEMpy as fp
 from numba import jit
 import matplotlib.pyplot as plt
@@ -114,7 +114,7 @@ for e in numEl:
         assemblyTime = time.time() - forceIntTime - startTime
 
         u = spsolve(K, RHS + FTract + FBody)
-        u = u.reshape(len(u) // 2, 2)
+        # u = u.reshape(len(u) // 2, 2)
 
         solveTime = time.time() - startTime - assemblyTime - forceIntTime
 
@@ -151,5 +151,5 @@ for v, name in zip(plotVars, plotVarNames):
 ax.set_xticks(numDOFList)
 ax.set_xticklabels(numDOFList)
 ax.legend(labelcolor="linecolor")
-fig.savefig("../../Images/QuadElScaling.png", dpi=400)
+fig.savefig("../../docs/docs/Images/QuadElScaling.png", dpi=400)
 plt.show()
