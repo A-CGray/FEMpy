@@ -1,4 +1,5 @@
 mkdocs
+livereload
 pymdown-extensions
 mkdocs-material
 mkdocstrings
