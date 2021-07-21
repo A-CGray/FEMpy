@@ -11,6 +11,7 @@ Element Class
 # ==============================================================================
 # Standard Python modules
 # ==============================================================================
+import abc
 
 # ==============================================================================
 # External Python modules
@@ -145,10 +146,11 @@ class Element(object):
         """
         return self.getShapeFunctionDerivs(paramCoords) @ nodeCoords
 
+    @abc.abstractmethod
     def getShapeFunctions(self, paramCoords):
         """Compute shape function values at a set of parametric coordinates
 
-        This function returns a zero array and should be re-implemented in any child classes
+        This function must be implemented in any child classes
 
         Parameters
         ----------
@@ -160,14 +162,15 @@ class Element(object):
         N : n x numNode array
             Shape function values, N[i][j] is the value of the jth shape function at the ith point
         """
-        return np.zeros((np.shape(paramCoords)[0], self.numNodes))
+        return
 
+    @abc.abstractmethod
     def getShapeFunctionDerivs(self, paramCoords):
         """Compute shape function derivatives at a set of parametric coordinates
 
         These are the derivatives of the shape functions with respect to the parametric coordinates (si, eta, gamma)
 
-        This function returns a zero array and should be re-implemented in any child classes
+        This function must be implemented in any child classes
 
         Parameters
         ----------
@@ -179,7 +182,7 @@ class Element(object):
         NPrime : n x numDim x numNode array
             Shape function values, N[i][j] is the value of the jth shape function at the ith point
         """
-        return np.zeros((np.shape(paramCoords)[0], self.numDim, self.numNodes))
+        return
 
     def getNPrime(self, paramCoords, nodeCoords):
         """Compute shape function derivatives at a set of parametric coordinates
