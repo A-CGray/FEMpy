@@ -1375,7 +1375,7 @@
 
       <p>Compute shape function derivatives at a set of parametric coordinates</p>
 <p>These are the derivatives of the shape functions with respect to the parametric coordinates (si, eta, gamma)</p>
-<p>This function returns a zero array and should be re-implemented in any child classes</p>
+<p>This function must be implemented in any child classes</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1413,12 +1413,13 @@
 </table>
         <details class="quote">
           <summary>Source code in <code></code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getShapeFunctionDerivs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<span class="k">def</span> <span class="nf">getShapeFunctionDerivs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute shape function derivatives at a set of parametric coordinates</span>
 
 <span class="sd">    These are the derivatives of the shape functions with respect to the parametric coordinates (si, eta, gamma)</span>
 
-<span class="sd">    This function returns a zero array and should be re-implemented in any child classes</span>
+<span class="sd">    This function must be implemented in any child classes</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1430,7 +1431,7 @@
 <span class="sd">    NPrime : n x numDim x numNode array</span>
 <span class="sd">        Shape function values, N[i][j] is the value of the jth shape function at the ith point</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span><span class="p">))</span>
+    <span class="k">return</span>
 </code></pre></div>
         </details>
     </div>
@@ -1452,7 +1453,7 @@
     <div class="doc doc-contents ">
 
       <p>Compute shape function values at a set of parametric coordinates</p>
-<p>This function returns a zero array and should be re-implemented in any child classes</p>
+<p>This function must be implemented in any child classes</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1490,10 +1491,11 @@
 </table>
         <details class="quote">
           <summary>Source code in <code></code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getShapeFunctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<span class="k">def</span> <span class="nf">getShapeFunctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute shape function values at a set of parametric coordinates</span>
 
-<span class="sd">    This function returns a zero array and should be re-implemented in any child classes</span>
+<span class="sd">    This function must be implemented in any child classes</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1505,7 +1507,7 @@
 <span class="sd">    N : n x numNode array</span>
 <span class="sd">        Shape function values, N[i][j] is the value of the jth shape function at the ith point</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span><span class="p">))</span>
+    <span class="k">return</span>
 </code></pre></div>
         </details>
     </div>
