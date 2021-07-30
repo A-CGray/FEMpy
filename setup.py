@@ -27,7 +27,8 @@ setup(
             "mkdocstrings",
             "pytkdocs[numpy-style]",
             "Jinja2<3.0,>=2.11",
-        ]
+        ],
+        "dev": ["parameterized", "testflo"],
     },
     classifiers=["Operating System :: OS Independent", "Programming Language :: Python"],
 )

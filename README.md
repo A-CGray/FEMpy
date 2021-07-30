@@ -21,9 +21,9 @@ Or, if you want to make changes to the code:
 ```shell
 pip install -e .
 ```
-If you want to build documentation locally, make sure to install the necessary dependencies:
+If you want to build documentation locally, or run the unit tests, make sure to install the necessary dependencies:
 ```shell
-pip install -e .[docs]
+pip install -e .[docs, dev]
 ```
 And then run:
 ```shell
