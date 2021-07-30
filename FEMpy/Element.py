@@ -179,8 +179,9 @@ class Element(object):
 
         Returns
         -------
-        NPrime : n x numDim x numNode array
-            Shape function values, N[i][j] is the value of the jth shape function at the ith point
+        NPrimeParam : n x numDim x numNode array
+            Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
+            parametric coordinate
         """
         return
 
@@ -363,6 +364,75 @@ class Element(object):
         F = f(realCoord)
         Fb = _bodyForceInt(F, N)
         return (Fb.T * detJ).T
+
+    # ==============================================================================
+    # Private functions
+    # ==============================================================================
+
+    # --- Functions for testing element implementations ---
+    def _getRandParamCoord(self, n=1):
+        """Generate a set of random parametric coordinates
+
+        By default this method assumes that the valid range for all parametric coordinates is [-1, 1].
+        For elements where this is not the case, this method should be reimplemented.
+
+        Parameters
+        ----------
+        n : int, optional
+            number of points to generate, by default 1
+        """
+        return np.random.rand((n, self.numDim))
+
+    @abc.abstractmethod
+    def _getRandomNodeCoords(self):
+        """Generate a random, but valid, set of node coordinates for an element
+
+        This method should be implemented for each element.
+
+        Returns
+        -------
+        nodeCoords : numNode x numDim array
+            Node coordinates
+        """
+        pass
+
+    def _testGetParamCoord(self, n=10):
+        """Test the getParamCoord method
+
+        This test works by generating a set of random parametric coordinates, converting them to real coordinates, and
+        then checking that the parametric coordinates returned by getParamCoord match the original random values.
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of random coordinates to generate, by default 10
+        """
+        paramCoord = self._getRandParamCoord(n)
+        nodeCoords = self._getRandomNodeCoords()
+        realCoords = self.getRealCoord(paramCoord, nodeCoords)
+        error = np.zeros_like(realCoords)
+        for i in range(n):
+            error[i] = paramCoords[i] - self.getParamCoord(realCoords[i], nodeCoords)
+        return error
+
+    def _testShapeFunctionDerivatives(self, n=10):
+        """Test the implementation of the shape function derivatives using the complex-step method
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of random coordinates to generate, by default 10
+        """
+        paramCoords = self._getRandParamCoord(n)
+        coordPert = np.zeros_like(paramCoords)
+        dN = self.getShapeFunctionDerivs(paramCoords)
+        dNApprox = np.zeros_like(dN)
+        for i in range(self.numDim):
+            NPert = np.copy(paramCoords)
+            np.copyto(coordPert, paramCoords)
+            NPert[:, i] += 1e-200
+            dNApprox[:, i, :] = 1e200 * np.imag(self.getShapeFunctions(NPert))
+        return dN - dNApprox
 
 
 if __name__ == "__main__":

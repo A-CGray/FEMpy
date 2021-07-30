@@ -85,7 +85,8 @@ class QuadElement(Element):
         Returns
         -------
         NPrime : n x numDim x numNode array
-            Shape function values, N[i][j] is the value of the jth shape function at the ith point
+            Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
+            parametric coordinate
         """
         return LP.LagrangePoly2dDeriv(paramCoords[:, 0], paramCoords[:, 1], self.order + 1)
 
