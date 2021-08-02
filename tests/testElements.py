@@ -12,7 +12,6 @@ Element unit tests
 # Standard Python modules
 # ==============================================================================
 import unittest
-from unittest.case import TestCase
 from parameterized import parameterized_class
 
 # ==============================================================================
@@ -23,7 +22,7 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy import QuadElement, serendipityQuadElement, Lagrange1dElement
+from FEMpy import QuadElement, Lagrange1dElement  # , serendipityQuadElement,
 
 # --- Elements to test: ---
 # QuadElement: 1st to 4th order

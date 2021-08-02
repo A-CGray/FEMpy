@@ -129,8 +129,10 @@ class Element(object):
         #         jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
         #         x += np.linalg.solve(jacT, res)
         # return x
-        resFunc = lambda x: realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
-        # jacFunc = lambda x: self.getJacobian(np.array([x]), nodeCoords)[0].T
+
+        def resFunc(x):
+            return realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
+
         sol = root(resFunc, np.zeros(self.numDim), method="krylov", tol=tol)
         return sol.x
 
