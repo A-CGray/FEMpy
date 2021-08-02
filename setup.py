@@ -18,7 +18,7 @@ setup(
     packages=[
         "FEMpy",
     ],
-    install_requires=["numpy", "numba", "scipy"],
+    install_requires=["numpy", "numba", "scipy", "pyComposite @ git+https://github.com/A-Gray-94/pyComposite.git"],
     extras_require={
         "docs": [
             "mkdocs",
