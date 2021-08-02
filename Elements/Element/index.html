@@ -845,7 +845,7 @@
     <span class="c1"># Transform parametric to real coordinates in order to compute body force components</span>
     <span class="n">realCoord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRealCoord</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
     <span class="n">F</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">realCoord</span><span class="p">)</span>
-    <span class="n">Fb</span> <span class="o">=</span> <span class="n">_bodyForceInt</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">Fb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_computeNTFProduct</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">Fb</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">detJ</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 </code></pre></div>
         </details>
@@ -937,7 +937,7 @@
 <span class="sd">        The B matrices, B[i] returns the 2D B matrix at the ith parametric point</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">NPrime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNPrime</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">makeBMat</span><span class="p">(</span><span class="n">NPrime</span><span class="p">,</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">LMats</span><span class="p">,</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">numStrain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_makeBMat</span><span class="p">(</span><span class="n">NPrime</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -1044,7 +1044,7 @@
           <summary>Source code in <code>FEMpy/Element.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getMassIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">):</span>
     <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span>
-    <span class="n">NMat</span> <span class="o">=</span> <span class="n">makeNMat</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">)</span>
+    <span class="n">NMat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_makeNMat</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getJacobian</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
     <span class="n">detJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
     <span class="n">NTN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">NMat</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">NMat</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">rho</span>
