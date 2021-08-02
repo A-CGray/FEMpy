@@ -461,14 +461,3 @@ class Element(object):
     # TODO: Tests to add
     # - Complex step validation of jacobian
     # - Validate stiffness matrix against resdiual (would need to implement a residual assembly method)
-
-
-if __name__ == "__main__":
-    QuadElem = Element(numNodes=4, numDimensions=2, numStrain=3)
-    nodecoords = np.array([[-1.0, -1.0], [1.0, -1.0], [1.0, 1.0], [-1.0, 1.0]])
-    uNodes = np.array([[-1.0, -1.0], [1.0, -1.0], [1.0, 1.0], [-1.0, 1.0]])
-    paramCoords = np.array([[-1.0, -1.0], [0.0, 0.0], [1.0, 1.0]])
-    print(QuadElem.getShapeFunctions(paramCoords), "\n")
-    print(QuadElem.getRealCoord(paramCoords, nodecoords), "\n")
-    print(QuadElem.getU(paramCoords, uNodes), "\n")
-    print(QuadElem.getUPrime(paramCoords, nodecoords, uNodes), "\n")
