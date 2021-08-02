@@ -441,11 +441,26 @@ class Element(object):
         dN = self.getShapeFunctionDerivs(paramCoords)
         dNApprox = np.zeros_like(dN)
         for i in range(self.numDim):
-            # NPert = np.zeros_like(paramCoords, dtype="complex128")
             np.copyto(coordPert, paramCoords)
             coordPert[:, i] += 1e-200 * 1j
             dNApprox[:, i, :] = 1e200 * np.imag(self.getShapeFunctions(coordPert))
         return dN - dNApprox
+
+    def _testShapeFunctionSum(self, n=10):
+        """Test the basic property that shape function values should sum to 1 everywhere within an element
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of points to test at, by default 10
+        """
+        paramCoords = self._getRandParamCoord(n)
+        N = self.getShapeFunctions(paramCoords)
+        return np.sum(N, axis=1)
+
+    # TODO: Tests to add
+    # - Complex step validation of jacobian
+    # - Validate stiffness matrix against resdiual (would need to implement a residual assembly method)
 
 
 if __name__ == "__main__":

@@ -56,6 +56,10 @@ class ElementUnitTest(unittest.TestCase):
         error = self.element._testShapeFunctionDerivatives(self.numTestPoints)
         np.testing.assert_allclose(error, 0, atol=self.tol, rtol=self.tol)
 
+    def testShapeFunctionSum(self):
+        sum = self.element._testShapeFunctionSum(self.numTestPoints)
+        np.testing.assert_allclose(sum, 1, atol=self.tol, rtol=self.tol)
+
 
 if __name__ == "__main__":
     unittest.main()
