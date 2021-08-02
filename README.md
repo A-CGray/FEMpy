@@ -1,7 +1,10 @@
 # FEMpy
 
 [![Docs](https://github.com/A-Gray-94/FEMpy/actions/workflows/docs.yml/badge.svg)](https://a-gray-94.github.io/FEMpy/)
+[![Unit Tests](https://github.com/A-Gray-94/FEMpy/actions/workflows/Tests.yml/badge.svg)](https://a-gray-94.github.io/FEMpy/)
+[![Code Formatting](https://github.com/A-Gray-94/FEMpy/actions/workflows/Formatting.yml/badge.svg)](https://a-gray-94.github.io/FEMpy/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![codecov](https://codecov.io/gh/A-Gray-94/FEMpy/branch/main/graph/badge.svg?token=VLBE5HHP68)](https://codecov.io/gh/A-Gray-94/FEMpy)
 
 FEMpy is my attempt to implement a basic object-oriented finite element method in python.
 
