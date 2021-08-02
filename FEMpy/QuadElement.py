@@ -159,6 +159,26 @@ class QuadElement(Element):
                 Fb[p, :, d] = (F[p, d] * N[p]).T
         return (Fb.T * detJStar).T
 
+    def _getRandomNodeCoords(self):
+        """Generate a random, but valid, set of node coordinates for an element
+
+        For the Quad element, we simply create a grid of evenly spaced points then add some random noise to each point
+        before applying a random scaling and rotation
+
+        Returns
+        -------
+        nodeCoords : numNode x numDim array
+            Node coordinates
+        """
+        xy = np.linspace(0, 1, self.order + 1)
+        nodeCoords = np.random.rand((self.order + 1) ** 2, self.numDim) * 0.1
+        nodeCoords[:, 0] += np.tile(xy, self.order + 1)
+        nodeCoords[:, 1] += np.repeat(xy, self.order + 1)
+        nodeCoords *= np.random.rand(1)
+        theta = np.random.rand(1) * np.pi
+        R = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])[:, :, 0]
+        return (R @ nodeCoords.T).T
+
 
 if __name__ == "__main__":
 
