@@ -16,7 +16,7 @@
         <link rel="canonical" href="https://a-gray-94.github.io/FEMpy/Elements/QuadElement/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.0">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.2">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.fe914879.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.1118c9be.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ba0d045b.min.css">
@@ -643,7 +643,7 @@ ordering is:</p>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/QuadElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">numDisplacements</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Instantiate an arbitrary order 2d quadrilateral finite element</span>
 
@@ -673,6 +673,8 @@ ordering is:</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">edgeFreeCoord</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="c1"># value of the fixed coordinate on each edge</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">edgeFixedCoord</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">]</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Order</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2">-LagrangeQuad&quot;</span>
 </code></pre></div>
         </details>
     </div>
@@ -726,12 +728,13 @@ ordering is:</p>
   <tbody>
     <tr>
       <td><code>n x numDim x numNode array</code></td>
-      <td><p>Shape function values, N[i][j] is the value of the jth shape function at the ith point</p></td>
+      <td><p>Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
+parametric coordinate</p></td>
     </tr>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/QuadElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getShapeFunctionDerivs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute shape function derivatives at a set of parametric coordinates</span>
 
@@ -745,7 +748,8 @@ ordering is:</p>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    NPrime : n x numDim x numNode array</span>
-<span class="sd">        Shape function values, N[i][j] is the value of the jth shape function at the ith point</span>
+<span class="sd">        Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth</span>
+<span class="sd">        parametric coordinate</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">LP</span><span class="o">.</span><span class="n">LagrangePoly2dDeriv</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
@@ -805,7 +809,7 @@ ordering is:</p>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/QuadElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getShapeFunctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute shape function values at a set of parametric coordinates</span>
 
@@ -843,7 +847,7 @@ ordering is:</p>
 
 
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/QuadElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getStiffnessMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="c1"># TODO: this function should not presume the constitutive object has a thickness, what if you want to use this</span>
     <span class="c1"># quad element for something else, like 2D heat transfer where there&#39;s no thickness</span>
@@ -918,7 +922,7 @@ force components at the ith point queried</p></td>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/QuadElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">integrateBodyForce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="c1"># TODO: this function should not presume the constitutive object has a thickness, what if you want to use this</span>
     <span class="c1"># quad element for something else, like 2D heat transfer where there&#39;s no thickness</span>
@@ -1004,7 +1008,7 @@ force components at the ith point queried</p></td>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/QuadElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">integrateTraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute equivalent nodal forces due to body forces through numerical integration</span>
 
@@ -1063,7 +1067,7 @@ force components at the ith point queried</p></td>
 
 
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/QuadElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">tractionIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">edgeNum</span><span class="p">):</span>
     <span class="c1"># Compute shape functions and Jacobian determinant at parametric coordinates</span>
     <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">)</span>
@@ -1173,10 +1177,10 @@ force components at the ith point queried</p></td>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.53c85856.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.716f8af4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2b46852b.min.js"></script>
       
         <script src="../../js/flowchart-loader.js"></script>
       

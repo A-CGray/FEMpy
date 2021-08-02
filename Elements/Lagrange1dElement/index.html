@@ -16,7 +16,7 @@
         <link rel="canonical" href="https://a-gray-94.github.io/FEMpy/Elements/Lagrange1dElement/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.0">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.2">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.fe914879.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.1118c9be.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ba0d045b.min.css">
@@ -603,7 +603,7 @@
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/Lagrange1dElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Initialise an arbitrary order 1D finite element</span>
 
@@ -614,6 +614,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">numNodes</span><span class="o">=</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">numDimensions</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Order</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2">-Lagrange1D&quot;</span>
 </code></pre></div>
         </details>
     </div>
@@ -636,7 +637,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/Lagrange1dElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getMassMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">getMassMat</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">A</span>
 </code></pre></div>
@@ -698,7 +699,7 @@
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/Lagrange1dElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getShapeFunctionDerivs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute shape function derivatives at a set of parametric coordinates</span>
 
@@ -777,7 +778,7 @@
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/Lagrange1dElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getShapeFunctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute shape function values at a set of parametric coordinates</span>
 
@@ -816,7 +817,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code></code></summary>
+          <summary>Source code in <code>FEMpy/Lagrange1dElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getStiffnessMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">getStiffnessMat</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">A</span>
 </code></pre></div>
@@ -894,10 +895,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.53c85856.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.716f8af4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2b46852b.min.js"></script>
       
         <script src="../../js/flowchart-loader.js"></script>
       
