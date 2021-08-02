@@ -149,14 +149,8 @@ class QuadElement(Element):
         realCoord = self.getRealCoord(paramCoord, nodeCoords)
         F = f(realCoord)
 
-        # Compute N^T fb at each point, it's complicated because things are not the right shape
-        nP = np.shape(F)[0]
-        nD = np.shape(F)[1]
-        nN = np.shape(N)[1]
-        Fb = np.zeros((nP, nN, nD))
-        for p in range(nP):
-            for d in range(nD):
-                Fb[p, :, d] = (F[p, d] * N[p]).T
+        # Compute N^T fb at each point
+        Fb = self._computeNTFProduct(F, N)
         return (Fb.T * detJStar).T
 
     def _getRandomNodeCoords(self):

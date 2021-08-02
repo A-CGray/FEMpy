@@ -27,7 +27,7 @@ from .GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
 
 
 @jit(nopython=True, cache=True)
-def makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
+def _makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
     numPoints = np.shape(NPrime)[0]
     BMat = np.zeros((numPoints, numStrain, numDim * numNodes))
     for p in range(numPoints):
@@ -38,7 +38,7 @@ def makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
 
 
 @jit(nopython=True, cache=True)
-def makeNMat(N, numDim):
+def _makeNMat(N, numDim):
     s = np.shape(N)
     numPoints = s[0]
     numShapeFunc = s[1]
@@ -50,7 +50,7 @@ def makeNMat(N, numDim):
 
 
 @jit(nopython=True, cache=True)
-def _bodyForceInt(F, N):
+def _computeNTFProduct(F, N):
     # Compute N^T fb at each point, it's complicated because things are not the right shape
     nP = np.shape(F)[0]
     nD = np.shape(F)[1]
@@ -238,7 +238,7 @@ class Element(object):
             The B matrices, B[i] returns the 2D B matrix at the ith parametric point
         """
         NPrime = self.getNPrime(paramCoords, nodeCoords)
-        return makeBMat(NPrime, constitutive.LMats, constitutive.numStrain, self.numDim, self.numNodes)
+        return self._makeBMat(NPrime, constitutive)
 
     def getStrain(self, paramCoords, nodeCoords, constitutive, uNodes):
         BMat = self.getBMat(paramCoords, nodeCoords, constitutive)
@@ -325,7 +325,7 @@ class Element(object):
 
     def getMassIntegrand(self, paramCoords, nodeCoords, constitutive):
         N = self.getShapeFunctions(paramCoords)
-        NMat = makeNMat(N, self.numDim)
+        NMat = self._makeNMat(N)
         J = self.getJacobian(paramCoords, nodeCoords)
         detJ = np.linalg.det(J)
         NTN = np.swapaxes(NMat, 1, 2) @ NMat * constitutive.rho
@@ -362,6 +362,18 @@ class Element(object):
             )
             return gaussQuad3d(bodyForceFunc, n)
 
+    def _computeNTFProduct(self, F, N):
+        """A basic wrapper for the jit compiled function _computeNTFProduct"""
+        return _computeNTFProduct(F, N)
+
+    def _makeNMat(self, N):
+        """A basic wrapper for the jit compiled function _makeNMat"""
+        return _makeNMat(N, self.numDim)
+
+    def _makeBMat(self, NPrime, constitutive):
+        """A basic wrapper for the jit compiled function _makeBMat"""
+        return _makeBMat(NPrime, constitutive.LMats, constitutive.numStrain, self.numDim, self.numNodes)
+
     def bodyForceIntegrad(self, f, paramCoord, nodeCoords):
         # Compute shape functions and Jacobian determinant at parametric coordinates
         N = self.getShapeFunctions(paramCoord)
@@ -370,7 +382,7 @@ class Element(object):
         # Transform parametric to real coordinates in order to compute body force components
         realCoord = self.getRealCoord(paramCoord, nodeCoords)
         F = f(realCoord)
-        Fb = _bodyForceInt(F, N)
+        Fb = self._computeNTFProduct(F, N)
         return (Fb.T * detJ).T
 
     # ==============================================================================
