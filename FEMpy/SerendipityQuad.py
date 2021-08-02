@@ -44,7 +44,7 @@ def serendipityShapeFuncs(x, y):
     """
     psi = x.flatten()
     eta = y.flatten()
-    N = np.zeros((len(psi), 8))
+    N = np.zeros((len(psi), 8), dtype=x.dtype)
 
     N[:, 0] = 0.25 * (1.0 - psi) * (1.0 - eta) * (-psi - eta - 1.0)
     N[:, 1] = 0.25 * (1.0 + psi) * (1.0 - eta) * (psi - eta - 1.0)

@@ -437,14 +437,14 @@ class Element(object):
             Number of random coordinates to generate, by default 10
         """
         paramCoords = self._getRandParamCoord(n)
-        coordPert = np.zeros_like(paramCoords)
+        coordPert = np.zeros_like(paramCoords, dtype="complex128")
         dN = self.getShapeFunctionDerivs(paramCoords)
         dNApprox = np.zeros_like(dN)
         for i in range(self.numDim):
-            NPert = np.copy(paramCoords)
+            # NPert = np.zeros_like(paramCoords, dtype="complex128")
             np.copyto(coordPert, paramCoords)
-            NPert[:, i] += 1e-200
-            dNApprox[:, i, :] = 1e200 * np.imag(self.getShapeFunctions(NPert))
+            coordPert[:, i] += 1e-200 * 1j
+            dNApprox[:, i, :] = 1e200 * np.imag(self.getShapeFunctions(coordPert))
         return dN - dNApprox
 
 

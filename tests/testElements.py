@@ -52,6 +52,10 @@ class ElementUnitTest(unittest.TestCase):
         error = self.element._testGetParamCoord(self.numTestPoints, maxIter=400, tol=self.tol * 1e-3)
         np.testing.assert_allclose(error, 0, atol=self.tol, rtol=self.tol)
 
+    def testShapeFunctionDerivatives(self):
+        error = self.element._testShapeFunctionDerivatives(self.numTestPoints)
+        np.testing.assert_allclose(error, 0, atol=self.tol, rtol=self.tol)
+
 
 if __name__ == "__main__":
     unittest.main()
