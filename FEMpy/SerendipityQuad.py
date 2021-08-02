@@ -111,6 +111,7 @@ class serendipityQuadElement(QuadElement):
         super().__init__(order=2, numDisplacements=numDisplacements)
         self.numNodes = 8
         self.numDOF = self.numNodes * numDisplacements
+        self.name = "SerendipityQuad"
 
     def getShapeFunctions(self, paramCoords):
         """Compute shape function values at a set of parametric coordinates

@@ -56,6 +56,8 @@ class QuadElement(Element):
         # value of the fixed coordinate on each edge
         self.edgeFixedCoord = [-1.0, 1.0, 1.0, -1.0]
 
+        self.name = f"Order{self.order}-LagrangeQuad"
+
     def getShapeFunctions(self, paramCoords):
         """Compute shape function values at a set of parametric coordinates
 

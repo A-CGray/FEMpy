@@ -37,6 +37,7 @@ class Lagrange1dElement(Element):
         """
         self.order = order
         super().__init__(numNodes=order + 1, numDimensions=1)
+        self.name = f"Order{self.order}-Lagrange1D"
 
     def getShapeFunctions(self, paramCoords):
         """Compute shape function values at a set of parametric coordinates
@@ -81,3 +82,18 @@ class Lagrange1dElement(Element):
 
     def getMassMat(self, nodeCoords, constitutive, n=None):
         return super().getMassMat(nodeCoords, constitutive, n=n) * constitutive.A
+
+    def _getRandomNodeCoords(self):
+        """Generate a random, but valid, set of node coordinates for an element
+
+        For a 1D element, we simply create evenly spaced points from 0 to one, add some slight random noise and then
+        apply a random scaling factor
+
+        Returns
+        -------
+        nodeCoords : numNode x numDim array
+            Node coordinates
+        """
+        nodeCoords = np.random.rand(self.numNodes, 1) * 0.1
+        nodeCoords[:, 0] += np.linspace(0, 1, self.numNodes)
+        return nodeCoords * np.random.rand(1)
