@@ -40,7 +40,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        run: pip install .[dev]
+        run: pip install -e .[dev]
 
       - name: Run unit tests
         run: testflo -n 1 -v --coverage --coverpkg FEMpy .
