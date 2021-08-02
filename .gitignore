@@ -4,6 +4,9 @@
 # Doc build output
 docs/site/
 
+# testflo output
+testflo_report.out
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

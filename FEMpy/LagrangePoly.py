@@ -100,7 +100,7 @@ def LagrangePoly2d(x, y, n):
     yp = y.flatten()
     Nx = LagrangePoly1d(xp, n)
     Ny = LagrangePoly1d(yp, n)
-    N = np.zeros((len(xp), n ** 2))
+    N = np.zeros((len(xp), n ** 2), dtype=xp.dtype)
     for i in range(len(xp)):
         for j in range(n):
             for k in range(n):

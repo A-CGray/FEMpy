@@ -56,6 +56,8 @@ class QuadElement(Element):
         # value of the fixed coordinate on each edge
         self.edgeFixedCoord = [-1.0, 1.0, 1.0, -1.0]
 
+        self.name = f"Order{self.order}-LagrangeQuad"
+
     def getShapeFunctions(self, paramCoords):
         """Compute shape function values at a set of parametric coordinates
 
@@ -85,7 +87,8 @@ class QuadElement(Element):
         Returns
         -------
         NPrime : n x numDim x numNode array
-            Shape function values, N[i][j] is the value of the jth shape function at the ith point
+            Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
+            parametric coordinate
         """
         return LP.LagrangePoly2dDeriv(paramCoords[:, 0], paramCoords[:, 1], self.order + 1)
 
@@ -155,6 +158,26 @@ class QuadElement(Element):
             for d in range(nD):
                 Fb[p, :, d] = (F[p, d] * N[p]).T
         return (Fb.T * detJStar).T
+
+    def _getRandomNodeCoords(self):
+        """Generate a random, but valid, set of node coordinates for an element
+
+        For the Quad element, we simply create a grid of evenly spaced points then add some random noise to each point
+        before applying a random scaling and rotation
+
+        Returns
+        -------
+        nodeCoords : numNode x numDim array
+            Node coordinates
+        """
+        xy = np.linspace(0, 1, self.order + 1)
+        nodeCoords = np.random.rand((self.order + 1) ** 2, self.numDim) * 0.1
+        nodeCoords[:, 0] += np.tile(xy, self.order + 1)
+        nodeCoords[:, 1] += np.repeat(xy, self.order + 1)
+        nodeCoords *= np.random.rand(1)
+        theta = np.random.rand(1) * np.pi
+        R = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])[:, :, 0]
+        return (R @ nodeCoords.T).T
 
 
 if __name__ == "__main__":

@@ -1,0 +1,11 @@
+codecov:
+  disable_default_path_fixes: true
+
+coverage:
+  status:
+    project:
+      default:
+        threshold: 5%
+    patch:
+      default:
+        target: 50%

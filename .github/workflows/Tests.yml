@@ -1,0 +1,51 @@
+name: Unit tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.7
+          - python-version: 3.8
+          - python-version: 3.9
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade pip
+        run: |
+          # install pip=>20.1 to use "pip cache dir"
+          python3 -m pip install --upgrade pip
+
+      - name: Get pip cache dir
+        id: pip-cache
+        run: echo "::set-output name=dir::$(pip cache dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/testRequirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -e .[dev]
+
+      - name: Run unit tests
+        run: testflo -n 1 -v --coverage --coverpkg FEMpy .
+
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true

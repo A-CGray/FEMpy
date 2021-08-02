@@ -18,6 +18,7 @@ import abc
 # ==============================================================================
 import numpy as np
 from numba import jit
+from scipy.optimize import root
 
 # ==============================================================================
 # Extension modules
@@ -78,6 +79,7 @@ class Element(object):
         self.numDim = numDimensions
         self.numDisp = numDimensions if numDisplacements is None else numDisplacements
         self.numDOF = numNodes * self.numDisp
+        self.name = f"{self.numNodes}Node-{self.numDisp}Disp-{self.numDim}D-Element"
 
     def getRealCoord(self, paramCoords, nodeCoords):
         """Compute the real coordinates of a point in isoparametric space
@@ -99,7 +101,7 @@ class Element(object):
 
         return N[:, : self.numNodes] @ nodeCoords
 
-    def getParamCoord(self, realCoords, nodeCoords, maxIter=4):
+    def getParamCoord(self, realCoords, nodeCoords, maxIter=10, tol=1e-8):
         """Find the parametric coordinates within an element corresponding to a point in real space
 
         Note this function only currently works for finding the parametric coordinates of one point inside one element
@@ -107,7 +109,7 @@ class Element(object):
         Parameters
         ----------
         realCoords : array of length numDim
-            Real coordinates to find the paranmetric coordinates of
+            Real coordinates to find the paranmetric coordinates of the desired point
         nodeCoords : numNode x numDim array
             Element node real coordinates
         maxIter : int, optional
@@ -118,15 +120,21 @@ class Element(object):
         x : array of length numDim
             Parametric coordinates of the desired point
         """
-        x = np.zeros(self.numDim)
-        for i in range(maxIter):
-            res = realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
-            if np.sum(res ** 2) < 1e-6:
-                break
-            else:
-                jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
-                x += np.linalg.solve(jacT, res)
-        return x
+        # x = np.zeros(self.numDim)
+        # for i in range(maxIter):
+        #     res = realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
+        #     if np.max(np.abs(res)) < tol:
+        #         break
+        #     else:
+        #         jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
+        #         x += np.linalg.solve(jacT, res)
+        # return x
+
+        def resFunc(x):
+            return realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
+
+        sol = root(resFunc, np.zeros(self.numDim), method="krylov", tol=tol)
+        return sol.x
 
     def getJacobian(self, paramCoords, nodeCoords):
         """Get the element Jacobians at a set of parametric coordinates
@@ -179,8 +187,9 @@ class Element(object):
 
         Returns
         -------
-        NPrime : n x numDim x numNode array
-            Shape function values, N[i][j] is the value of the jth shape function at the ith point
+        NPrimeParam : n x numDim x numNode array
+            Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
+            parametric coordinate
         """
         return
 
@@ -364,13 +373,91 @@ class Element(object):
         Fb = _bodyForceInt(F, N)
         return (Fb.T * detJ).T
 
+    # ==============================================================================
+    # Private functions
+    # ==============================================================================
 
-if __name__ == "__main__":
-    QuadElem = Element(numNodes=4, numDimensions=2, numStrain=3)
-    nodecoords = np.array([[-1.0, -1.0], [1.0, -1.0], [1.0, 1.0], [-1.0, 1.0]])
-    uNodes = np.array([[-1.0, -1.0], [1.0, -1.0], [1.0, 1.0], [-1.0, 1.0]])
-    paramCoords = np.array([[-1.0, -1.0], [0.0, 0.0], [1.0, 1.0]])
-    print(QuadElem.getShapeFunctions(paramCoords), "\n")
-    print(QuadElem.getRealCoord(paramCoords, nodecoords), "\n")
-    print(QuadElem.getU(paramCoords, uNodes), "\n")
-    print(QuadElem.getUPrime(paramCoords, nodecoords, uNodes), "\n")
+    # --- Functions for testing element implementations ---
+    def _getRandParamCoord(self, n=1):
+        """Generate a set of random parametric coordinates
+
+        By default this method assumes that the valid range for all parametric coordinates is [-1, 1].
+        For elements where this is not the case, this method should be reimplemented.
+
+        Parameters
+        ----------
+        n : int, optional
+            number of points to generate, by default 1
+
+        Returns
+        -------
+        paramCoords : n x numDim array
+            isoparametric coordinates, one row for each point
+        """
+        return np.atleast_2d(np.random.rand(n, self.numDim))
+
+    @abc.abstractmethod
+    def _getRandomNodeCoords(self):
+        """Generate a random, but valid, set of node coordinates for an element
+
+        This method should be implemented for each element.
+
+        Returns
+        -------
+        nodeCoords : numNode x numDim array
+            Node coordinates
+        """
+        pass
+
+    def _testGetParamCoord(self, n=10, maxIter=40, tol=1e-10):
+        """Test the getParamCoord method
+
+        This test works by generating a set of random parametric coordinates, converting them to real coordinates, and
+        then checking that the parametric coordinates returned by getParamCoord match the original random values.
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of random coordinates to generate, by default 10
+        """
+        paramCoord = self._getRandParamCoord(n)
+        nodeCoords = self._getRandomNodeCoords()
+        realCoords = self.getRealCoord(paramCoord, nodeCoords)
+        error = np.zeros_like(realCoords)
+        for i in range(n):
+            error[i] = paramCoord[i] - self.getParamCoord(realCoords[i], nodeCoords, maxIter=maxIter, tol=tol)
+        return error
+
+    def _testShapeFunctionDerivatives(self, n=10):
+        """Test the implementation of the shape function derivatives using the complex-step method
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of random coordinates to generate, by default 10
+        """
+        paramCoords = self._getRandParamCoord(n)
+        coordPert = np.zeros_like(paramCoords, dtype="complex128")
+        dN = self.getShapeFunctionDerivs(paramCoords)
+        dNApprox = np.zeros_like(dN)
+        for i in range(self.numDim):
+            np.copyto(coordPert, paramCoords)
+            coordPert[:, i] += 1e-200 * 1j
+            dNApprox[:, i, :] = 1e200 * np.imag(self.getShapeFunctions(coordPert))
+        return dN - dNApprox
+
+    def _testShapeFunctionSum(self, n=10):
+        """Test the basic property that shape function values should sum to 1 everywhere within an element
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of points to test at, by default 10
+        """
+        paramCoords = self._getRandParamCoord(n)
+        N = self.getShapeFunctions(paramCoords)
+        return np.sum(N, axis=1)
+
+    # TODO: Tests to add
+    # - Complex step validation of jacobian
+    # - Validate stiffness matrix against resdiual (would need to implement a residual assembly method)
