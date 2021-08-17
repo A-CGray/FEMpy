@@ -17,7 +17,15 @@ import time
 # External Python modules
 # ==============================================================================
 import numpy as np
-from pypardiso import spsolve
+
+try:
+    from pypardiso import spsolve
+
+    solverArgs = {"factorize": False}
+except ModuleNotFoundError:
+    from scipy.sparse.linalg import spsolve
+
+    solverArgs = {}
 import FEMpy as fp
 from numba import jit
 import matplotlib.pyplot as plt
@@ -113,7 +121,7 @@ for e in numEl:
 
         assemblyTime = time.time() - forceIntTime - startTime
 
-        u = spsolve(K, RHS + FTract + FBody, factorize=False)
+        u = spsolve(K, RHS + FTract + FBody, **solverArgs)
         # u = u.reshape(len(u) // 2, 2)
 
         solveTime = time.time() - startTime - assemblyTime - forceIntTime

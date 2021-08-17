@@ -1,3 +1,6 @@
+# Gauss quadrature pkl files
+Gauss*.pkl
+
 # VS Code config
 .vscode
 
