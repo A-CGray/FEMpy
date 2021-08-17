@@ -17,11 +17,13 @@ To use these values include `from guassQuad import getGaussPoints, getgaussWeigh
 
 import numpy as np
 import pickle
+import os
 
 # --- Load the Gauss quadrature weights and coordinates ---
-with open("GaussQuadWeights.pkl", "rb") as f:
+dataDir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(dataDir,"GaussQuadWeights.pkl"), "rb") as f:
     gaussWeights = pickle.load(f)
-with open("GaussQuadCoords.pkl", "rb") as f:
+with open(os.path.join(dataDir,"GaussQuadCoords.pkl"), "rb") as f:
     gaussCoords = pickle.load(f)
 
 def getgaussWeights(n):
