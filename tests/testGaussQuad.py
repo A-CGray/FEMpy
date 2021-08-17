@@ -70,7 +70,7 @@ class GaussQuadUnitTest(unittest.TestCase):
         self.assertAlmostEqual(gaussInt, scipyInt, places=self.precision)
 
     def test_2d_gauss_quad(self):
-        gaussInt = gaussQuad2d(TestFunc2d, [6, 6])
+        gaussInt = gaussQuad2d(TestFunc2d, 6)
         scipyInt = integrate.dblquad(TestFunc2d, -1.0, 1.0, -1.0, 1.0)[0]
         self.assertAlmostEqual(gaussInt, scipyInt, places=self.precision)
 
@@ -80,7 +80,7 @@ class GaussQuadUnitTest(unittest.TestCase):
         self.assertAlmostEqual(gaussInt, scipyInt, places=self.precision)
 
     def test_3d_gauss_quad(self):
-        gaussInt = gaussQuad3d(TestFunc3d, [6, 6, 6])
+        gaussInt = gaussQuad3d(TestFunc3d, 6)
         scipyInt = integrate.tplquad(TestFunc3d, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0)[0]
         self.assertAlmostEqual(gaussInt, scipyInt, places=self.precision)
 
@@ -90,7 +90,7 @@ class GaussQuadUnitTest(unittest.TestCase):
         self.assertAlmostEqual(gaussInt, scipyInt, places=self.precision)
 
     def test_3d_mat_gauss_quad(self):
-        gaussInt = gaussQuad3d(TestMatFunc3d, [6, 6, 6], a=[-4.0, 2.0, 0.0], b=[1.0, 3.0, 4.0])
+        gaussInt = gaussQuad3d(TestMatFunc3d, 6, a=[-4.0, 2.0, 0.0], b=[1.0, 3.0, 4.0])
         trueInt = np.array([[-30.0, 40.0, 60.0], [20.0, 50.0, 60.0], [20.0, 40.0, 40.0]])
         np.testing.assert_allclose(gaussInt, trueInt, atol=10 ** -self.precision, rtol=10 ** -self.precision)
 
