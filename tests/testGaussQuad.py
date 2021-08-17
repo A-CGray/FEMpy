@@ -54,8 +54,8 @@ def TestMatFunc3d(x1, x2, x3):
 
 
 class GaussQuadUnitTest(unittest.TestCase):
-    """Test FEMpy's Gauss quadrature integration against scipy's integration methods
-    """
+    """Test FEMpy's Gauss quadrature integration against scipy's integration methods"""
+
     def setUp(self) -> None:
         self.precision = 8
 

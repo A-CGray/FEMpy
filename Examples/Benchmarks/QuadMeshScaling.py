@@ -17,11 +17,14 @@ import time
 # External Python modules
 # ==============================================================================
 import numpy as np
+
 try:
     from pypardiso import spsolve
-    solverArgs = {"factorize":False}
+
+    solverArgs = {"factorize": False}
 except ModuleNotFoundError:
     from scipy.sparse.linalg import spsolve
+
     solverArgs = {}
 import FEMpy as fp
 from numba import jit

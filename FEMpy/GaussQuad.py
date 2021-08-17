@@ -21,10 +21,11 @@ import os
 
 # --- Load the Gauss quadrature weights and coordinates ---
 dataDir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(dataDir,"GaussQuadWeights.pkl"), "rb") as f:
+with open(os.path.join(dataDir, "GaussQuadWeights.pkl"), "rb") as f:
     gaussWeights = pickle.load(f)
-with open(os.path.join(dataDir,"GaussQuadCoords.pkl"), "rb") as f:
+with open(os.path.join(dataDir, "GaussQuadCoords.pkl"), "rb") as f:
     gaussCoords = pickle.load(f)
+
 
 def getgaussWeights(n):
     """Get the weights for n-point numerical integration using Gauss Quadrature

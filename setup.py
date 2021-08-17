@@ -8,28 +8,31 @@ __version__ = re.findall(
     open("FEMpy/__init__.py").read(),
 )[0]
 
+
 def computeGaussQuadValues(n):
     from numpy.polynomial.legendre import leggauss
     import pickle
+
     gaussWeights = {}
     gaussCoords = {}
-    for i in range(1,n+1):
-        gaussCoords[i-1], gaussWeights[i-1] = leggauss(i)
+    for i in range(1, n + 1):
+        gaussCoords[i - 1], gaussWeights[i - 1] = leggauss(i)
     with open("FEMpy/GaussQuadWeights.pkl", "wb") as f:
         pickle.dump(gaussWeights, f, protocol=-1)
     with open("FEMpy/GaussQuadCoords.pkl", "wb") as f:
         pickle.dump(gaussCoords, f, protocol=-1)
+
+
 class installWrapper(install):
-    """wrapper around setuptools' install method that will run a post install script
-    """
+    """wrapper around setuptools' install method that will run a post install script"""
 
     def run(self):
         install.run(self)
         computeGaussQuadValues(64)
 
+
 class developWrapper(develop):
-    """wrapper around setuptools' develop method that will run a post install script
-    """
+    """wrapper around setuptools' develop method that will run a post install script"""
 
     def run(self):
         develop.run(self)
@@ -61,5 +64,5 @@ setup(
         "dev": ["parameterized", "testflo"],
     },
     classifiers=["Operating System :: OS Independent", "Programming Language :: Python"],
-    cmdclass={'install': installWrapper, 'develop': developWrapper}
+    cmdclass={"install": installWrapper, "develop": developWrapper},
 )
