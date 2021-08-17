@@ -33,12 +33,6 @@ nav:
          2D Quad: Elements/QuadElement.md
          Serendipity Quad: Elements/SerendipityQuad.md
          1D Line Element: Elements/Lagrange1dElement.md
-    - Constitutive Classes:
-         Generic Constitutive Class: Constitutive/Constitutive.md
-         Isotropic Plane Stress: Constitutive/IsoPlaneStress.md
-         Orthotropic Plane Stress: Constitutive/OrthoPlaneStress.md
-         Isotropic Plane Strain: Constitutive/IsoPlaneStrain.md
-         Axial Bar: Constitutive/AxialBar.md
 markdown_extensions:
     - pymdownx.superfences
     - pymdownx.progressbar
