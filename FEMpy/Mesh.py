@@ -16,7 +16,7 @@ Mesh Utilities
 # External Python modules
 # ==============================================================================
 import numpy as np
-from numba import jit
+from numba import njit
 
 # ==============================================================================
 # Extension modules
@@ -102,7 +102,7 @@ def getEdgesfromNodes(nodes, conn, nodeEls, edgeInds):
     return Elements, Edges
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def computeElementCentroids(nodeCoords, conn):
     """Compute element centroids
 

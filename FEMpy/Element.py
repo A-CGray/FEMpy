@@ -17,7 +17,7 @@ import abc
 # External Python modules
 # ==============================================================================
 import numpy as np
-from numba import jit
+from numba import njit
 from scipy.optimize import root
 
 # ==============================================================================
@@ -26,7 +26,7 @@ from scipy.optimize import root
 from .GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def _makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
     numPoints = np.shape(NPrime)[0]
     BMat = np.zeros((numPoints, numStrain, numDim * numNodes))
@@ -37,7 +37,7 @@ def _makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
     return BMat
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def _makeNMat(N, numDim):
     s = np.shape(N)
     numPoints = s[0]
@@ -49,7 +49,7 @@ def _makeNMat(N, numDim):
     return NMat
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def _computeNTFProduct(F, N):
     # Compute N^T fb at each point, it's complicated because things are not the right shape
     nP = np.shape(F)[0]
