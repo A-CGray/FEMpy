@@ -1,11 +1,11 @@
 """
 ==============================================================================
-Element unit tests
+Gauss Quadrature unit tests
 ==============================================================================
-@File    :   testElements.py
+@File    :   testGaussQuad.py
 @Date    :   2021/07/29
 @Author  :   Alasdair Christison Gray
-@Description :
+@Description : Unit tests for FEMpy's gauss quadrature integration scheme
 """
 
 # ==============================================================================
