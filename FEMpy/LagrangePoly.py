@@ -16,14 +16,14 @@ Lagrange polynomial interpolation
 # External Python modules
 # ==============================================================================
 import numpy as np
-from numba import jit
+from numba import njit
 
 # ==============================================================================
 # Extension modules
 # ==============================================================================
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def LagrangePoly1d(x, n):
     """Compute the values of the 1d Lagrange polynomials at a series of points
 
@@ -48,10 +48,11 @@ def LagrangePoly1d(x, n):
     for m in range(n):
         for i in list(range(m)) + list(range(m + 1, n)):
             N[:, m] *= (xp - xi[i]) / (xi[m] - xi[i])
+    # print("computing lagrange shape funcs")
     return N
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def LagrangePoly1dDeriv(x, n):
     """Compute the derivatives of the 1d Lagrange polynomials at a series of points
 
@@ -76,7 +77,7 @@ def LagrangePoly1dDeriv(x, n):
     return dNdx
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def LagrangePoly2d(x, y, n):
     """Compute the derivatives of the 2d Lagrange polynomials at a series of points in 2d space
 
@@ -108,7 +109,7 @@ def LagrangePoly2d(x, y, n):
     return N
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def LagrangePoly2dDeriv(x, y, n):
     """Compute the derivatives of the 2d Lagrange polynomials at a series of points in 2d space
 

@@ -16,14 +16,14 @@ FEMpy Utilities
 # External Python modules
 # ==============================================================================
 import numpy as np
-from numba import jit
+from numba import njit
 
 # ==============================================================================
 # Extension modules
 # ==============================================================================
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def ksAgg(g, rho=100.0):
     """Compute a smooth approximation to the maximum of a set of values us KS agregation
 

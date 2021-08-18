@@ -27,7 +27,7 @@ except ModuleNotFoundError:
 
     solverArgs = {}
 import FEMpy as fp
-from numba import jit
+from numba import njit
 import matplotlib.pyplot as plt
 import niceplots
 
@@ -37,26 +37,26 @@ niceplots.setRCParams()
 # ==============================================================================
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def tractionForce(x):
     ft = np.zeros_like(x)
     ft[:, 0] = 1e6
     return ft
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def bodyForce(x):
     fb = np.zeros_like(x)
     fb[:, 1] = 1e6
     return fb
 
 
-@jit(nopython=True, cache=True)
+@njit(cache=True)
 def warpFunc(x, y):
     return 2.0 * x, (2.0 - x) * y
 
 
-# @jit(nopython=True, cache=True)
+# @njit( cache=True)
 def createGridMesh(nx, ny, warpFunc=None):
     xNodes = np.tile(np.linspace(0.0, 1.0, nx + 1), ny + 1)
     yNodes = np.repeat(np.linspace(0.0, 1.0, ny + 1), nx + 1)
