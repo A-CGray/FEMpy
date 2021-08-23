@@ -22,7 +22,7 @@ import numpy as np
 # ==============================================================================
 
 
-class Constitutive(object):
+class Constitutive:
     def __init__(self, numStrain, numDisp, numStress=None, numDim=None) -> None:
         self.numStrain = numStrain
         self.numStress = numStress if numStress is not None else numStrain

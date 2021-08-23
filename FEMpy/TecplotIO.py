@@ -53,7 +53,7 @@ def readTecplot(filename):
         Element connectivity matrix
     """
     # --- Open file and read lines ---
-    with open(filename, "r") as file:
+    with open(filename) as file:
         lines = file.readlines()
 
         data = {}

@@ -62,7 +62,7 @@ def _computeNTFProduct(F, N):
     return Fb
 
 
-class Element(object):
+class Element:
     def __init__(self, numNodes, numDimensions, numDisplacements=None):
         """Instantiate an Element object
 
