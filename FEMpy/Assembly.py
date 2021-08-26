@@ -24,6 +24,29 @@ from scipy import sparse as sp
 # ==============================================================================
 
 
+def sparseVec(entries, rows, length):
+    """generate a CSR sparse vector for COO sparse matrix type inputs
+
+    Parameters
+    ----------
+    entries : list
+        Non-zero entries of the vector
+    rows : list
+        Rows of the non-zero entries, duplicates allowed, in which case entries will be summed
+    length : int
+        Vector length]
+
+    Returns
+    -------
+    scipy.sparse.csr_matrix
+        Sparse length x 1 vector
+    """
+    return sp.coo_matrix(
+        (entries, (rows, np.zeros_like(rows))),
+        shape=(length, 1),
+    ).tocsr()
+
+
 def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType="stiffness"):
 
     numNodes = np.shape(nodeCoords)[0]
@@ -131,8 +154,7 @@ def assembleTractions(nodeCoords, conn, element, constitutive, tractElems, tract
         FRows += elDOF[usefulDOF].tolist()
         FEntries += FLocal[usefulDOF].tolist()
 
-    FTract = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsr()
-    return FTract
+    return sparseVec(FEntries, FRows, numNodes * numDisp)
 
 
 def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownStates, n=2):
@@ -159,8 +181,7 @@ def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownS
         FRows += elDOF[usefulDOF].tolist()
         FEntries += FLocal[usefulDOF].tolist()
 
-    FBody = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsr()
-    return FBody
+    return sparseVec(FEntries, FRows, numNodes * numDisp)
 
 
 def computeStresses(Element, ParamCoords, constitutive, nodeCoords, Conn, nodalDisp):

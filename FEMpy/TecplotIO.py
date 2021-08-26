@@ -110,10 +110,7 @@ def writeTecplot(nodeCoords, data: dict, conn, filename: str, elementType=None, 
         [description]
     """
     numEl = np.shape(conn)[0]
-    if isinstance(conn, list):
-        Conn = np.array(conn)
-    else:
-        Conn = conn
+    Conn = np.array(conn) if isinstance(conn, list) else conn
     numNode = np.max(Conn) + 1
     dirs = ["X", "Y", "Z"]
     varNames = dirs[: np.shape(nodeCoords)[1]]
