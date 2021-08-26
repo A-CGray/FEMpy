@@ -85,7 +85,7 @@ def getEdgesfromNodes(nodes, conn, nodeEls, edgeInds):
 
     # --- Now loop through each of the elements we just found that have at least one node in the set and see if the nodes from the set in that element make up any edges ---
     elEdges = {}
-    for e in elNodes.keys():
+    for e in elNodes:
         for j in range(len(edgeInds)):
             locEdgeNodes = edgeInds[j]
             edgeNodes = conn[e][locEdgeNodes]

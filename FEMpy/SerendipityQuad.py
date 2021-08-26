@@ -177,7 +177,7 @@ if __name__ == "__main__":
     serendipityShapeFuncs(x, y)
     serendipityShapeFuncDerivs(x, y)
     startTime = time.time()
-    for i in range(1000):
+    for _ in range(1000):
         serendipityShapeFuncs(x, y)
         # print("\n")
         serendipityShapeFuncDerivs(x, y)

@@ -73,8 +73,7 @@ def LagrangePoly1dDeriv(x, n):
         Shape function derivative values
     """
     xp = x.flatten() + 1j * 1e-200
-    dNdx = 1e200 * np.imag(LagrangePoly1d(xp, n))
-    return dNdx
+    return 1e200 * np.imag(LagrangePoly1d(xp, n))
 
 
 @njit(cache=True)
@@ -155,7 +154,7 @@ if __name__ == "__main__":
     print(LagrangePoly2d(x, y, 3), "\n")
     print(LagrangePoly2dDeriv(x, y, 3), "\n\n\n")
     startTime = time.time()
-    for i in range(1000):
+    for _ in range(1000):
         LagrangePoly1d(x, 3)
         LagrangePoly1dDeriv(x, 3)
         LagrangePoly2d(x, y, 3)

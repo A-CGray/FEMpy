@@ -131,8 +131,10 @@ def assembleTractions(nodeCoords, conn, element, constitutive, tractElems, tract
         FRows += elDOF[usefulDOF].tolist()
         FEntries += FLocal[usefulDOF].tolist()
 
-    FTract = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsr()
-    return FTract
+    return sp.coo_matrix(
+        (FEntries, (FRows, np.zeros_like(FRows))),
+        shape=(numNodes * numDisp, 1),
+    ).tocsr()
 
 
 def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownStates, n=2):
@@ -159,8 +161,10 @@ def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownS
         FRows += elDOF[usefulDOF].tolist()
         FEntries += FLocal[usefulDOF].tolist()
 
-    FBody = sp.coo_matrix((FEntries, (FRows, np.zeros_like(FRows))), shape=(numNodes * numDisp, 1)).tocsr()
-    return FBody
+    return sp.coo_matrix(
+        (FEntries, (FRows, np.zeros_like(FRows))),
+        shape=(numNodes * numDisp, 1),
+    ).tocsr()
 
 
 def computeStresses(Element, ParamCoords, constitutive, nodeCoords, Conn, nodalDisp):

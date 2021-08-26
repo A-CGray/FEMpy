@@ -86,6 +86,8 @@ solveTimeList = []
 totalTimeList = []
 numDOFList = []
 
+leftEdgeDisp = 0.0
+
 for e in numEl:
     minforceIntTime = np.inf
     minassemblyTime = np.inf
@@ -97,8 +99,6 @@ for e in numEl:
     numDOFList.append(2 * numNodes)
 
     leftEdgeNodes = np.argwhere(nodeCoords[:, 0] == 0.0).flatten()
-    leftEdgeDisp = 0.0
-
     knownDisp = np.empty(numNodes * 2)
     knownDisp[:] = np.nan
     knownDisp[leftEdgeNodes * 2] = leftEdgeDisp
