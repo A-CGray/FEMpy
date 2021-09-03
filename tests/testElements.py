@@ -22,7 +22,7 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy import QuadElement, Lagrange1dElement, serendipityQuadElement
+from FEMpy import QuadElement, Lagrange1dElement, serendipityQuadElement, TriElement
 
 # --- Elements to test: ---
 # QuadElement: 1st to 4th order
@@ -31,9 +31,13 @@ from FEMpy import QuadElement, Lagrange1dElement, serendipityQuadElement
 
 test_params = []
 
-for el in [Lagrange1dElement, QuadElement, serendipityQuadElement]:
+for el in [Lagrange1dElement, QuadElement, serendipityQuadElement, TriElement]:
     if el in [QuadElement, Lagrange1dElement]:
         for order in range(1, 5):
+            element = el(order=order)
+            test_params.append({"element": element, "name": element.name})
+    elif el in [TriElement]:
+        for order in range(1, 4):
             element = el(order=order)
             test_params.append({"element": element, "name": element.name})
     else:

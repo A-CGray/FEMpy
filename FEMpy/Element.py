@@ -406,7 +406,7 @@ class Element:
         paramCoords : n x numDim array
             isoparametric coordinates, one row for each point
         """
-        return np.atleast_2d(np.random.rand(n, self.numDim))
+        return 2.0 * np.atleast_2d(np.random.rand(n, self.numDim)) - 1.0
 
     @abc.abstractmethod
     def _getRandomNodeCoords(self):

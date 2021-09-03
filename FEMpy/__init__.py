@@ -2,6 +2,7 @@ __version__ = "0.0.1"
 
 from .Element import *
 from .QuadElement import *
+from .TriElement import *
 from .SerendipityQuad import *
 from .Lagrange1dElement import *
 from .Constitutive import *

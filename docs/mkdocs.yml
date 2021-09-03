@@ -31,6 +31,7 @@ nav:
     - Elements:
          Generic Element: Elements/Element.md
          2D Quad: Elements/QuadElement.md
+         2D Tri: Elements/TriElement.md
          Serendipity Quad: Elements/SerendipityQuad.md
          1D Line Element: Elements/Lagrange1dElement.md
 markdown_extensions:
