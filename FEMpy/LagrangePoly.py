@@ -143,7 +143,7 @@ def LagrangePoly2dDeriv(x, y, n):
     return N
 
 
-@njit(cache=True)
+# @njit(cache=True)
 def LagrangePolyTri(x, y, n):
     """Compute the values of the Lagrangian polynomial for a triangular basis up to order 3
 
@@ -180,8 +180,8 @@ def LagrangePolyTri(x, y, n):
         N[:, 1] = 2 * x2 - xp
         N[:, 2] = 2 * y2 - yp
         N[:, 3] = 4 * xy
-        N[:, 4] = -4 * (xy + y2 - 1)
-        N[:, 5] = -4 * (x2 + xy - 1)
+        N[:, 4] = -4 * (xy + y2 - yp)
+        N[:, 5] = -4 * (x2 + xy - xp)
 
     elif n == 3:
         x2 = xp ** 2
@@ -212,7 +212,7 @@ def LagrangePolyTri(x, y, n):
         N[:, 7] = 4.5 * (3.0 * x3 + 6.0 * x2y - 5.0 * x2 + 3.0 * xy2 - 5.0 * xy + 2.0 * xp)
         N[:, 8] = 4.5 * (-3.0 * x3 - 3.0 * x2y + 4.0 * x2 + xy - xp)
         N[:, 9] = -27.0 * (x2y + xy2 - xy)
-        return N
+    return N
 
 
 @njit(cache=True)

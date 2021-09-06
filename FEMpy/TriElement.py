@@ -20,8 +20,14 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from .Element import Element
-from . import LagrangePoly as LP
+try:
+    from .Element import Element
+except ImportError:
+    from FEMpy.Element import Element
+try:
+    from . import LagrangePoly as LP
+except:
+    import FEMpy.LagrangePoly as LP
 
 # TODO: Implement gaussian quadrature integration fr=or triangles
 # TODO: Alter general element class to integrate based on values returned from getIntegrationPoints and getIntegrationWeights methods
@@ -123,3 +129,33 @@ class TriElement(Element):
         coords = np.atleast_2d(np.random.rand(n, 2))
         coords[:, 1] *= 1.0 - coords[:, 0]
         return coords
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    import niceplots
+    niceplots.setRCParams()
+
+    el = TriElement(order=2)
+    x = np.linspace(0, 1., 101)
+    psi, eta = np.meshgrid(x, x)
+    p = psi.flatten()
+    e = eta.flatten()
+    N = el.getShapeFunctions(np.array([p, e]).T)
+
+    numSF = el.numNodes
+    nrows = int(np.floor(np.sqrt(numSF)))
+    ncols = numSF/nrows
+    if ncols%1 == 0:
+        ncols = int(ncols)
+    else:
+        ncols = int(ncols) + 1
+    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(4*ncols, 4*nrows))
+    axes = axes.flatten()
+    for i in range(numSF):
+        ax = axes[i]
+        Ni = N[:, i].reshape((101, 101))
+        ax.contourf(psi, eta, np.where(psi+eta > 1., np.nan, Ni), cmap=niceplots.parula_map)
+        niceplots.adjust_spines(ax, outward=True)
+        ax.set_title(f"N{i+1}")
+
+    plt.show()
