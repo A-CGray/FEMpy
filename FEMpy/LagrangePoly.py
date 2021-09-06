@@ -143,7 +143,7 @@ def LagrangePoly2dDeriv(x, y, n):
     return N
 
 
-# @njit(cache=True)
+@njit(cache=True)
 def LagrangePolyTri(x, y, n):
     """Compute the values of the Lagrangian polynomial for a triangular basis up to order 3
 
@@ -253,8 +253,8 @@ def LagrangePolyTriDeriv(x, y, n):
         dNdx[:, 0, 3] = 4.0 * yp
         dNdx[:, 1, 3] = 4.0 * xp
         dNdx[:, 0, 4] = -4.0 * yp
-        dNdx[:, 1, 4] = -4.0 * (xp + 2.0 * yp)
-        dNdx[:, 0, 5] = -4.0 * (2.0 * xp + yp)
+        dNdx[:, 1, 4] = -4.0 * (xp + 2.0 * yp - 1.0)
+        dNdx[:, 0, 5] = -4.0 * (2.0 * xp + yp - 1.0)
         dNdx[:, 1, 5] = -4.0 * xp
 
     elif n == 3:
@@ -284,12 +284,12 @@ def LagrangePolyTriDeriv(x, y, n):
         dNdx[:, 1, 7] = 4.5 * (6.0 * x2 + 6.0 * xy - 5.0 * xp)
 
         dNdx[:, 0, 8] = 4.5 * (-9.0 * x2 - 6.0 * xy + 8.0 * xp + yp - 1.0)
-        dNdx[:, 1, 8] = 4.5 * (-6.0 * xy + xp)
+        dNdx[:, 1, 8] = 4.5 * (xp - 3.0*x2)
 
         dNdx[:, 0, 9] = -27.0 * (2.0 * xy + y2 - yp)
         dNdx[:, 1, 9] = -27.0 * (x2 + 2.0 * xy - xp)
 
-        return dNdx
+    return dNdx
 
 
 if __name__ == "__main__":
