@@ -26,7 +26,7 @@ except ImportError:
     from FEMpy.Element import Element
 try:
     from . import LagrangePoly as LP
-except:
+except ImportError:
     import FEMpy.LagrangePoly as LP
 
 # TODO: Implement gaussian quadrature integration fr=or triangles
@@ -121,7 +121,7 @@ class TriElement(Element):
         x : array of length numDim
             Parametric coordinates of the desired point
         """
-        return super().getParamCoord(realCoords, nodeCoords, maxIter, tol, x0 = 0.333*np.ones(2))
+        return super().getParamCoord(realCoords, nodeCoords, maxIter, tol, x0=0.333 * np.ones(2))
 
     def _getRandomNodeCoords(self):
         """Generate a set of random node coordinates

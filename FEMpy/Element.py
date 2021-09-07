@@ -18,7 +18,8 @@ import abc
 # ==============================================================================
 import numpy as np
 from numba import njit
-from scipy.optimize import root
+
+# from scipy.optimize import root
 
 # ==============================================================================
 # Extension modules
@@ -123,7 +124,7 @@ class Element:
         if x0 is None:
             x0 = np.zeros(self.numDim)
         x = np.copy(x0)
-        for i in range(maxIter):
+        for _ in range(maxIter):
             res = realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
             print(f"x = {x}, R = {res}")
             if np.max(np.abs(res)) < tol:
