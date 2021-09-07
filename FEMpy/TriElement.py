@@ -32,6 +32,25 @@ except:
 # TODO: Implement gaussian quadrature integration fr=or triangles
 # TODO: Alter general element class to integrate based on values returned from getIntegrationPoints and getIntegrationWeights methods
 class TriElement(Element):
+    """
+    An up-to-3rd-order 2d triangular element with 3, 6 or 10 nodes respectively. The edges of the triangle share the
+    number of the node opposite them, so edge 1 is opposite node 1 (between nodes 2 and 3) and so on. In the second and
+    3rd order elements, the first 3 nodes are still the corners of the triangle, the remaining mid-edge nodes are
+    numbered sequentially along each edge, starting at edge 1. In the 3rd order element the final node is at the
+    element centroid. If this doesn't make sense to you, just look at my nice ascii art below.
+
+    3
+    |\
+    | \
+    6  5
+    |   \
+    |    \
+    7  10 4
+    |      \
+    |       \
+    1--8--9--2
+    """
+
     def __init__(self, order=1, numDisplacements=2):
         """Instantiate a triangular element
 
@@ -83,6 +102,27 @@ class TriElement(Element):
         """
         return LP.LagrangePolyTriDeriv(paramCoords[:, 0], paramCoords[:, 1], self.order)
 
+    def getParamCoord(self, realCoords, nodeCoords, maxIter=10, tol=1e-8):
+        """Find the parametric coordinates within an element corresponding to a point in real space
+
+        THis function is only reimplemented here so we can pass a better starting guess
+
+        Parameters
+        ----------
+        realCoords : array of length numDim
+            Real coordinates to find the paranmetric coordinates of the desired point
+        nodeCoords : numNode x numDim array
+            Element node real coordinates
+        maxIter : int, optional
+            Maximum number of search iterations, by default 4
+
+        Returns
+        -------
+        x : array of length numDim
+            Parametric coordinates of the desired point
+        """
+        return super().getParamCoord(realCoords, nodeCoords, maxIter, tol, x0 = 0.333*np.ones(2))
+
     def _getRandomNodeCoords(self):
         """Generate a set of random node coordinates
 
@@ -90,23 +130,23 @@ class TriElement(Element):
         then apply a random scaling and rotation
         """
 
-        xy = np.zeros((3, 2))
-        xyOrder = np.argsort(np.arctan2(xy[:, 1], xy[:, 0]))
         nodeCoords = np.zeros((self.numNodes, 2))
-        nodeCoords[:3] = xy[xyOrder]
+        theta = np.linspace(0, 2 * np.pi, 4)
+        nodeCoords[:3, 0] = np.cos(theta[:-1] + np.random.rand(3) * np.pi / 8)
+        nodeCoords[:3, 1] = np.sin(theta[:-1] + np.random.rand(3) * np.pi / 8)
 
         if self.order > 1:
             edgeFrac = 1.0 / (self.order)
-            for i in range(self.order - 1):
-                for j in range(3):
-                    nodeCoords[3 + j * (self.order - 1)] = nodeCoords[j] + edgeFrac * i * (
-                        nodeCoords[j % 3] - nodeCoords[j]
+            for e in range(3):
+                for i in range(self.order - 1):
+                    nodeCoords[3 + e * (self.order - 1) + i] = nodeCoords[(e + 1) % 3] + (i + 1) * edgeFrac * (
+                        nodeCoords[(e + 2) % 3] - nodeCoords[(e + 1) % 3]
                     )
         if self.order == 3:
             nodeCoords[-1] = 1.0 / 9.0 * np.sum(nodeCoords[:-1], axis=0)
-        for i in range(2):
-            nodeCoords[:, i] += np.random.rand(self.numNodes) * 0.1
-        nodeCoords *= np.random.rand(1)
+        # for i in range(2):
+        #     nodeCoords[:, i] += np.random.rand(self.numNodes) * 0.02
+        nodeCoords *= 0.2 + (2.0 - 0.2) * np.random.rand(1)
         theta = np.random.rand(1) * np.pi
         R = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])[:, :, 0]
         return (R @ nodeCoords.T).T
@@ -130,13 +170,15 @@ class TriElement(Element):
         coords[:, 1] *= 1.0 - coords[:, 0]
         return coords
 
+
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import niceplots
+
     niceplots.setRCParams()
 
     el = TriElement(order=2)
-    x = np.linspace(0, 1., 101)
+    x = np.linspace(0, 1.0, 101)
     psi, eta = np.meshgrid(x, x)
     p = psi.flatten()
     e = eta.flatten()
@@ -144,18 +186,30 @@ if __name__ == "__main__":
 
     numSF = el.numNodes
     nrows = int(np.floor(np.sqrt(numSF)))
-    ncols = numSF/nrows
-    if ncols%1 == 0:
+    ncols = numSF / nrows
+    if ncols % 1 == 0:
         ncols = int(ncols)
     else:
         ncols = int(ncols) + 1
-    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(4*ncols, 4*nrows))
+    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(4 * ncols, 4 * nrows))
     axes = axes.flatten()
-    for i in range(numSF):
-        ax = axes[i]
-        Ni = N[:, i].reshape((101, 101))
-        ax.contourf(psi, eta, np.where(psi+eta > 1., np.nan, Ni), cmap=niceplots.parula_map)
-        niceplots.adjust_spines(ax, outward=True)
-        ax.set_title(f"N{i+1}")
+    NSum = np.zeros((101, 101))
+    for i in range(len(axes)):
+        if i < numSF:
+            ax = axes[i]
+            Ni = N[:, i].reshape((101, 101))
+            NSum += Ni
+            ax.contourf(psi, eta, np.where(psi + eta > 1.0, np.nan, Ni), cmap="coolwarm", levels=np.linspace(-1, 1, 21))
+            niceplots.adjust_spines(ax, outward=True)
+            ax.set_title(f"N{i+1}")
+        elif i == numSF:
+            ax = axes[i]
+            ax.contourf(
+                psi, eta, np.where(psi + eta > 1.0, np.nan, NSum), cmap="coolwarm", levels=np.linspace(-1, 1, 21)
+            )
+            niceplots.adjust_spines(ax, outward=True)
+            ax.set_title("$\sum N_i$")
+        else:
+            axes[i].set_axis_off()
 
     plt.show()

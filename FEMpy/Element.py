@@ -101,7 +101,7 @@ class Element:
 
         return N[:, : self.numNodes] @ nodeCoords
 
-    def getParamCoord(self, realCoords, nodeCoords, maxIter=10, tol=1e-8):
+    def getParamCoord(self, realCoords, nodeCoords, maxIter=10, tol=1e-8, x0=None):
         """Find the parametric coordinates within an element corresponding to a point in real space
 
         Note this function only currently works for finding the parametric coordinates of one point inside one element
@@ -120,21 +120,31 @@ class Element:
         x : array of length numDim
             Parametric coordinates of the desired point
         """
-        # x = np.zeros(self.numDim)
-        # for i in range(maxIter):
+        if x0 is None:
+            x0 = np.zeros(self.numDim)
+        x = np.copy(x0)
+        for i in range(maxIter):
+            res = realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
+            print(f"x = {x}, R = {res}")
+            if np.max(np.abs(res)) < tol:
+                break
+            else:
+                jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
+                x += np.linalg.solve(jacT, res)
+        return x
+
+        # Alternate implementation using scipy's root finding
+        # def resFunc(x):
         #     res = realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
-        #     if np.max(np.abs(res)) < tol:
-        #         break
-        #     else:
-        #         jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
-        #         x += np.linalg.solve(jacT, res)
-        # return x
+        #     print(f"x = {x}, R = {res}")
+        #     return res
 
-        def resFunc(x):
-            return realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
+        # def jacFunc(x):
+        #     jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
+        #     return jacT
 
-        sol = root(resFunc, np.zeros(self.numDim), method="krylov", tol=tol)
-        return sol.x
+        # sol = root(resFunc, x0, jac = jacFunc, method="krylov", tol=tol)
+        # return sol.x
 
     def getJacobian(self, paramCoords, nodeCoords):
         """Get the element Jacobians at a set of parametric coordinates

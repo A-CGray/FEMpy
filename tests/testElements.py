@@ -50,7 +50,7 @@ class ElementUnitTest(unittest.TestCase):
     def setUp(self) -> None:
         self.tol = 1e-10
         self.numTestPoints = 4
-        np.random.seed(1)
+        np.random.seed(10)
 
     def testGetParamCoord(self):
         error = self.element._testGetParamCoord(self.numTestPoints, maxIter=400, tol=self.tol * 1e-3)

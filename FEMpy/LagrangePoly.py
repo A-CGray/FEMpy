@@ -284,7 +284,7 @@ def LagrangePolyTriDeriv(x, y, n):
         dNdx[:, 1, 7] = 4.5 * (6.0 * x2 + 6.0 * xy - 5.0 * xp)
 
         dNdx[:, 0, 8] = 4.5 * (-9.0 * x2 - 6.0 * xy + 8.0 * xp + yp - 1.0)
-        dNdx[:, 1, 8] = 4.5 * (xp - 3.0*x2)
+        dNdx[:, 1, 8] = 4.5 * (xp - 3.0 * x2)
 
         dNdx[:, 0, 9] = -27.0 * (2.0 * xy + y2 - yp)
         dNdx[:, 1, 9] = -27.0 * (x2 + 2.0 * xy - xp)
