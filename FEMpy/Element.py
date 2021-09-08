@@ -342,6 +342,29 @@ class Element:
         NTN = np.swapaxes(NMat, 1, 2) @ NMat * constitutive.rho
         return (NTN.T * detJ).T
 
+    def integrate(self, func, n):
+        """Numerically integrate a function over the element
+
+        Parameters
+        ----------
+        func : function
+            Function to be integrated, should be in the form f(x) where x is numIntPoint x numDim array of parametric coordinates
+        n : int
+            Desired order of integration
+
+        Returns
+        -------
+        F : float or array
+            Integrated value
+        """
+        pts = self.getIntegrationPoints(n)
+        w = self.getIntegrationWeights(n)
+        return np.sum(func(pts).T * w, axis=-1).T
+
+    # TODO: Add version of integrate method that integrates a function that takes real coordinates as input
+    # TODO: Convert existing matrix/force assembly methods to use integrate method
+    # TODO: Implement getIntegrationPoints and getIntegrationWeights methods for general nD elements
+
     def integrateBodyForce(self, f, nodeCoords, n=1):
         """Compute equivalent nodal forces due to body forces through numerical integration
 
