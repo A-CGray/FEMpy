@@ -47,6 +47,8 @@ def getgaussWeights(n):
 
     Gauss Quadrature integration with n points will exactly integrate polynomials of order <= 2n-1
 
+    Values generated using numpy's leggauss function
+
     Parameters
     ----------
     n : int
@@ -64,6 +66,8 @@ def getGaussPoints(n):
     """Get the coordinates for n-point numerical integration using Gauss Quadrature on the interval (-1, 1))
 
     Gauss Quadrature integration with n points will exactly integrate polynomials of order <= 2n-1
+
+    Values generated using numpy's leggauss function
 
     Parameters
     ----------
@@ -208,7 +212,8 @@ def gaussQuad3d(f, n, a=-1.0, b=1.0):
 def getTriGaussPoints(n):
     """Get the coordinates of the points for nth order Gaussian integration over a triangular domain
 
-    [extended_summary]
+    Values taken from https://kratos-wiki.cimne.upc.edu/index.php/Numerical_Integration
+    and https://link.springer.com/content/pdf/bbm%3A978-3-540-32609-0%2F1.pdf
 
     Parameters
     ----------
@@ -227,7 +232,8 @@ def getTriGaussPoints(n):
 def getTriGaussWeights(n):
     """Get the weights of the points for nth order Gaussian integration over a triangular domain
 
-    [extended_summary]
+    Values taken from https://kratos-wiki.cimne.upc.edu/index.php/Numerical_Integration
+    and https://link.springer.com/content/pdf/bbm%3A978-3-540-32609-0%2F1.pdf
 
     Parameters
     ----------
