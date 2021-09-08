@@ -224,7 +224,7 @@ def getTriGaussPoints(n):
     return TriGaussPoints[n]
 
 
-def getTriGaussPoints(n):
+def getTriGaussWeights(n):
     """Get the weights of the points for nth order Gaussian integration over a triangular domain
 
     [extended_summary]
