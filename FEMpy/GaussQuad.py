@@ -26,6 +26,21 @@ with open(os.path.join(dataDir, "GaussQuadWeights.pkl"), "rb") as f:
 with open(os.path.join(dataDir, "GaussQuadCoords.pkl"), "rb") as f:
     gaussCoords = pickle.load(f)
 
+# --- Define gauss quadrature points and weights for triangles ---
+TriGaussPoints = {}
+TriGaussPoints[1] = np.array([[1.0 / 3.0, 1.0 / 3.0]])
+TriGaussPoints[2] = np.array([[1.0 / 6.0, 1.0 / 6.0], [2.0 / 3.0, 1.0 / 6.0], [1.0 / 6.0, 2.0 / 3.0]])
+TriGaussPoints[3] = np.array([[1.0 / 3.0, 1.0 / 3.0], [0.2, 0.2], [0.6, 0.2], [0.2, 0.6]])
+TriGaussPoints[4] = np.array(
+    [[0.0, 0.0], [0.5, 0.0], [1.0, 0.0], [0.5, 0.5], [0.0, 1.0], [0.0, 0.5], [1.0 / 3.0, 1.0 / 3.0]]
+)
+
+TriGaussWeights = {}
+TriGaussWeights[1] = np.array([0.5])
+TriGaussWeights[2] = 1.0 / 6.0 * np.ones(3)
+TriGaussWeights[3] = np.array([-9.0 / 32.0, 25.0 / 96.0, 25.0 / 96.0, 25.0 / 96.0, 25.0 / 96.0])
+TriGaussWeights[4] = np.array([0.025, 1.0 / 15.0, 0.025, 1.0 / 15.0, 0.025, 1.0 / 15.0, 0.225])
+
 
 def getgaussWeights(n):
     """Get the weights for n-point numerical integration using Gauss Quadrature
@@ -188,3 +203,41 @@ def gaussQuad3d(f, n, a=-1.0, b=1.0):
             intF += totalScale * W[0][i] * W[1][j] * gaussQuad1d(func, n[-1], a[-1], b[-1])
 
     return intF
+
+
+def getTriGaussPoints(n):
+    """Get the coordinates of the points for nth order Gaussian integration over a triangular domain
+
+    [extended_summary]
+
+    Parameters
+    ----------
+    n : int
+        Order of integration
+
+    Returns
+    -------
+    xGauss : 2 x N array
+        Paramteric coordinates of Gauss integration points
+    """
+
+    return TriGaussPoints[n]
+
+
+def getTriGaussPoints(n):
+    """Get the weights of the points for nth order Gaussian integration over a triangular domain
+
+    [extended_summary]
+
+    Parameters
+    ----------
+    n : int
+        Order of integration
+
+    Returns
+    -------
+    xGauss : 1 x N array
+        Weights of Gauss integration points
+    """
+
+    return TriGaussWeights[n]

@@ -94,6 +94,8 @@ class GaussQuadUnitTest(unittest.TestCase):
         trueInt = np.array([[-30.0, 40.0, 60.0], [20.0, 50.0, 60.0], [20.0, 40.0, 40.0]])
         np.testing.assert_allclose(gaussInt, trueInt, atol=10 ** -self.precision, rtol=10 ** -self.precision)
 
+    # TODO: Add tests for integration over triangle
+
 
 if __name__ == "__main__":
     unittest.main()
