@@ -5,14 +5,8 @@ Gauss Quadrature Points and Weights
 @File    :   guassQuad.py
 @Date    :   2021/03/10
 @Author  :   Alasdair Christison Gray
-@Description : This file contains the coordinates and weights (to far too many decimal places) for numerical integration
-on the domain (-1, 1) using Gauss Quadrature. Weights and coordinates are given to 256 decimal places for up to 64 point
-integration which can integrate up to 127th order polynomials exactly. These values were taken from:
-
-https://pomax.github.io/bezierinfo/legendre-gauss.html
-
-To use these values include `from guassQuad import getGaussPoints, getgaussWeights` in your code and then use
-`getGaussPoints(n)`, `getGaussPoints(n)` to get lists of the points and weights for n-point integration.
+@Description : This file contains the coordinates and weights for numerical integration using Gauss quadrature on 1D
+intervals, 2D quads and triangles and 3d hexahedrons
 """
 
 import numpy as np
