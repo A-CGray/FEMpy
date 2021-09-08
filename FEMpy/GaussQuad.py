@@ -208,7 +208,7 @@ def gaussQuad3d(f, n, a=-1.0, b=1.0):
 def getTriGaussPoints(n):
     """Get the coordinates of the points for nth order Gaussian integration over a triangular domain
 
-    [extended_summary]
+    Values taken from https://kratos-wiki.cimne.upc.edu/index.php/Numerical_Integration
 
     Parameters
     ----------
@@ -227,7 +227,7 @@ def getTriGaussPoints(n):
 def getTriGaussWeights(n):
     """Get the weights of the points for nth order Gaussian integration over a triangular domain
 
-    [extended_summary]
+    Values taken from https://kratos-wiki.cimne.upc.edu/index.php/Numerical_Integration
 
     Parameters
     ----------
