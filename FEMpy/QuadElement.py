@@ -150,7 +150,7 @@ class QuadElement(Element):
         F = f(realCoord)
 
         # Compute N^T fb at each point
-        Fb = self._computeNTFProduct(F, N)
+        Fb = self.computeNTFProduct(F, N)
         return (Fb.T * detJStar).T
 
     def _getRandomNodeCoords(self):

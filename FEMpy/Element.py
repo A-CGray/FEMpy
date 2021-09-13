@@ -27,42 +27,6 @@ from numba import njit
 from .GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
 
 
-@njit(cache=True)
-def _makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
-    numPoints = np.shape(NPrime)[0]
-    BMat = np.zeros((numPoints, numStrain, numDim * numNodes))
-    for p in range(numPoints):
-        for n in range(numNodes):
-            for d in range(numDim):
-                BMat[p, :, n * numDim : (n + 1) * numDim] += LMats[d] * NPrime[p, d, n]
-    return BMat
-
-
-@njit(cache=True)
-def _makeNMat(N, numDim):
-    s = np.shape(N)
-    numPoints = s[0]
-    numShapeFunc = s[1]
-    NMat = np.zeros((numPoints, numDim, numDim * numShapeFunc))
-    for p in range(numPoints):
-        for n in range(numShapeFunc):
-            NMat[p, :, numDim * n : numDim * (n + 1)] = N[p, n] * np.eye(numDim)
-    return NMat
-
-
-@njit(cache=True)
-def _computeNTFProduct(F, N):
-    # Compute N^T fb at each point, it's complicated because things are not the right shape
-    nP = np.shape(F)[0]
-    nD = np.shape(F)[1]
-    nN = np.shape(N)[1]
-    Fb = np.zeros((nP, nN, nD))
-    for p in range(nP):
-        for d in range(nD):
-            Fb[p, :, d] = (F[p, d] * N[p]).T
-    return Fb
-
-
 class Element:
     def __init__(self, numNodes, numDimensions, numDisplacements=None):
         """Instantiate an Element object
@@ -249,7 +213,7 @@ class Element:
             The B matrices, B[i] returns the 2D B matrix at the ith parametric point
         """
         NPrime = self.getNPrime(paramCoords, nodeCoords)
-        return self._makeBMat(NPrime, constitutive)
+        return self.makeBMat(NPrime, constitutive)
 
     def getStrain(self, paramCoords, nodeCoords, constitutive, uNodes):
         BMat = self.getBMat(paramCoords, nodeCoords, constitutive)
@@ -336,7 +300,7 @@ class Element:
 
     def getMassIntegrand(self, paramCoords, nodeCoords, constitutive):
         N = self.getShapeFunctions(paramCoords)
-        NMat = self._makeNMat(N)
+        NMat = self.makeNMat(N)
         J = self.getJacobian(paramCoords, nodeCoords)
         detJ = np.linalg.det(J)
         NTN = np.swapaxes(NMat, 1, 2) @ NMat * constitutive.rho
@@ -396,18 +360,6 @@ class Element:
             )
             return gaussQuad3d(bodyForceFunc, n)
 
-    def _computeNTFProduct(self, F, N):
-        """A basic wrapper for the jit compiled function _computeNTFProduct"""
-        return _computeNTFProduct(F, N)
-
-    def _makeNMat(self, N):
-        """A basic wrapper for the jit compiled function _makeNMat"""
-        return _makeNMat(N, self.numDim)
-
-    def _makeBMat(self, NPrime, constitutive):
-        """A basic wrapper for the jit compiled function _makeBMat"""
-        return _makeBMat(NPrime, constitutive.LMats, constitutive.numStrain, self.numDim, self.numNodes)
-
     def bodyForceIntegrad(self, f, paramCoord, nodeCoords):
         # Compute shape functions and Jacobian determinant at parametric coordinates
         N = self.getShapeFunctions(paramCoord)
@@ -416,12 +368,72 @@ class Element:
         # Transform parametric to real coordinates in order to compute body force components
         realCoord = self.getRealCoord(paramCoord, nodeCoords)
         F = f(realCoord)
-        Fb = self._computeNTFProduct(F, N)
+        Fb = self.computeNTFProduct(F, N)
         return (Fb.T * detJ).T
+
+    def makeNMat(self, N):
+        """A basic wrapper for the jit compiled function _makeNMat"""
+        return self._makeNMat(N, self.numDim)
+
+    def makeBMat(self, NPrime, constitutive):
+        """A basic wrapper for the jit compiled function _makeBMat"""
+        return self._makeBMat(NPrime, constitutive.LMats, constitutive.numStrain, self.numDim, self.numNodes)
 
     # ==============================================================================
     # Private functions
     # ==============================================================================
+
+    @staticmethod
+    @njit(cache=True)
+    def _makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
+        numPoints = np.shape(NPrime)[0]
+        BMat = np.zeros((numPoints, numStrain, numDim * numNodes))
+        for p in range(numPoints):
+            for n in range(numNodes):
+                for d in range(numDim):
+                    BMat[p, :, n * numDim : (n + 1) * numDim] += LMats[d] * NPrime[p, d, n]
+        return BMat
+
+    @staticmethod
+    @njit(cache=True)
+    def _makeNMat(N, numDim):
+        s = np.shape(N)
+        numPoints = s[0]
+        numShapeFunc = s[1]
+        NMat = np.zeros((numPoints, numDim, numDim * numShapeFunc))
+        for p in range(numPoints):
+            for n in range(numShapeFunc):
+                NMat[p, :, numDim * n : numDim * (n + 1)] = N[p, n] * np.eye(numDim)
+        return NMat
+
+    @staticmethod
+    @njit(cache=True)
+    def computeNTFProduct(F, N):
+        """Compute N^T * f at a series of points,
+
+        Required when integrating tractions or body forces, it's complicated because things are not the right shape.
+
+        Parameters
+        ----------
+        F : numPoint x numDim Array
+            Force vectors at points
+        N : numPoint x numNode array
+            Shape function values at points, N[i][j] is the value of the jth shape function at the ith point
+
+        Returns
+        -------
+        Fb : numPoint x numNode x numDim array
+            Force contribution to each node from each point, Fb[i][j][k] is the kth component of the force at node j
+            due to the force at point i
+        """
+        nP = np.shape(F)[0]
+        nD = np.shape(F)[1]
+        nN = np.shape(N)[1]
+        Fb = np.zeros((nP, nN, nD))
+        for p in range(nP):
+            for d in range(nD):
+                Fb[p, :, d] = (F[p, d] * N[p]).T
+        return Fb
 
     # --- Functions for testing element implementations ---
     def _getRandParamCoord(self, n=1):
