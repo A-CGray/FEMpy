@@ -105,7 +105,7 @@ class TriElement(Element):
     def getParamCoord(self, realCoords, nodeCoords, maxIter=10, tol=1e-8):
         """Find the parametric coordinates within an element corresponding to a point in real space
 
-        THis function is only reimplemented here so we can pass a better starting guess
+        This function is only reimplemented here so we can pass a better starting guess
 
         Parameters
         ----------
