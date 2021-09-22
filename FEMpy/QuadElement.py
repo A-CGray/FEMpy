@@ -45,7 +45,6 @@ class QuadElement(Element):
         numDisplacements : int, optional
             Number of variables at each node, by default 2
         """
-
         self.order = order
         nodes = (order + 1) ** 2
         super().__init__(numNodes=nodes, numDimensions=2, numDisplacements=numDisplacements)

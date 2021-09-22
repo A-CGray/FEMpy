@@ -72,7 +72,6 @@ def getEdgesfromNodes(nodes, conn, nodeEls, edgeInds):
     Edges : list of lists
         Edges[i] contains the indices of the edges of Elements[i] in set
     """
-
     # --- Loop through nodes and create dict with element numbers as keys and element nodes in set as values ---
     elNodes = {}
     for node in nodes:

@@ -110,7 +110,6 @@ def gaussQuad2d(f, n, a=-1.0, b=1.0):
     return type of f
         The integrand
     """
-
     if isinstance(n, int):
         n = [n] * 2
     if isinstance(a, float):
@@ -158,7 +157,6 @@ def gaussQuad3d(f, n, a=-1.0, b=1.0):
     return type of f
         The integrand
     """
-
     if isinstance(n, int):
         n = [n] * 3
     if isinstance(a, float):
