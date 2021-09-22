@@ -102,7 +102,7 @@ class QuadElement(Element):
         # quad element for something else, like 2D heat transfer where there's no thickness
         return super().integrateBodyForce(f, nodeCoords, n=n) * constitutive.t
 
-    def integrateTraction(self, f, nodeCoords, constitutive, edges=[0, 1, 2, 3], n=1):
+    def integrateTraction(self, f, nodeCoords, constitutive, edges=None, n=1):
         """Compute equivalent nodal forces due to body forces through numerical integration
 
 
@@ -124,6 +124,8 @@ class QuadElement(Element):
         Fb : numNode x numDisp array
             Equivalent nodal loads due to traction forces force
         """
+        if edges is None:
+            edges = [0, 1, 2, 3]
         if isinstance(edges, (int, np.integer)):
             edges = [edges]
         Ft = np.zeros((self.numNodes, self.numDisp))
