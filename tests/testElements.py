@@ -49,15 +49,15 @@ class ElementUnitTest(unittest.TestCase):
         np.random.seed(1)
 
     def testGetParamCoord(self):
-        error = self.element._testGetParamCoord(self.numTestPoints, maxIter=400, tol=self.tol * 1e-3)
+        error = self.element.testGetParamCoord(self.numTestPoints, maxIter=400, tol=self.tol * 1e-3)
         np.testing.assert_allclose(error, 0, atol=self.tol, rtol=self.tol)
 
     def testShapeFunctionDerivatives(self):
-        error = self.element._testShapeFunctionDerivatives(self.numTestPoints)
+        error = self.element.testShapeFunctionDerivatives(self.numTestPoints)
         np.testing.assert_allclose(error, 0, atol=self.tol, rtol=self.tol)
 
     def testShapeFunctionSum(self):
-        sum = self.element._testShapeFunctionSum(self.numTestPoints)
+        sum = self.element.testShapeFunctionSum(self.numTestPoints)
         np.testing.assert_allclose(sum, 1, atol=self.tol, rtol=self.tol)
 
 

@@ -83,7 +83,7 @@ class Lagrange1dElement(Element):
     def getMassMat(self, nodeCoords, constitutive, n=None):
         return super().getMassMat(nodeCoords, constitutive, n=n) * constitutive.A
 
-    def _getRandomNodeCoords(self):
+    def getRandomNodeCoords(self):
         """Generate a random, but valid, set of node coordinates for an element
 
         For a 1D element, we simply create evenly spaced points from 0 to one, add some slight random noise and then

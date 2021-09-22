@@ -170,7 +170,7 @@ class Element:
         N : n x numNode array
             Shape function values, N[i][j] is the value of the jth shape function at the ith point
         """
-        return
+        raise NotImplementedError
 
     @abc.abstractmethod
     def getShapeFunctionDerivs(self, paramCoords):
@@ -191,7 +191,7 @@ class Element:
             Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
             parametric coordinate
         """
-        return
+        raise NotImplementedError
 
     def getNPrime(self, paramCoords, nodeCoords):
         """Compute shape function derivatives at a set of parametric coordinates
@@ -386,11 +386,10 @@ class Element:
         return (Fb.T * detJ).T
 
     # ==============================================================================
-    # Private functions
+    # Functions for testing element implementations
     # ==============================================================================
 
-    # --- Functions for testing element implementations ---
-    def _getRandParamCoord(self, n=1):
+    def getRandParamCoord(self, n=1):
         """Generate a set of random parametric coordinates
 
         By default this method assumes that the valid range for all parametric coordinates is [-1, 1].
@@ -409,7 +408,7 @@ class Element:
         return np.atleast_2d(np.random.rand(n, self.numDim))
 
     @abc.abstractmethod
-    def _getRandomNodeCoords(self):
+    def getRandomNodeCoords(self):
         """Generate a random, but valid, set of node coordinates for an element
 
         This method should be implemented for each element.
@@ -419,9 +418,9 @@ class Element:
         nodeCoords : numNode x numDim array
             Node coordinates
         """
-        pass
+        raise NotImplementedError
 
-    def _testGetParamCoord(self, n=10, maxIter=40, tol=1e-10):
+    def testGetParamCoord(self, n=10, maxIter=40, tol=1e-10):
         """Test the getParamCoord method
 
         This test works by generating a set of random parametric coordinates, converting them to real coordinates, and
@@ -432,15 +431,15 @@ class Element:
         n : int, optional
             Number of random coordinates to generate, by default 10
         """
-        paramCoord = self._getRandParamCoord(n)
-        nodeCoords = self._getRandomNodeCoords()
+        paramCoord = self.getRandParamCoord(n)
+        nodeCoords = self.getRandomNodeCoords()
         realCoords = self.getRealCoord(paramCoord, nodeCoords)
         error = np.zeros_like(realCoords)
         for i in range(n):
             error[i] = paramCoord[i] - self.getParamCoord(realCoords[i], nodeCoords, maxIter=maxIter, tol=tol)
         return error
 
-    def _testShapeFunctionDerivatives(self, n=10):
+    def testShapeFunctionDerivatives(self, n=10):
         """Test the implementation of the shape function derivatives using the complex-step method
 
         Parameters
@@ -448,7 +447,7 @@ class Element:
         n : int, optional
             Number of random coordinates to generate, by default 10
         """
-        paramCoords = self._getRandParamCoord(n)
+        paramCoords = self.getRandParamCoord(n)
         coordPert = np.zeros_like(paramCoords, dtype="complex128")
         dN = self.getShapeFunctionDerivs(paramCoords)
         dNApprox = np.zeros_like(dN)
@@ -458,7 +457,7 @@ class Element:
             dNApprox[:, i, :] = 1e200 * np.imag(self.getShapeFunctions(coordPert))
         return dN - dNApprox
 
-    def _testShapeFunctionSum(self, n=10):
+    def testShapeFunctionSum(self, n=10):
         """Test the basic property that shape function values should sum to 1 everywhere within an element
 
         Parameters
@@ -466,7 +465,7 @@ class Element:
         n : int, optional
             Number of points to test at, by default 10
         """
-        paramCoords = self._getRandParamCoord(n)
+        paramCoords = self.getRandParamCoord(n)
         N = self.getShapeFunctions(paramCoords)
         return np.sum(N, axis=1)
 
