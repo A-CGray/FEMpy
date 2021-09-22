@@ -123,7 +123,7 @@ class TriElement(Element):
         """
         return super().getParamCoord(realCoords, nodeCoords, maxIter, tol, x0=0.333 * np.ones(2))
 
-    def _getRandomNodeCoords(self):
+    def getRandomNodeCoords(self):
         """Generate a set of random node coordinates
 
         First create 3 random points and put them in CCW order, then add in higher order nodes if required, then add noise
@@ -151,7 +151,7 @@ class TriElement(Element):
         R = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])[:, :, 0]
         return (R @ nodeCoords.T).T
 
-    def _getRandParamCoord(self, n=1):
+    def getRandParamCoord(self, n=1):
         """Generate a set of random parametric coordinates
 
         For a tri element we need u and v in range [0,1] and u + v <= 1, we can generate these points by generating

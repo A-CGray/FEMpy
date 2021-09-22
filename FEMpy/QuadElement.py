@@ -45,7 +45,6 @@ class QuadElement(Element):
         numDisplacements : int, optional
             Number of variables at each node, by default 2
         """
-
         self.order = order
         nodes = (order + 1) ** 2
         super().__init__(numNodes=nodes, numDimensions=2, numDisplacements=numDisplacements)
@@ -102,7 +101,7 @@ class QuadElement(Element):
         # quad element for something else, like 2D heat transfer where there's no thickness
         return super().integrateBodyForce(f, nodeCoords, n=n) * constitutive.t
 
-    def integrateTraction(self, f, nodeCoords, constitutive, edges=[0, 1, 2, 3], n=1):
+    def integrateTraction(self, f, nodeCoords, constitutive, edges=None, n=1):
         """Compute equivalent nodal forces due to body forces through numerical integration
 
 
@@ -124,6 +123,8 @@ class QuadElement(Element):
         Fb : numNode x numDisp array
             Equivalent nodal loads due to traction forces force
         """
+        if edges is None:
+            edges = [0, 1, 2, 3]
         if isinstance(edges, (int, np.integer)):
             edges = [edges]
         Ft = np.zeros((self.numNodes, self.numDisp))
@@ -153,7 +154,7 @@ class QuadElement(Element):
         Fb = self.computeNTFProduct(F, N)
         return (Fb.T * detJStar).T
 
-    def _getRandomNodeCoords(self):
+    def getRandomNodeCoords(self):
         """Generate a random, but valid, set of node coordinates for an element
 
         For the Quad element, we simply create a grid of evenly spaced points then add some random noise to each point

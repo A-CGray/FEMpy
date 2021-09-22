@@ -146,10 +146,10 @@ class serendipityQuadElement(QuadElement):
         """
         return serendipityShapeFuncDerivs(paramCoords[:, 0], paramCoords[:, 1])
 
-    def _getRandomNodeCoords(self):
+    def getRandomNodeCoords(self):
         """Generate a random, but valid, set of node coordinates for an element
 
-        Here we simply call the _getRandomNodeCoords method of the parent 2nd order QuadElement class and then remove
+        Here we simply call the getRandomNodeCoords method of the parent 2nd order QuadElement class and then remove
         the central point, the points need to be reordered too because the 2nd order QuadElement points are not in CCW
         order as the Serendipity quad points are
 
@@ -158,7 +158,7 @@ class serendipityQuadElement(QuadElement):
         nodeCoords : numNode x numDim array
             Node coordinates
         """
-        nodeCoords = super()._getRandomNodeCoords()
+        nodeCoords = super().getRandomNodeCoords()
         return nodeCoords[[0, 2, 8, 6, 1, 5, 7, 3]]
 
 
