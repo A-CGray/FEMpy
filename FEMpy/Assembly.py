@@ -210,7 +210,6 @@ def computeStresses(Element, ParamCoords, constitutive, nodeCoords, Conn, nodalD
     Stresses : numElement*numPoint x numStress array
         Stresses at
     """
-
     numEl = np.shape(Conn)[0]
 
     if isinstance(constitutive, Iterable):

@@ -66,7 +66,6 @@ def NewmarkExplicit(MMat, KMat, Force, tStep, tf, t0=0.0, u0=None, uDot0=None):
     t : array of length nTimestep
         Time history
     """
-
     # --- Convert force to function of time if it isn't ---
     ForceFunc = (lambda t: Force) if not callable(Force) else Force
     # --- Generate time steps ---
