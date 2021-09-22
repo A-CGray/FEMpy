@@ -425,6 +425,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getRandomNodeCoords" class="md-nav__link">
+    getRandomNodeCoords()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getShapeFunctionDerivs" class="md-nav__link">
     getShapeFunctionDerivs()
   </a>
@@ -501,6 +508,13 @@
         <li class="md-nav__item">
   <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getMassMat" class="md-nav__link">
     getMassMat()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Lagrange1dElement.Lagrange1dElement.getRandomNodeCoords" class="md-nav__link">
+    getRandomNodeCoords()
   </a>
   
 </li>
@@ -640,6 +654,61 @@
           <summary>Source code in <code>FEMpy/Lagrange1dElement.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getMassMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">getMassMat</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">A</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Lagrange1dElement.Lagrange1dElement.getRandomNodeCoords" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getRandomNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Generate a random, but valid, set of node coordinates for an element</p>
+<p>For a 1D element, we simply create evenly spaced points from 0 to one, add some slight random noise and then
+apply a random scaling factor</p>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>numNode x numDim array</code></td>
+      <td><p>Node coordinates</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>FEMpy/Lagrange1dElement.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getRandomNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a random, but valid, set of node coordinates for an element</span>
+
+<span class="sd">    For a 1D element, we simply create evenly spaced points from 0 to one, add some slight random noise and then</span>
+<span class="sd">    apply a random scaling factor</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nodeCoords : numNode x numDim array</span>
+<span class="sd">        Node coordinates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nodeCoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>
+    <span class="n">nodeCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">nodeCoords</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>

@@ -394,6 +394,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.QuadElement.QuadElement.getRandomNodeCoords" class="md-nav__link">
+    getRandomNodeCoords()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.QuadElement.QuadElement.getShapeFunctionDerivs" class="md-nav__link">
     getShapeFunctionDerivs()
   </a>
@@ -508,6 +515,13 @@
         <li class="md-nav__item">
   <a href="#FEMpy.QuadElement.QuadElement.__init__" class="md-nav__link">
     __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.QuadElement.QuadElement.getRandomNodeCoords" class="md-nav__link">
+    getRandomNodeCoords()
   </a>
   
 </li>
@@ -675,6 +689,66 @@ ordering is:</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">edgeFixedCoord</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">]</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Order</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2">-LagrangeQuad&quot;</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.QuadElement.QuadElement.getRandomNodeCoords" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getRandomNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Generate a random, but valid, set of node coordinates for an element</p>
+<p>For the Quad element, we simply create a grid of evenly spaced points then add some random noise to each point
+before applying a random scaling and rotation</p>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>numNode x numDim array</code></td>
+      <td><p>Node coordinates</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>FEMpy/QuadElement.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getRandomNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a random, but valid, set of node coordinates for an element</span>
+
+<span class="sd">    For the Quad element, we simply create a grid of evenly spaced points then add some random noise to each point</span>
+<span class="sd">    before applying a random scaling and rotation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nodeCoords : numNode x numDim array</span>
+<span class="sd">        Node coordinates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">nodeCoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>
+    <span class="n">nodeCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">nodeCoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">nodeCoords</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)]])[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">R</span> <span class="o">@</span> <span class="n">nodeCoords</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 </code></pre></div>
         </details>
     </div>

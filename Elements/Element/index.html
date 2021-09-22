@@ -431,6 +431,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getRandParamCoord" class="md-nav__link">
+    getRandParamCoord()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getRandomNodeCoords" class="md-nav__link">
+    getRandomNodeCoords()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.getRealCoord" class="md-nav__link">
     getRealCoord()
   </a>
@@ -496,6 +510,27 @@
         <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.integrateBodyForce" class="md-nav__link">
     integrateBodyForce()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.testGetParamCoord" class="md-nav__link">
+    testGetParamCoord()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.testShapeFunctionDerivatives" class="md-nav__link">
+    testShapeFunctionDerivatives()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.testShapeFunctionSum" class="md-nav__link">
+    testShapeFunctionSum()
   </a>
   
 </li>
@@ -639,6 +674,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getRandParamCoord" class="md-nav__link">
+    getRandParamCoord()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.getRandomNodeCoords" class="md-nav__link">
+    getRandomNodeCoords()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.getRealCoord" class="md-nav__link">
     getRealCoord()
   </a>
@@ -704,6 +753,27 @@
         <li class="md-nav__item">
   <a href="#FEMpy.Element.Element.integrateBodyForce" class="md-nav__link">
     integrateBodyForce()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.testGetParamCoord" class="md-nav__link">
+    testGetParamCoord()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.testShapeFunctionDerivatives" class="md-nav__link">
+    testShapeFunctionDerivatives()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.Element.Element.testShapeFunctionSum" class="md-nav__link">
+    testShapeFunctionSum()
   </a>
   
 </li>
@@ -1289,6 +1359,135 @@
 
 
 
+<h2 id="FEMpy.Element.Element.getRandParamCoord" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getRandParamCoord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Generate a set of random parametric coordinates</p>
+<p>By default this method assumes that the valid range for all parametric coordinates is [-1, 1].
+For elements where this is not the case, this method should be reimplemented.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>n</code></td>
+        <td><code>int</code></td>
+        <td><p>number of points to generate, by default 1</p></td>
+        <td><code>1</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>n x numDim array</code></td>
+      <td><p>isoparametric coordinates, one row for each point</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>FEMpy/Element.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getRandParamCoord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a set of random parametric coordinates</span>
+
+<span class="sd">    By default this method assumes that the valid range for all parametric coordinates is [-1, 1].</span>
+<span class="sd">    For elements where this is not the case, this method should be reimplemented.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int, optional</span>
+<span class="sd">        number of points to generate, by default 1</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    paramCoords : n x numDim array</span>
+<span class="sd">        isoparametric coordinates, one row for each point</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.getRandomNodeCoords" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getRandomNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Generate a random, but valid, set of node coordinates for an element</p>
+<p>This method should be implemented for each element.</p>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>numNode x numDim array</code></td>
+      <td><p>Node coordinates</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>FEMpy/Element.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<span class="k">def</span> <span class="nf">getRandomNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a random, but valid, set of node coordinates for an element</span>
+
+<span class="sd">    This method should be implemented for each element.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nodeCoords : numNode x numDim array</span>
+<span class="sd">        Node coordinates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
 <h2 id="FEMpy.Element.Element.getRealCoord" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">getRealCoord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span></code>
 
@@ -1440,7 +1639,7 @@ parametric coordinate</p></td>
 <span class="sd">        Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth</span>
 <span class="sd">        parametric coordinate</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div>
         </details>
     </div>
@@ -1516,7 +1715,7 @@ parametric coordinate</p></td>
 <span class="sd">    N : n x numNode array</span>
 <span class="sd">        Shape function values, N[i][j] is the value of the jth shape function at the ith point</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div>
         </details>
     </div>
@@ -1906,6 +2105,183 @@ force components at the ith point queried</p></td>
             <span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">nodeCoords</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">gaussQuad3d</span><span class="p">(</span><span class="n">bodyForceFunc</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.testGetParamCoord" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">testGetParamCoord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Test the getParamCoord method</p>
+<p>This test works by generating a set of random parametric coordinates, converting them to real coordinates, and
+then checking that the parametric coordinates returned by getParamCoord match the original random values.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>n</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of random coordinates to generate, by default 10</p></td>
+        <td><code>10</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>FEMpy/Element.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">testGetParamCoord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test the getParamCoord method</span>
+
+<span class="sd">    This test works by generating a set of random parametric coordinates, converting them to real coordinates, and</span>
+<span class="sd">    then checking that the parametric coordinates returned by getParamCoord match the original random values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int, optional</span>
+<span class="sd">        Number of random coordinates to generate, by default 10</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">paramCoord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRandParamCoord</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">nodeCoords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRandomNodeCoords</span><span class="p">()</span>
+    <span class="n">realCoords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRealCoord</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">realCoords</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">error</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">paramCoord</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">getParamCoord</span><span class="p">(</span><span class="n">realCoords</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="n">maxIter</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">error</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.testShapeFunctionDerivatives" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">testShapeFunctionDerivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Test the implementation of the shape function derivatives using the complex-step method</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>n</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of random coordinates to generate, by default 10</p></td>
+        <td><code>10</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>FEMpy/Element.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">testShapeFunctionDerivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test the implementation of the shape function derivatives using the complex-step method</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int, optional</span>
+<span class="sd">        Number of random coordinates to generate, by default 10</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">paramCoords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRandParamCoord</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">coordPert</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;complex128&quot;</span><span class="p">)</span>
+    <span class="n">dN</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctionDerivs</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span>
+    <span class="n">dNApprox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">dN</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">):</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">coordPert</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">)</span>
+        <span class="n">coordPert</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1e-200</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+        <span class="n">dNApprox</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">1e200</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">coordPert</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dN</span> <span class="o">-</span> <span class="n">dNApprox</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.Element.Element.testShapeFunctionSum" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">testShapeFunctionSum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Test the basic property that shape function values should sum to 1 everywhere within an element</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>n</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of points to test at, by default 10</p></td>
+        <td><code>10</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>FEMpy/Element.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">testShapeFunctionSum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test the basic property that shape function values should sum to 1 everywhere within an element</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int, optional</span>
+<span class="sd">        Number of points to test at, by default 10</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">paramCoords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRandParamCoord</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>

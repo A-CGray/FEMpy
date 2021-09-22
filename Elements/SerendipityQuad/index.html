@@ -406,6 +406,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#FEMpy.SerendipityQuad.serendipityQuadElement.getRandomNodeCoords" class="md-nav__link">
+    getRandomNodeCoords()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#FEMpy.SerendipityQuad.serendipityQuadElement.getShapeFunctionDerivs" class="md-nav__link">
     getShapeFunctionDerivs()
   </a>
@@ -480,6 +487,13 @@
         <li class="md-nav__item">
   <a href="#FEMpy.SerendipityQuad.serendipityQuadElement.__init__" class="md-nav__link">
     __init__()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#FEMpy.SerendipityQuad.serendipityQuadElement.getRandomNodeCoords" class="md-nav__link">
+    getRandomNodeCoords()
   </a>
   
 </li>
@@ -562,6 +576,62 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span> <span class="o">=</span> <span class="mi">8</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">numDOF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span> <span class="o">*</span> <span class="n">numDisplacements</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;SerendipityQuad&quot;</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h2 id="FEMpy.SerendipityQuad.serendipityQuadElement.getRandomNodeCoords" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getRandomNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Generate a random, but valid, set of node coordinates for an element</p>
+<p>Here we simply call the getRandomNodeCoords method of the parent 2<sup>nd</sup> order QuadElement class and then remove
+the central point, the points need to be reordered too because the 2<sup>nd</sup> order QuadElement points are not in CCW
+order as the Serendipity quad points are</p>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>numNode x numDim array</code></td>
+      <td><p>Node coordinates</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>FEMpy/SerendipityQuad.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getRandomNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a random, but valid, set of node coordinates for an element</span>
+
+<span class="sd">    Here we simply call the getRandomNodeCoords method of the parent 2nd order QuadElement class and then remove</span>
+<span class="sd">    the central point, the points need to be reordered too because the 2nd order QuadElement points are not in CCW</span>
+<span class="sd">    order as the Serendipity quad points are</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nodeCoords : numNode x numDim array</span>
+<span class="sd">        Node coordinates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nodeCoords</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">getRandomNodeCoords</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">nodeCoords</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
 </code></pre></div>
         </details>
     </div>
