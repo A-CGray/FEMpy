@@ -191,10 +191,7 @@ if __name__ == "__main__":
     numSF = el.numNodes
     nrows = int(np.floor(np.sqrt(numSF)))
     ncols = numSF / nrows
-    if ncols % 1 == 0:
-        ncols = int(ncols)
-    else:
-        ncols = int(ncols) + 1
+    ncols = int(ncols) if ncols % 1 == 0 else int(ncols) + 1
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(4 * ncols, 4 * nrows))
     axes = axes.flatten()
     NSum = np.zeros((101, 101))

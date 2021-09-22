@@ -93,9 +93,8 @@ class Element:
             print(f"x = {x}, R = {res}")
             if np.max(np.abs(res)) < tol:
                 break
-            else:
-                jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
-                x += np.linalg.solve(jacT, res)
+            jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
+            x += np.linalg.solve(jacT, res)
         return x
 
         # Alternate implementation using scipy's root finding

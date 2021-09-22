@@ -9,6 +9,7 @@ Gauss Quadrature Points and Weights
 intervals, 2D quads and triangles and 3d hexahedrons
 """
 
+
 import numpy as np
 import pickle
 import os
@@ -21,16 +22,14 @@ with open(os.path.join(dataDir, "GaussQuadCoords.pkl"), "rb") as f:
     gaussCoords = pickle.load(f)
 
 # --- Define gauss quadrature points and weights for triangles ---
-TriGaussPoints = {}
-TriGaussPoints[1] = np.array([[1.0 / 3.0, 1.0 / 3.0]])
+TriGaussPoints = {1: np.array([[1.0 / 3.0, 1.0 / 3.0]])}
 TriGaussPoints[2] = np.array([[1.0 / 6.0, 1.0 / 6.0], [2.0 / 3.0, 1.0 / 6.0], [1.0 / 6.0, 2.0 / 3.0]])
 TriGaussPoints[3] = np.array([[1.0 / 3.0, 1.0 / 3.0], [0.2, 0.2], [0.6, 0.2], [0.2, 0.6]])
 TriGaussPoints[4] = np.array(
     [[0.0, 0.0], [0.5, 0.0], [1.0, 0.0], [0.5, 0.5], [0.0, 1.0], [0.0, 0.5], [1.0 / 3.0, 1.0 / 3.0]]
 )
 
-TriGaussWeights = {}
-TriGaussWeights[1] = np.array([0.5])
+TriGaussWeights = {1: np.array([0.5])}
 TriGaussWeights[2] = 1.0 / 6.0 * np.ones(3)
 TriGaussWeights[3] = np.array([-9.0 / 32.0, 25.0 / 96.0, 25.0 / 96.0, 25.0 / 96.0, 25.0 / 96.0])
 TriGaussWeights[4] = np.array([0.025, 1.0 / 15.0, 0.025, 1.0 / 15.0, 0.025, 1.0 / 15.0, 0.225])
