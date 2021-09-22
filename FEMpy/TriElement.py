@@ -154,7 +154,8 @@ class TriElement(Element):
     def _getRandParamCoord(self, n=1):
         """Generate a set of random parametric coordinates
 
-        For a tri element we need u and v in range [0,1] and u + v <= 1
+        For a tri element we need u and v in range [0,1] and u + v <= 1, we can generate these points by generating
+        random points in a square on the domain [0,1] and then reflecting any points outside the triangle to the inside.
 
         Parameters
         ----------
@@ -167,7 +168,10 @@ class TriElement(Element):
             isoparametric coordinates, one row for each point
         """
         coords = np.atleast_2d(np.random.rand(n, 2))
-        coords[:, 1] *= 1.0 - coords[:, 0]
+        for i in range(n):
+            coordSum = coords[i, 0] + coords[i, 1]
+            if coordSum > 1:
+                coords[i] -= 1 - coordSum
         return coords
 
 
