@@ -388,7 +388,7 @@ class Element:
     # ==============================================================================
     # Functions for testing element implementations
     # ==============================================================================
-    
+
     def getRandParamCoord(self, n=1):
         """Generate a set of random parametric coordinates
 
@@ -431,8 +431,8 @@ class Element:
         n : int, optional
             Number of random coordinates to generate, by default 10
         """
-        paramCoord = self._getRandParamCoord(n)
-        nodeCoords = self._getRandomNodeCoords()
+        paramCoord = self.getRandParamCoord(n)
+        nodeCoords = self.getRandomNodeCoords()
         realCoords = self.getRealCoord(paramCoord, nodeCoords)
         error = np.zeros_like(realCoords)
         for i in range(n):
@@ -447,7 +447,7 @@ class Element:
         n : int, optional
             Number of random coordinates to generate, by default 10
         """
-        paramCoords = self._getRandParamCoord(n)
+        paramCoords = self.getRandParamCoord(n)
         coordPert = np.zeros_like(paramCoords, dtype="complex128")
         dN = self.getShapeFunctionDerivs(paramCoords)
         dNApprox = np.zeros_like(dN)
@@ -465,7 +465,7 @@ class Element:
         n : int, optional
             Number of points to test at, by default 10
         """
-        paramCoords = self._getRandParamCoord(n)
+        paramCoords = self.getRandParamCoord(n)
         N = self.getShapeFunctions(paramCoords)
         return np.sum(N, axis=1)
 

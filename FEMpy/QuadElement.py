@@ -155,7 +155,7 @@ class QuadElement(Element):
         Fb = self._computeNTFProduct(F, N)
         return (Fb.T * detJStar).T
 
-    def _getRandomNodeCoords(self):
+    def getRandomNodeCoords(self):
         """Generate a random, but valid, set of node coordinates for an element
 
         For the Quad element, we simply create a grid of evenly spaced points then add some random noise to each point
