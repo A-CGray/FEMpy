@@ -386,11 +386,10 @@ class Element:
         return (Fb.T * detJ).T
 
     # ==============================================================================
-    # Private functions
+    # Functions for testing element implementations
     # ==============================================================================
-
-    # --- Functions for testing element implementations ---
-    def _getRandParamCoord(self, n=1):
+    
+    def getRandParamCoord(self, n=1):
         """Generate a set of random parametric coordinates
 
         By default this method assumes that the valid range for all parametric coordinates is [-1, 1].
@@ -409,7 +408,7 @@ class Element:
         return np.atleast_2d(np.random.rand(n, self.numDim))
 
     @abc.abstractmethod
-    def _getRandomNodeCoords(self):
+    def getRandomNodeCoords(self):
         """Generate a random, but valid, set of node coordinates for an element
 
         This method should be implemented for each element.
@@ -421,7 +420,7 @@ class Element:
         """
         pass
 
-    def _testGetParamCoord(self, n=10, maxIter=40, tol=1e-10):
+    def testGetParamCoord(self, n=10, maxIter=40, tol=1e-10):
         """Test the getParamCoord method
 
         This test works by generating a set of random parametric coordinates, converting them to real coordinates, and
@@ -440,7 +439,7 @@ class Element:
             error[i] = paramCoord[i] - self.getParamCoord(realCoords[i], nodeCoords, maxIter=maxIter, tol=tol)
         return error
 
-    def _testShapeFunctionDerivatives(self, n=10):
+    def testShapeFunctionDerivatives(self, n=10):
         """Test the implementation of the shape function derivatives using the complex-step method
 
         Parameters
@@ -458,7 +457,7 @@ class Element:
             dNApprox[:, i, :] = 1e200 * np.imag(self.getShapeFunctions(coordPert))
         return dN - dNApprox
 
-    def _testShapeFunctionSum(self, n=10):
+    def testShapeFunctionSum(self, n=10):
         """Test the basic property that shape function values should sum to 1 everywhere within an element
 
         Parameters
