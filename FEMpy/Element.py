@@ -170,7 +170,7 @@ class Element:
         N : n x numNode array
             Shape function values, N[i][j] is the value of the jth shape function at the ith point
         """
-        return
+        raise NotImplementedError
 
     @abc.abstractmethod
     def getShapeFunctionDerivs(self, paramCoords):
@@ -191,7 +191,7 @@ class Element:
             Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
             parametric coordinate
         """
-        return
+        raise NotImplementedError
 
     def getNPrime(self, paramCoords, nodeCoords):
         """Compute shape function derivatives at a set of parametric coordinates
@@ -418,7 +418,7 @@ class Element:
         nodeCoords : numNode x numDim array
             Node coordinates
         """
-        pass
+        raise NotImplementedError
 
     def testGetParamCoord(self, n=10, maxIter=40, tol=1e-10):
         """Test the getParamCoord method
