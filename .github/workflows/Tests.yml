@@ -57,7 +57,7 @@ jobs:
         with:
           fail_ci_if_error: true
           
-      - name: Upload coverage to Code CLimate
+      - name: Upload coverage to Code Climate
         if: ${{ matrix.python-version == 3.9}}
         uses: paambaati/codeclimate-action@v2.7.5
         env:
