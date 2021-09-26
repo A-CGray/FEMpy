@@ -51,8 +51,14 @@ jobs:
           export NUMBA_DISABLE_JIT=1
           testflo -n 1 -v --coverage --coverpkg FEMpy .
 
-      - name: "Upload coverage to Codecov"
+      - name: Upload coverage to Codecov
         if: ${{ matrix.python-version == 3.9}}
         uses: codecov/codecov-action@v1
         with:
           fail_ci_if_error: true
+          
+      - name: Upload coverage to Code CLimate
+        if: ${{ matrix.python-version == 3.9}}
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_COVERAGE_ID }}
