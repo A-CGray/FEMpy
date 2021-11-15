@@ -1,11 +1,11 @@
 # FEMpy
 
-[![Docs](https://github.com/A-Gray-94/FEMpy/actions/workflows/docs.yml/badge.svg)](https://a-gray-94.github.io/FEMpy/)
-[![Unit Tests](https://github.com/A-Gray-94/FEMpy/actions/workflows/Tests.yml/badge.svg)](https://a-gray-94.github.io/FEMpy/)
-[![Code Formatting](https://github.com/A-Gray-94/FEMpy/actions/workflows/Formatting.yml/badge.svg)](https://a-gray-94.github.io/FEMpy/)
+[![Docs](https://github.com/A-CGray/FEMpy/actions/workflows/docs.yml/badge.svg)](https://A-CGray.github.io/FEMpy/)
+[![Unit Tests](https://github.com/A-CGray/FEMpy/actions/workflows/Tests.yml/badge.svg)](https://A-CGray.github.io/FEMpy/)
+[![Code Formatting](https://github.com/A-CGray/FEMpy/actions/workflows/Formatting.yml/badge.svg)](https://A-CGray.github.io/FEMpy/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Code Coverage](https://api.codeclimate.com/v1/badges/38d025776dc6fc3e77c5/test_coverage)](https://codeclimate.com/github/A-Gray-94/FEMpy/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/38d025776dc6fc3e77c5/maintainability)](https://codeclimate.com/github/A-Gray-94/FEMpy/maintainability)
+[![Code Coverage](https://api.codeclimate.com/v1/badges/38d025776dc6fc3e77c5/test_coverage)](https://codeclimate.com/github/A-CGray/FEMpy/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/38d025776dc6fc3e77c5/maintainability)](https://codeclimate.com/github/A-CGray/FEMpy/maintainability)
 
 FEMpy is my attempt to implement a basic object-oriented finite element method in python.
 
