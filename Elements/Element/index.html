@@ -16,7 +16,7 @@
         <link rel="canonical" href="https://a-gray-94.github.io/FEMpy/Elements/Element/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.0">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.8b42a75e.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a57b2b03.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -366,6 +366,8 @@
       </a>
       
         
+
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -616,6 +618,8 @@
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
+
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -903,6 +907,17 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">numDisp</span> <span class="o">=</span> <span class="n">numDimensions</span> <span class="k">if</span> <span class="n">numDisplacements</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">numDisplacements</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">numDOF</span> <span class="o">=</span> <span class="n">numNodes</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDisp</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span><span class="si">}</span><span class="s2">Node-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numDisp</span><span class="si">}</span><span class="s2">Disp-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="si">}</span><span class="s2">D-Element&quot;</span>
+
+    <span class="c1"># --- Define fast jacobian determinant function based on number of dimensions ---</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jacDet</span> <span class="o">=</span> <span class="n">det1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jacInv</span> <span class="o">=</span> <span class="n">inv1</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jacDet</span> <span class="o">=</span> <span class="n">det2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jacInv</span> <span class="o">=</span> <span class="n">inv2</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jacDet</span> <span class="o">=</span> <span class="n">det3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jacInv</span> <span class="o">=</span> <span class="n">inv3</span>
 </code></pre></div>
         </details>
     </div>
@@ -930,7 +945,7 @@
     <span class="c1"># Compute shape functions and Jacobian determinant at parametric coordinates</span>
     <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">)</span>
     <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getJacobian</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
-    <span class="n">detJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+    <span class="n">detJ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacDet</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
     <span class="c1"># Transform parametric to real coordinates in order to compute body force components</span>
     <span class="n">realCoord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRealCoord</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
     <span class="n">F</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">realCoord</span><span class="p">)</span>
@@ -1135,7 +1150,7 @@
     <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span>
     <span class="n">NMat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_makeNMat</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getJacobian</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
-    <span class="n">detJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+    <span class="n">detJ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacDet</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
     <span class="n">NTN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">NMat</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">NMat</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">rho</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">NTN</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">detJ</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 </code></pre></div>
@@ -1260,7 +1275,7 @@
     <span class="n">NPrimeParam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctionDerivs</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span>
     <span class="c1"># The Jacobian is NPrimeParam * nodeCoords so we don&#39;t need to waste time recomputing NPrimeParam inside the</span>
     <span class="c1"># getJacobian function</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">NPrimeParam</span> <span class="o">@</span> <span class="n">nodeCoords</span><span class="p">)</span> <span class="o">@</span> <span class="n">NPrimeParam</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacInv</span><span class="p">(</span><span class="n">NPrimeParam</span> <span class="o">@</span> <span class="n">nodeCoords</span><span class="p">)</span> <span class="o">@</span> <span class="n">NPrimeParam</span>
 </code></pre></div>
         </details>
     </div>
@@ -1761,7 +1776,7 @@ parametric coordinate</p></td>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">getStiffnessIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">):</span>
     <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getBMat</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">)</span>
     <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getJacobian</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
-    <span class="n">detJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
+    <span class="n">detJ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacDet</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>
     <span class="n">BDB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">DMat</span> <span class="o">@</span> <span class="n">B</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">BDB</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">detJ</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 </code></pre></div>
@@ -2393,10 +2408,10 @@ then checking that the parametric coordinates returned by getParamCoord match th
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.f8263e09.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.4fc53ad4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
       
         <script src="../../js/flowchart-loader.js"></script>
       
