@@ -17,7 +17,6 @@ import unittest
 # External Python modules
 # ==============================================================================
 import numpy as np
-from parameterized import parameterized_class
 
 # ==============================================================================
 # Extension modules
