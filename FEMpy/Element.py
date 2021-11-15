@@ -24,6 +24,7 @@ from scipy.optimize import root
 # Extension modules
 # ==============================================================================
 from .GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
+from .LinAlg import det1, det2, det3, inv1, inv2, inv3
 
 
 @njit(cache=True)
@@ -80,6 +81,17 @@ class Element:
         self.numDisp = numDimensions if numDisplacements is None else numDisplacements
         self.numDOF = numNodes * self.numDisp
         self.name = f"{self.numNodes}Node-{self.numDisp}Disp-{self.numDim}D-Element"
+
+        # --- Define fast jacobian determinant function based on number of dimensions ---
+        if self.numDim == 1:
+            self.jacDet = det1
+            self.jacInv = inv1
+        elif self.numDim == 2:
+            self.jacDet = det2
+            self.jacInv = inv2
+        elif self.numDim == 3:
+            self.jacDet = det3
+            self.jacInv = inv3
 
     def getRealCoord(self, paramCoords, nodeCoords):
         """Compute the real coordinates of a point in isoparametric space
@@ -213,7 +225,7 @@ class Element:
         NPrimeParam = self.getShapeFunctionDerivs(paramCoords)
         # The Jacobian is NPrimeParam * nodeCoords so we don't need to waste time recomputing NPrimeParam inside the
         # getJacobian function
-        return np.linalg.inv(NPrimeParam @ nodeCoords) @ NPrimeParam
+        return self.jacInv(NPrimeParam @ nodeCoords) @ NPrimeParam
 
     def getBMat(self, paramCoords, nodeCoords, constitutive):
         """Compute the element B matrix at a set of parametric coordinates
@@ -289,7 +301,7 @@ class Element:
     def getStiffnessIntegrand(self, paramCoords, nodeCoords, constitutive):
         B = self.getBMat(paramCoords, nodeCoords, constitutive)
         J = self.getJacobian(paramCoords, nodeCoords)
-        detJ = np.linalg.det(J)
+        detJ = self.jacDet(J)
         BDB = np.swapaxes(B, 1, 2) @ constitutive.DMat @ B
         return (BDB.T * detJ).T
 
@@ -327,7 +339,7 @@ class Element:
         N = self.getShapeFunctions(paramCoords)
         NMat = self._makeNMat(N)
         J = self.getJacobian(paramCoords, nodeCoords)
-        detJ = np.linalg.det(J)
+        detJ = self.jacDet(J)
         NTN = np.swapaxes(NMat, 1, 2) @ NMat * constitutive.rho
         return (NTN.T * detJ).T
 
@@ -378,7 +390,7 @@ class Element:
         # Compute shape functions and Jacobian determinant at parametric coordinates
         N = self.getShapeFunctions(paramCoord)
         J = self.getJacobian(paramCoord, nodeCoords)
-        detJ = np.linalg.det(J)
+        detJ = self.jacDet(J)
         # Transform parametric to real coordinates in order to compute body force components
         realCoord = self.getRealCoord(paramCoord, nodeCoords)
         F = f(realCoord)
