@@ -17,3 +17,4 @@ from .TecplotIO import *
 from .Mesh import *
 from .Smoothing import getSmoother
 from .Utils import *
+from .LinAlg import *
