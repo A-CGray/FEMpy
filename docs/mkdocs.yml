@@ -33,6 +33,8 @@ nav:
          2D Quad: Elements/QuadElement.md
          Serendipity Quad: Elements/SerendipityQuad.md
          1D Line Element: Elements/Lagrange1dElement.md
+    - Utilities:
+        Linear Algebra: LinAlg/LinAlg.md
 markdown_extensions:
     - pymdownx.superfences
     - pymdownx.progressbar
