@@ -3,7 +3,18 @@ import numpy as np
 
 
 def det1(A):
-    """Compute the determinants of a series of 1x1 matrices."""
+    """Compute the determinants of a series of 1x1 matrices.
+
+    Parameters
+    ----------
+    A : nx1x1 array_like
+        Arrays to compute detrminents of
+
+    Returns
+    -------
+    dets : array of length n
+        Matrix determinants
+    """
     return A.flatten()
 
 
@@ -54,7 +65,18 @@ def det3(A):
 
 
 def inv1(A):
-    """Compute the determinants of a series of 1x1 matrices."""
+    """Compute the inverses of a series of 1x1 matrices.
+
+    Parameters
+    ----------
+    A : nx1x1 array_like
+        Arrays to compute detrminents of
+
+    Returns
+    -------
+    dets : nx1x1 array
+        Matrix inverses
+    """
     return 1.0 / A
 
 
