@@ -42,7 +42,6 @@ def det3(A):
     dets : array of length n
         Matrix determinants
     """
-
     n = np.shape(A)[0]
     dets = np.zeros(n)
     for i in range(n):
