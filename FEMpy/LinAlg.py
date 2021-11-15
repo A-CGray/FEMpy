@@ -3,6 +3,7 @@ import numpy as np
 
 
 def det1(A):
+    """Compute the determinants of a series of 1x1 matrices."""
     return A.flatten()
 
 
@@ -29,7 +30,6 @@ def det2(A):
 
 @njit(cache=True, fastmath=True)
 def det3(A):
-
     """Compute the determinants of a series of 3x3 matrices.
 
     Parameters
@@ -55,6 +55,7 @@ def det3(A):
 
 
 def inv1(A):
+    """Compute the determinants of a series of 1x1 matrices."""
     return 1.0 / A
 
 
