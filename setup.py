@@ -4,7 +4,10 @@ from setuptools.command.install import install
 import re
 import os
 
-__version__ = re.findall(r"""__version__ = ["']+([0-9\.]*)["']+""", open("FEMpy/__init__.py").read(),)[0]
+__version__ = re.findall(
+    r"""__version__ = ["']+([0-9\.]*)["']+""",
+    open("FEMpy/__init__.py").read(),
+)[0]
 
 
 def computeGaussQuadValues(n, outdir=None):
@@ -50,7 +53,7 @@ setup(
     author_email="",
     url="https://github.com/A-Gray-94/FEMpy",
     license="Apache License Version 2.0",
-    packages=["FEMpy",],
+    packages=["FEMpy"],
     install_requires=["numpy", "numba", "scipy", "pyComposite @ git+https://github.com/A-Gray-94/pyComposite.git"],
     extras_require={
         "docs": [

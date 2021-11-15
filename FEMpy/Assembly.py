@@ -41,7 +41,10 @@ def sparseVec(entries, rows, length):
     scipy.sparse.csr_matrix
         Sparse length x 1 vector
     """
-    return sp.coo_matrix((entries, (rows, np.zeros_like(rows))), shape=(length, 1),).tocsr()
+    return sp.coo_matrix(
+        (entries, (rows, np.zeros_like(rows))),
+        shape=(length, 1),
+    ).tocsr()
 
 
 def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType="stiffness"):
