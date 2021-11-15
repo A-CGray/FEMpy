@@ -28,6 +28,7 @@ class LinAlgUnitTest(unittest.TestCase):
     """Test FEMpy's Gauss quadrature integration against scipy's integration methods"""
 
     def setUp(self) -> None:
+        """Create random matrix stacks to use in tests"""
         numMats = 1000
         self.precision = 8
         np.random.seed(0)
