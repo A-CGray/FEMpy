@@ -188,7 +188,42 @@ class Element:
         NPrimeParam = self.getShapeFunctionDerivs(paramCoords)
         # The Jacobian is NPrimeParam * nodeCoords so we don't need to waste time recomputing NPrimeParam inside the
         # getJacobian function
+        # return np.linalg.solve(NPrimeParam @ nodeCoords, NPrimeParam)
         return np.linalg.inv(NPrimeParam @ nodeCoords) @ NPrimeParam
+
+    @abc.abstractmethod
+    def getIntegrationPoints(self, order=None):
+        """Get the parametric coordinates of the elements integration points
+
+        Parameters
+        ----------
+        order : int
+            Desired order of accuracy, i.e `order=3` will return integration points for a scheme that integrates cubic
+            polynomials exactly
+
+        Returns
+        -------
+        points : numIntPoint x nD array
+            Parametric coordinates of the integration points
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def getIntegrationWeights(self, order=None):
+        """Get the weights of the elements integration points
+
+        Parameters
+        ----------
+        order : int
+            Desired order of accuracy, i.e `order=3` will return the weights for a scheme that integrates cubic
+            polynomials exactly
+
+        Returns
+        -------
+        points : array of length numIntPoint
+            Parametric coordinates of the integration points
+        """
+        raise NotImplementedError
 
     def getBMat(self, paramCoords, nodeCoords, constitutive):
         """Compute the element B matrix at a set of parametric coordinates
