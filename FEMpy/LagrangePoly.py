@@ -112,8 +112,6 @@ def LagrangePoly2d(x, y, n):
 def LagrangePoly2dDeriv(x, y, n):
     """Compute the derivatives of the 2d Lagrange polynomials at a series of points in 2d space
 
-
-
     Parameters
     ----------
     x : array of length nP (0D, nPx1 or 1xnP)
@@ -138,8 +136,9 @@ def LagrangePoly2dDeriv(x, y, n):
     for i in range(len(xp)):
         for j in range(n):
             for k in range(n):
-                N[i, 0, j * n + k] = dNdx[i, k] * Ny[i, j]
-                N[i, 1, j * n + k] = Nx[i, k] * dNdy[i, j]
+                t = j * n + k
+                N[i, 0, t] = dNdx[i, k] * Ny[i, j]
+                N[i, 1, t] = Nx[i, k] * dNdy[i, j]
     return N
 
 

@@ -29,7 +29,7 @@ try:
 except ImportError:
     import FEMpy.LagrangePoly as LP
 
-# TODO: Implement gaussian quadrature integration fr=or triangles
+# TODO: Implement gaussian quadrature integration for triangles
 # TODO: Alter general element class to integrate based on values returned from getIntegrationPoints and getIntegrationWeights methods
 class TriElement(Element):
     """
