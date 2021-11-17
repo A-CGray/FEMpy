@@ -12,6 +12,7 @@ Element Class
 # Standard Python modules
 # ==============================================================================
 import abc
+from functools import cache
 
 # ==============================================================================
 # External Python modules
@@ -224,6 +225,46 @@ class Element:
             Parametric coordinates of the integration points
         """
         raise NotImplementedError
+
+    @cache
+    def getIntegrationPointShapeFunctions(self, order=None):
+        """Compute shape functions at the integration points
+
+        This function is cached so that the values do not need to be recomputed everytime something is integrated over
+        the element
+
+        Parameters
+        ----------
+        order : int
+            Desired order of accuracy, i.e `order=3` will use integration points for a scheme that integrates cubic
+            polynomials exactly
+
+        Returns
+        -------
+        N : numIntPoint x numNode array
+            Shape function values at the integration points
+        """
+        return self.getShapeFunctions(self.getIntegrationPoints(order))
+
+    @cache
+    def getIntegrationPointShapeFunctionDerivs(self, order=None):
+        """Compute shape function derivatives at the integration points
+
+        This function is cached so that the values do not need to be recomputed everytime something is integrated over
+        the element
+
+        Parameters
+        ----------
+        order : int
+            Desired order of accuracy, i.e `order=3` will use integration points for a scheme that integrates cubic
+            polynomials exactly
+
+        Returns
+        -------
+        NPrime : numIntPoint x numDim x numNode array
+            Shape function derivatives at the integration points
+        """
+        return self.getShapeFunctionDerivs(self.getIntegrationPoints(order))
 
     def getBMat(self, paramCoords, nodeCoords, constitutive):
         """Compute the element B matrix at a set of parametric coordinates
