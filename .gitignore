@@ -1,6 +1,9 @@
 # Gauss quadrature pkl files
 Gauss*.pkl
 
+# Profiling files
+*.prof
+
 # VS Code config
 .vscode
 
