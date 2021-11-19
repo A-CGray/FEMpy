@@ -695,7 +695,7 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
       <tr>
         <td><code>A</code></td>
         <td><code>nx1x1 array_like</code></td>
-        <td><p>Arrays to compute detrminents of</p></td>
+        <td><p>Arrays to compute determinants of</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -723,7 +723,7 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    A : nx1x1 array_like</span>
-<span class="sd">        Arrays to compute detrminents of</span>
+<span class="sd">        Arrays to compute determinants of</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -767,7 +767,7 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
       <tr>
         <td><code>A</code></td>
         <td><code>nx2x2 array_like</code></td>
-        <td><p>Arrays to compute detrminents of</p></td>
+        <td><p>Arrays to compute determinants of</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -789,14 +789,14 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
 </table>
         <details class="quote">
           <summary>Source code in <code>FEMpy/LinAlg.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="nd">@njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">det2</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the determinants of a series of 2x2 matrices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    A : nx2x2 array_like</span>
-<span class="sd">        Arrays to compute detrminents of</span>
+<span class="sd">        Arrays to compute determinants of</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -844,7 +844,7 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
       <tr>
         <td><code>A</code></td>
         <td><code>nx3x3 array_like</code></td>
-        <td><p>Arrays to compute detrminents of</p></td>
+        <td><p>Arrays to compute determinants of</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -866,14 +866,14 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
 </table>
         <details class="quote">
           <summary>Source code in <code>FEMpy/LinAlg.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="nd">@njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">det3</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the determinants of a series of 3x3 matrices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    A : nx3x3 array_like</span>
-<span class="sd">        Arrays to compute detrminents of</span>
+<span class="sd">        Arrays to compute determinants of</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -925,7 +925,7 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
       <tr>
         <td><code>A</code></td>
         <td><code>nx1x1 array_like</code></td>
-        <td><p>Arrays to compute detrminents of</p></td>
+        <td><p>Arrays to compute inverses of</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -953,7 +953,7 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    A : nx1x1 array_like</span>
-<span class="sd">        Arrays to compute detrminents of</span>
+<span class="sd">        Arrays to compute inverses of</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -997,7 +997,7 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
       <tr>
         <td><code>A</code></td>
         <td><code>nx2x2 array_like</code></td>
-        <td><p>Arrays to compute detrminents of</p></td>
+        <td><p>Arrays to compute inverses of</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -1019,14 +1019,14 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
 </table>
         <details class="quote">
           <summary>Source code in <code>FEMpy/LinAlg.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="nd">@njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">inv2</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the inverses of a series of 2x2 matrices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    A : nx2x2 array_like</span>
-<span class="sd">        Arrays to compute detrminents of</span>
+<span class="sd">        Arrays to compute inverses of</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1078,7 +1078,7 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
       <tr>
         <td><code>A</code></td>
         <td><code>nx3x3 array_like</code></td>
-        <td><p>Arrays to compute detrminents of</p></td>
+        <td><p>Arrays to compute inverses of</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -1100,14 +1100,14 @@ With the help of numba, these routines are approximately 1-2 orders of magnitude
 </table>
         <details class="quote">
           <summary>Source code in <code>FEMpy/LinAlg.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="nd">@njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">inv3</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the inverses of a series of 3x3 matrices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    A : nx3x3 array_like</span>
-<span class="sd">        Arrays to compute detrminents of</span>
+<span class="sd">        Arrays to compute inverses of</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
