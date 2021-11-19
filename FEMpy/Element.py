@@ -12,7 +12,8 @@ Element Class
 # Standard Python modules
 # ==============================================================================
 import abc
-from functools import cache
+
+from functools import lru_cache
 
 # ==============================================================================
 # External Python modules
@@ -237,7 +238,7 @@ class Element:
         """
         raise NotImplementedError
 
-    @cache
+    @lru_cache
     def getIntegrationPointShapeFunctions(self, order=None):
         """Compute shape functions at the integration points
 
@@ -257,7 +258,7 @@ class Element:
         """
         return self.getShapeFunctions(self.getIntegrationPoints(order))
 
-    @cache
+    @lru_cache
     def getIntegrationPointShapeFunctionDerivs(self, order=None):
         """Compute shape function derivatives at the integration points
 
