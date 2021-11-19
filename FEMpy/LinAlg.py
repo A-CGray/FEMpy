@@ -8,7 +8,7 @@ def det1(A):
     Parameters
     ----------
     A : nx1x1 array_like
-        Arrays to compute detrminents of
+        Arrays to compute determinants of
 
     Returns
     -------
@@ -18,14 +18,14 @@ def det1(A):
     return A.flatten()
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True)
 def det2(A):
     """Compute the determinants of a series of 2x2 matrices.
 
     Parameters
     ----------
     A : nx2x2 array_like
-        Arrays to compute detrminents of
+        Arrays to compute determinants of
 
     Returns
     -------
@@ -39,14 +39,14 @@ def det2(A):
     return dets
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True)
 def det3(A):
     """Compute the determinants of a series of 3x3 matrices.
 
     Parameters
     ----------
     A : nx3x3 array_like
-        Arrays to compute detrminents of
+        Arrays to compute determinants of
 
     Returns
     -------
@@ -70,7 +70,7 @@ def inv1(A):
     Parameters
     ----------
     A : nx1x1 array_like
-        Arrays to compute detrminents of
+        Arrays to compute inverses of
 
     Returns
     -------
@@ -80,14 +80,14 @@ def inv1(A):
     return 1.0 / A
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True)
 def inv2(A):
     """Compute the inverses of a series of 2x2 matrices.
 
     Parameters
     ----------
     A : nx2x2 array_like
-        Arrays to compute detrminents of
+        Arrays to compute inverses of
 
     Returns
     -------
@@ -105,14 +105,14 @@ def inv2(A):
     return invs
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True)
 def inv3(A):
     """Compute the inverses of a series of 3x3 matrices.
 
     Parameters
     ----------
     A : nx3x3 array_like
-        Arrays to compute detrminents of
+        Arrays to compute inverses of
 
     Returns
     -------
@@ -136,13 +136,19 @@ def inv3(A):
 
 
 if __name__ == "__main__":
+    np.random.seed(0)
     A2 = np.random.rand(1000, 2, 2)
     A3 = np.random.rand(1000, 3, 3)
     dets2 = det2(A2)
     dets3 = det3(A3)
     invs2 = inv2(A2)
     invs3 = inv3(A3)
-    print(np.linalg.norm(dets2 - np.linalg.det(A2)))
-    print(np.linalg.norm(dets3 - np.linalg.det(A3)))
-    print(np.linalg.norm(invs2 - np.linalg.inv(A2)))
-    print(np.linalg.norm(invs3 - np.linalg.inv(A3)))
+    # Check error between this implementation and numpy, use hybrid error measure (f_ref - f_test)/(f_ref + 1) which
+    # measures the relative error for large numbers and absolute error for small numbers
+    errors = {}
+    errors["det2"] = np.linalg.norm((dets2 - np.linalg.det(A2)) / (dets2 + 1.0))
+    errors["det3"] = np.linalg.norm((dets3 - np.linalg.det(A3)) / (dets3 + 1.0))
+    errors["inv2"] = np.linalg.norm((invs2 - np.linalg.inv(A2)) / (invs2 + 1.0))
+    errors["inv3"] = np.linalg.norm((invs3 - np.linalg.inv(A3)) / (invs3 + 1.0))
+    for name, error in errors.items():
+        print(f"Error norm in {name} = {error:.03e}")
