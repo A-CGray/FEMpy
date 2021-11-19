@@ -238,7 +238,7 @@ class Element:
         """
         raise NotImplementedError
 
-    @lru_cache
+    @lru_cache(maxsize=None)
     def getIntegrationPointShapeFunctions(self, order=None):
         """Compute shape functions at the integration points
 
@@ -258,7 +258,7 @@ class Element:
         """
         return self.getShapeFunctions(self.getIntegrationPoints(order))
 
-    @lru_cache
+    @lru_cache(maxsize=None)
     def getIntegrationPointShapeFunctionDerivs(self, order=None):
         """Compute shape function derivatives at the integration points
 
