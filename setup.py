@@ -53,9 +53,7 @@ setup(
     author_email="",
     url="https://github.com/A-Gray-94/FEMpy",
     license="Apache License Version 2.0",
-    packages=[
-        "FEMpy",
-    ],
+    packages=["FEMpy"],
     install_requires=["numpy", "numba", "scipy", "pyComposite @ git+https://github.com/A-Gray-94/pyComposite.git"],
     extras_require={
         "docs": [
