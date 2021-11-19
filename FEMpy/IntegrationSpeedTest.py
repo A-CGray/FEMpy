@@ -15,8 +15,8 @@ Numerical Integration speed test
 # ==============================================================================
 # External Python modules
 # ==============================================================================
-import numpy as np
-from numba import njit
+# import numpy as np
+# from numba import njit
 import timeit
 
 # ==============================================================================
