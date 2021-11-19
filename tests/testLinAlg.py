@@ -30,7 +30,7 @@ class LinAlgUnitTest(unittest.TestCase):
     def setUp(self) -> None:
         """Create random matrix stacks to use in tests"""
         numMats = 1000
-        self.precision = 8
+        self.precision = 12
         np.random.seed(0)
         self.Mats = []
         for i in range(1, 4):
@@ -38,27 +38,27 @@ class LinAlgUnitTest(unittest.TestCase):
 
     def test1DDet(self):
         """Test 1D determinant"""
-        np.testing.assert_almost_equal(det1(self.Mats[0]), np.linalg.det(self.Mats[0]), decimal=self.precision)
+        np.testing.assert_allclose(det1(self.Mats[0]), np.linalg.det(self.Mats[0]), atol=10.0 ** (-self.precision))
 
     def test2DDet(self):
         """Test 2D determinant"""
-        np.testing.assert_almost_equal(det2(self.Mats[1]), np.linalg.det(self.Mats[1]), decimal=self.precision)
+        np.testing.assert_allclose(det2(self.Mats[1]), np.linalg.det(self.Mats[1]), atol=10.0 ** (-self.precision))
 
     def test3DDet(self):
         """Test 3D determinant"""
-        np.testing.assert_almost_equal(det3(self.Mats[2]), np.linalg.det(self.Mats[2]), decimal=self.precision)
+        np.testing.assert_allclose(det3(self.Mats[2]), np.linalg.det(self.Mats[2]), atol=10.0 ** (-self.precision))
 
     def test1Dinv(self):
         """Test 1D inverse"""
-        np.testing.assert_almost_equal(inv1(self.Mats[0]), np.linalg.inv(self.Mats[0]), decimal=self.precision)
+        np.testing.assert_allclose(inv1(self.Mats[0]), np.linalg.inv(self.Mats[0]), atol=10.0 ** (-self.precision))
 
     def test2Dinv(self):
         """Test 2D inverse"""
-        np.testing.assert_almost_equal(inv2(self.Mats[1]), np.linalg.inv(self.Mats[1]), decimal=self.precision)
+        np.testing.assert_allclose(inv2(self.Mats[1]), np.linalg.inv(self.Mats[1]), atol=10.0 ** (-self.precision))
 
     def test3Dinv(self):
         """Test 3D inverse"""
-        np.testing.assert_almost_equal(inv3(self.Mats[2]), np.linalg.inv(self.Mats[2]), decimal=self.precision)
+        np.testing.assert_allclose(inv3(self.Mats[2]), np.linalg.inv(self.Mats[2]), atol=10.0 ** (-self.precision))
 
 
 if __name__ == "__main__":
