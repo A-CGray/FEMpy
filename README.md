@@ -42,4 +42,4 @@ testflo -n 1 -v .
 To run unit tests.
 
 ## Documentation
-View the documentation (still under construction) [here](https://A-Gray-94.github.io/FEMpy/)
+View the documentation (still under construction) [here](https://A-CGray.github.io/FEMpy/)
