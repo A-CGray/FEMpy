@@ -64,7 +64,7 @@ setup(
             "pytkdocs[numpy-style]",
             "Jinja2<3.0,>=2.11",
         ],
-        "dev": ["parameterized", "testflo"],
+        "dev": ["parameterized", "testflo", "black==22.1.0", "flake8==4.0.1"],
     },
     classifiers=["Operating System :: OS Independent", "Programming Language :: Python"],
     cmdclass={"install": installWrapper, "develop": developWrapper},
