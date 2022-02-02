@@ -46,7 +46,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
-      run: pip install black
+    - run: pip install black
     - name: Format with black
       run: |
         black . --check --diff -l 120 --target-version ${{ matrix.blackFlag }};
