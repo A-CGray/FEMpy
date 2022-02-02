@@ -35,6 +35,7 @@ nav:
          1D Line Element: Elements/Lagrange1dElement.md
     - Utilities:
         Linear Algebra: LinAlg/LinAlg.md
+    - Contributing: DevelopmentGuide/DevelopmentGuide.md
 markdown_extensions:
     - pymdownx.superfences
     - pymdownx.progressbar
