@@ -3,6 +3,7 @@ from setuptools.command.develop import develop
 from setuptools.command.install import install
 import re
 import os
+import subprocess
 
 __version__ = re.findall(
     r"""__version__ = ["']+([0-9\.]*)["']+""",
@@ -42,6 +43,7 @@ class developWrapper(develop):
     def run(self):
         develop.run(self)
         computeGaussQuadValues(64)
+        subprocess.run("pre-commit install", shell=True)
 
 
 setup(
@@ -69,7 +71,7 @@ setup(
             "pytkdocs[numpy-style]",
             "Jinja2<3.0,>=2.11",
         ],
-        "dev": ["parameterized", "testflo", "black==22.1.0", "flake8==4.0.1"],
+        "dev": ["parameterized", "testflo", "black==22.1.0", "flake8==4.0.1", "pre-commit"],
     },
     classifiers=[
         "Operating System :: OS Independent",
