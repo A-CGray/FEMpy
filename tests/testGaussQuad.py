@@ -28,21 +28,21 @@ from FEMpy.GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
 def TestFunc(x):
     f = 1.0
     for i in range(1, 10):
-        f += x ** i
+        f += x**i
     return f
 
 
 def TestFunc2d(x1, x2):
     f = 1.0
     for i in range(1, 10):
-        f += x1 ** i - 3.0 * x2 ** i
+        f += x1**i - 3.0 * x2**i
     return f
 
 
 def TestFunc3d(x1, x2, x3):
     f = 1.0
     for i in range(1, 10):
-        f += x1 ** i - 4.0 * x2 ** i + 3.0 * x3 ** i
+        f += x1**i - 4.0 * x2**i + 3.0 * x3**i
     return f
 
 
@@ -92,7 +92,7 @@ class GaussQuadUnitTest(unittest.TestCase):
     def test_3d_mat_gauss_quad(self):
         gaussInt = gaussQuad3d(TestMatFunc3d, 6, a=[-4.0, 2.0, 0.0], b=[1.0, 3.0, 4.0])
         trueInt = np.array([[-30.0, 40.0, 60.0], [20.0, 50.0, 60.0], [20.0, 40.0, 40.0]])
-        np.testing.assert_allclose(gaussInt, trueInt, atol=10 ** -self.precision, rtol=10 ** -self.precision)
+        np.testing.assert_allclose(gaussInt, trueInt, atol=10**-self.precision, rtol=10**-self.precision)
 
 
 if __name__ == "__main__":

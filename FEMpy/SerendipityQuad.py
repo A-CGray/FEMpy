@@ -50,10 +50,10 @@ def serendipityShapeFuncs(x, y):
     N[:, 1] = 0.25 * (1.0 + psi) * (1.0 - eta) * (psi - eta - 1.0)
     N[:, 2] = 0.25 * (1.0 + psi) * (1.0 + eta) * (psi + eta - 1.0)
     N[:, 3] = 0.25 * (1.0 - psi) * (1.0 + eta) * (-psi + eta - 1.0)
-    N[:, 4] = 0.5 * (1.0 - psi ** 2) * (1.0 - eta)
-    N[:, 5] = 0.5 * (1.0 + psi) * (1.0 - eta ** 2)
-    N[:, 6] = 0.5 * (1.0 - psi ** 2) * (1.0 + eta)
-    N[:, 7] = 0.5 * (1.0 - psi) * (1.0 - eta ** 2)
+    N[:, 4] = 0.5 * (1.0 - psi**2) * (1.0 - eta)
+    N[:, 5] = 0.5 * (1.0 + psi) * (1.0 - eta**2)
+    N[:, 6] = 0.5 * (1.0 - psi**2) * (1.0 + eta)
+    N[:, 7] = 0.5 * (1.0 - psi) * (1.0 - eta**2)
 
     return N
 
@@ -86,18 +86,18 @@ def serendipityShapeFuncDerivs(x, y):
     dNdxy[:, 0, 2] = 0.25 * (1.0 + eta) * (2.0 * psi + eta)
     dNdxy[:, 0, 3] = 0.25 * (1.0 + eta) * (2.0 * psi - eta)
     dNdxy[:, 0, 4] = -psi * (1.0 - eta)
-    dNdxy[:, 0, 5] = 0.5 * (1 - eta ** 2)
+    dNdxy[:, 0, 5] = 0.5 * (1 - eta**2)
     dNdxy[:, 0, 6] = -psi * (1.0 + eta)
-    dNdxy[:, 0, 7] = -0.5 * (1 - eta ** 2)
+    dNdxy[:, 0, 7] = -0.5 * (1 - eta**2)
 
     # --- dNdEta ---
     dNdxy[:, 1, 0] = 0.25 * (1.0 - psi) * (2 * eta + psi)
     dNdxy[:, 1, 1] = 0.25 * (1.0 + psi) * (2 * eta - psi)
     dNdxy[:, 1, 2] = 0.25 * (1.0 + psi) * (2 * eta + psi)
     dNdxy[:, 1, 3] = 0.25 * (1.0 - psi) * (2 * eta - psi)
-    dNdxy[:, 1, 4] = -0.5 * (1.0 - psi ** 2)
+    dNdxy[:, 1, 4] = -0.5 * (1.0 - psi**2)
     dNdxy[:, 1, 5] = -eta * (1.0 + psi)
-    dNdxy[:, 1, 6] = 0.5 * (1.0 - psi ** 2)
+    dNdxy[:, 1, 6] = 0.5 * (1.0 - psi**2)
     dNdxy[:, 1, 7] = -eta * (1.0 - psi)
 
     return dNdxy
