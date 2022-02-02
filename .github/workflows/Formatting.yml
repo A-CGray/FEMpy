@@ -7,34 +7,11 @@ on:
     branches: [ main ]
 
 jobs:
-  lint-format-check:
+  pre-commit:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - python-version: "3.7"
-            blackFlag: "py37"
-          - python-version: "3.8"
-            blackFlag: "py38"
-          - python-version: "3.9"
-            blackFlag: "py39"
-          - python-version: "3.10"
-            blackFlag: "py310"
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - uses: actions/setup-python@v2
+    - uses: pre-commit/action@v2.0.3
       with:
-        python-version: ${{ matrix.python-version }}
-        cache: 'pip'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -e .[dev]
-    - name: Lint with flake8
-      run: |
-        wget https://raw.githubusercontent.com/mdolab/.github/master/.flake8;
-        flake8 . --count --show-source --statistics;
-    - name: Check formatting with black
-      run: |
-        black . --check --diff --target-version ${{ matrix.blackFlag }};
+        extra_args: run --all-files
