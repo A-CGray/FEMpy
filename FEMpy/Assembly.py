@@ -96,7 +96,8 @@ def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType
 
         # Add the force contribution of any nonzero fixed displacements
         RHSLocal[localFreeDOF] = -np.sum(
-            knownStates[elDOF[nonzeroConstrainedDOF]] * localMat[np.ix_(localFreeDOF, nonzeroConstrainedDOF)], axis=-1
+            knownStates[elDOF[nonzeroConstrainedDOF]] * localMat[np.ix_(localFreeDOF, nonzeroConstrainedDOF)],
+            axis=-1,
         )
 
         # For constrained DOF, set RHS equal to the fixed disp value
@@ -123,13 +124,25 @@ def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType
     # ==============================================================================
     # Create global stiffness mat and RHS
     # ==============================================================================
-    Mat = sp.coo_matrix((MatEntries, (MatRows, MatColumns)), shape=(numNodes * numDisp, numNodes * numDisp)).tocsr()
+    Mat = sp.coo_matrix(
+        (MatEntries, (MatRows, MatColumns)),
+        shape=(numNodes * numDisp, numNodes * numDisp),
+    ).tocsr()
     RHS = sp.coo_matrix((RHSEntries, (RHSRows, np.zeros_like(RHSRows))), shape=(numNodes * numDisp, 1)).tocsr()
 
     return Mat, RHS
 
 
-def assembleTractions(nodeCoords, conn, element, constitutive, tractElems, tractEdges, tractFunc, knownStates):
+def assembleTractions(
+    nodeCoords,
+    conn,
+    element,
+    constitutive,
+    tractElems,
+    tractEdges,
+    tractFunc,
+    knownStates,
+):
     numNodes = np.shape(nodeCoords)[0]
     numDisp = element.numDisp
 

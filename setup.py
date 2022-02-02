@@ -54,7 +54,12 @@ setup(
     url="https://github.com/A-Gray-94/FEMpy",
     license="Apache License Version 2.0",
     packages=["FEMpy"],
-    install_requires=["numpy", "numba", "scipy", "pyComposite @ git+https://github.com/A-Gray-94/pyComposite.git"],
+    install_requires=[
+        "numpy",
+        "numba",
+        "scipy",
+        "pyComposite @ git+https://github.com/A-Gray-94/pyComposite.git",
+    ],
     extras_require={
         "docs": [
             "mkdocs",
@@ -66,6 +71,9 @@ setup(
         ],
         "dev": ["parameterized", "testflo", "black==22.1.0", "flake8==4.0.1"],
     },
-    classifiers=["Operating System :: OS Independent", "Programming Language :: Python"],
+    classifiers=[
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+    ],
     cmdclass={"install": installWrapper, "develop": developWrapper},
 )

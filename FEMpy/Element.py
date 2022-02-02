@@ -384,7 +384,13 @@ class Element:
 
     def _makeBMat(self, NPrime, constitutive):
         """A basic wrapper for the jit compiled function _makeBMat"""
-        return _makeBMat(NPrime, constitutive.LMats, constitutive.numStrain, self.numDim, self.numNodes)
+        return _makeBMat(
+            NPrime,
+            constitutive.LMats,
+            constitutive.numStrain,
+            self.numDim,
+            self.numNodes,
+        )
 
     def bodyForceIntegrad(self, f, paramCoord, nodeCoords):
         # Compute shape functions and Jacobian determinant at parametric coordinates

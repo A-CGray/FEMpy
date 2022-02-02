@@ -38,6 +38,10 @@ class isoPlaneStrain(Constitutive):
             self.E
             / ((1.0 - 2.0 * self.nu) * (1.0 + self.nu))
             * np.array(
-                [[1.0 - self.nu, self.nu, 0.0], [self.nu, 1.0 - self.nu, 0.0], [0.0, 0.0, 0.5 * (1.0 - 2.0 * self.nu)]]
+                [
+                    [1.0 - self.nu, self.nu, 0.0],
+                    [self.nu, 1.0 - self.nu, 0.0],
+                    [0.0, 0.0, 0.5 * (1.0 - 2.0 * self.nu)],
+                ]
             )
         )
