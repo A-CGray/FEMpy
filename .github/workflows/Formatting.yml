@@ -22,7 +22,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
-      run: pip install flake8
+    - run: pip install flake8
     - name: Lint with flake8
       run: |
         wget https://raw.githubusercontent.com/mdolab/.github/master/.flake8;
