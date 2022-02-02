@@ -26,25 +26,25 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install .[dev]
+        pip install -e .[dev]
 
-      - name: Run unit tests
-        run: testflo -n 1 -v .
+    - name: Run unit tests
+      run: testflo -n 1 -v .
 
-      - name: Generate coverage report
-        if: ${{ matrix.python-version == 3.9}}
-        run: |
-          export NUMBA_DISABLE_JIT=1
-          testflo -n 1 -v --coverage --coverpkg FEMpy .
+    - name: Generate coverage report
+      if: ${{ matrix.python-version == 3.9}}
+      run: |
+        export NUMBA_DISABLE_JIT=1
+        testflo -n 1 -v --coverage --coverpkg FEMpy .
 
-      - name: Upload coverage to Codecov
-        if: ${{ matrix.python-version == 3.9}}
-        uses: codecov/codecov-action@v1
-        with:
-          fail_ci_if_error: true
+    - name: Upload coverage to Codecov
+      if: ${{ matrix.python-version == 3.9}}
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true
 
-      - name: Upload coverage to Code Climate
-        if: ${{ matrix.python-version == 3.9}}
-        uses: paambaati/codeclimate-action@v2.7.5
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_COVERAGE_ID }}
+    - name: Upload coverage to Code Climate
+      if: ${{ matrix.python-version == 3.9}}
+      uses: paambaati/codeclimate-action@v2.7.5
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_COVERAGE_ID }}
