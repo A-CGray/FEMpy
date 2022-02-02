@@ -100,7 +100,7 @@ def LagrangePoly2d(x, y, n):
     yp = y.flatten()
     Nx = LagrangePoly1d(xp, n)
     Ny = LagrangePoly1d(yp, n)
-    N = np.zeros((len(xp), n ** 2), dtype=xp.dtype)
+    N = np.zeros((len(xp), n**2), dtype=xp.dtype)
     for i in range(len(xp)):
         for j in range(n):
             for k in range(n):
@@ -132,7 +132,7 @@ def LagrangePoly2dDeriv(x, y, n):
     Ny = LagrangePoly1d(yp, n)
     dNdx = LagrangePoly1dDeriv(xp, n)
     dNdy = LagrangePoly1dDeriv(yp, n)
-    N = np.zeros((len(xp), 2, n ** 2))
+    N = np.zeros((len(xp), 2, n**2))
     for i in range(len(xp)):
         for j in range(n):
             for k in range(n):
@@ -172,8 +172,8 @@ def LagrangePolyTri(x, y, n):
         N[:, 2] = yp
 
     elif n == 2:
-        x2 = xp ** 2
-        y2 = yp ** 2
+        x2 = xp**2
+        y2 = yp**2
         xy = xp * yp
         N[:, 0] = 2 * x2 + 4 * xy - 3 * xp + 2 * y2 - 3 * y + 1
         N[:, 1] = 2 * x2 - xp
@@ -183,10 +183,10 @@ def LagrangePolyTri(x, y, n):
         N[:, 5] = -4 * (x2 + xy - xp)
 
     elif n == 3:
-        x2 = xp ** 2
-        y2 = yp ** 2
-        x3 = xp ** 3
-        y3 = yp ** 3
+        x2 = xp**2
+        y2 = yp**2
+        x3 = xp**3
+        y3 = yp**3
         xy = xp * yp
         x2y = x2 * yp
         xy2 = xp * y2
@@ -257,8 +257,8 @@ def LagrangePolyTriDeriv(x, y, n):
         dNdx[:, 1, 5] = -4.0 * xp
 
     elif n == 3:
-        x2 = xp ** 2
-        y2 = yp ** 2
+        x2 = xp**2
+        y2 = yp**2
         xy = xp * yp
         dNdx[:, 0, 0] = -13.5 * x2 - 27.0 * xy + 18 * xp - 0.5 * 27.0 * y2 + 18.0 * yp - 5.5
         dNdx[:, 1, 0] = -0.5 * 27.0 * x2 - 27.0 * xy + 18.0 * xp - 13.5 * y2 + 18.0 * yp - 5.5

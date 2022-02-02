@@ -36,6 +36,12 @@ class isoPlaneStress(Constitutive):
     def DMat(self):
         return (
             self.E
-            / (1.0 - self.nu ** 2.0)
-            * np.array([[1.0, self.nu, 0.0], [self.nu, 1.0, 0.0], [0.0, 0.0, 0.5 * (1.0 - self.nu)]])
+            / (1.0 - self.nu**2.0)
+            * np.array(
+                [
+                    [1.0, self.nu, 0.0],
+                    [self.nu, 1.0, 0.0],
+                    [0.0, 0.0, 0.5 * (1.0 - self.nu)],
+                ]
+            )
         )

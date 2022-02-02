@@ -32,5 +32,3 @@ build-mkdocs: clean
 
 publish-mkdocs:
 	mkdocs gh-deploy -f docs/mkdocs.yml
-
-
