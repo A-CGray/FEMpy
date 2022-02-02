@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://a-cgray.github.io/FEMpy/Elements/QuadElement/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.9">
     
     
       
@@ -23,7 +23,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2b4465f4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -70,7 +70,7 @@
   
     
     
-      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)</script>
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -244,6 +244,18 @@
       </a>
     </li>
   
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../DevelopmentGuide/DevelopmentGuide/" class="md-tabs__link">
+      Contributing
+    </a>
+  </li>
 
       
     </ul>
@@ -548,6 +560,21 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../DevelopmentGuide/DevelopmentGuide/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -663,6 +690,164 @@
     <div class="doc doc-contents first">
 
 
+        <details class="quote">
+          <summary>Source code in <code>FEMpy/QuadElement.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">QuadElement</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">numDisplacements</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Instantiate an arbitrary order 2d quadrilateral finite element</span>
+
+<span class="sd">        Note that this element does not use the typical CCW node ordering, to make it simpler to work with arbitrary</span>
+<span class="sd">        element orders, the nodes are ordered left to right followed by bottom to top, so for a 1st order element the</span>
+<span class="sd">        ordering is:</span>
+
+<span class="sd">        1) Bottom left</span>
+<span class="sd">        2) Bottom Right</span>
+<span class="sd">        3) Top left</span>
+<span class="sd">        4) Top right</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        order : int, optional</span>
+<span class="sd">            Element order, by default 1</span>
+<span class="sd">        numDisplacements : int, optional</span>
+<span class="sd">            Number of variables at each node, by default 2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">numNodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span> <span class="n">numDimensions</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">numDisplacements</span><span class="o">=</span><span class="n">numDisplacements</span><span class="p">)</span>
+
+        <span class="c1"># bottom, right, top, left order,</span>
+        <span class="c1"># 0 means psi varies along edge, 1 means eta varies along edge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edgeFreeCoord</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># value of the fixed coordinate on each edge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edgeFixedCoord</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Order</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2">-LagrangeQuad&quot;</span>
+
+    <span class="k">def</span> <span class="nf">getShapeFunctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute shape function values at a set of parametric coordinates</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        paramCoords : n x nDim array</span>
+<span class="sd">            isoparametric coordinates, one row for each point in isoparametric space to compute the Jacobian at</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        N : n x numNode array</span>
+<span class="sd">            Shape function values, N[i][j] is the value of the jth shape function at the ith point</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LP</span><span class="o">.</span><span class="n">LagrangePoly2d</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getShapeFunctionDerivs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute shape function derivatives at a set of parametric coordinates</span>
+
+<span class="sd">        These are the derivatives of the shape functions with respect to the parametric coordinates (si, eta, gamma)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        paramCoords : n x nD array</span>
+<span class="sd">            isoparametric coordinates, one row for each point in isoparametric space to compute the Jacobian at</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        NPrime : n x numDim x numNode array</span>
+<span class="sd">            Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth</span>
+<span class="sd">            parametric coordinate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LP</span><span class="o">.</span><span class="n">LagrangePoly2dDeriv</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getStiffnessMat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># TODO: this function should not presume the constitutive object has a thickness, what if you want to use this</span>
+        <span class="c1"># quad element for something else, like 2D heat transfer where there&#39;s no thickness</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">getStiffnessMat</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">t</span>
+
+    <span class="k">def</span> <span class="nf">integrateBodyForce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># TODO: this function should not presume the constitutive object has a thickness, what if you want to use this</span>
+        <span class="c1"># quad element for something else, like 2D heat transfer where there&#39;s no thickness</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">integrateBodyForce</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">t</span>
+
+    <span class="k">def</span> <span class="nf">integrateTraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">constitutive</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute equivalent nodal forces due to body forces through numerical integration</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        f : Body force function</span>
+<span class="sd">            Should accept an nP x numDim array as input and output a nP x numDisp array, ie f(x)[i] returns the body force components at the ith point queried</span>
+<span class="sd">        nodeCoords : numNode x numDim array</span>
+<span class="sd">            Element node real coordinates</span>
+<span class="sd">        n : int, optional</span>
+<span class="sd">            Number of integration points, can be a single value or a list with a value for each direction, by default 1</span>
+<span class="sd">        constitutive : [type]</span>
+<span class="sd">            [description]</span>
+<span class="sd">        edges : list, optional</span>
+<span class="sd">            [description], by default [1,2,3,4]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Fb : numNode x numDisp array</span>
+<span class="sd">            Equivalent nodal loads due to traction forces force</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">edges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">edges</span><span class="p">]</span>
+        <span class="n">Ft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDisp</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgeFreeCoord</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tractionIntegrand</span><span class="p">(</span>  <span class="c1"># noqa: E731</span>
+                    <span class="n">f</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgeFixedCoord</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x1</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                    <span class="n">nodeCoords</span><span class="p">,</span>
+                    <span class="n">e</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x2</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tractionIntegrand</span><span class="p">(</span>  <span class="c1"># noqa: E731</span>
+                    <span class="n">f</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">edgeFixedCoord</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="n">x2</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                    <span class="n">nodeCoords</span><span class="p">,</span>
+                    <span class="n">e</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">Ft</span> <span class="o">+=</span> <span class="n">gaussQuad1d</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Ft</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">t</span>
+
+    <span class="k">def</span> <span class="nf">tractionIntegrand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">edgeNum</span><span class="p">):</span>
+        <span class="c1"># Compute shape functions and Jacobian determinant at parametric coordinates</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getShapeFunctions</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">)</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getJacobian</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
+        <span class="n">detJStar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">J</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgeFreeCoord</span><span class="p">[</span><span class="n">edgeNum</span><span class="p">],</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Transform parametric to real coordinates in order to compute body force components</span>
+        <span class="n">realCoord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRealCoord</span><span class="p">(</span><span class="n">paramCoord</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">realCoord</span><span class="p">)</span>
+
+        <span class="c1"># Compute N^T fb at each point</span>
+        <span class="n">Fb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_computeNTFProduct</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">Fb</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">detJStar</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">def</span> <span class="nf">getRandomNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a random, but valid, set of node coordinates for an element</span>
+
+<span class="sd">        For the Quad element, we simply create a grid of evenly spaced points then add some random noise to each point</span>
+<span class="sd">        before applying a random scaling and rotation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        nodeCoords : numNode x numDim array</span>
+<span class="sd">            Node coordinates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">nodeCoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>
+        <span class="n">nodeCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">nodeCoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">nodeCoords</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)]])[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">R</span> <span class="o">@</span> <span class="n">nodeCoords</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -1181,11 +1366,17 @@ force components at the ith point queried</p></td>
     <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgeFreeCoord</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tractionIntegrand</span><span class="p">(</span>  <span class="c1"># noqa: E731</span>
-                <span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgeFixedCoord</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x1</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">e</span>
+                <span class="n">f</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgeFixedCoord</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x1</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                <span class="n">nodeCoords</span><span class="p">,</span>
+                <span class="n">e</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x2</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tractionIntegrand</span><span class="p">(</span>  <span class="c1"># noqa: E731</span>
-                <span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">edgeFixedCoord</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="n">x2</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">e</span>
+                <span class="n">f</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">edgeFixedCoord</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="n">x2</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                <span class="n">nodeCoords</span><span class="p">,</span>
+                <span class="n">e</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="n">Ft</span> <span class="o">+=</span> <span class="n">gaussQuad1d</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Ft</span> <span class="o">*</span> <span class="n">constitutive</span><span class="o">.</span><span class="n">t</span>
@@ -1310,10 +1501,10 @@ force components at the ith point queried</p></td>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.960e086b.min.js"></script>
       
         <script src="../../js/flowchart-loader.js"></script>
       

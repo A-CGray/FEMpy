@@ -2,32 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://a-cgray.github.io/FEMpy/</loc>
-         <lastmod>2021-12-20</lastmod>
+         <lastmod>2022-02-02</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://a-cgray.github.io/FEMpy/DevelopmentGuide/DevelopmentGuide/</loc>
+         <lastmod>2022-02-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://a-cgray.github.io/FEMpy/Elements/Element/</loc>
-         <lastmod>2021-12-20</lastmod>
+         <lastmod>2022-02-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://a-cgray.github.io/FEMpy/Elements/Lagrange1dElement/</loc>
-         <lastmod>2021-12-20</lastmod>
+         <lastmod>2022-02-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://a-cgray.github.io/FEMpy/Elements/QuadElement/</loc>
-         <lastmod>2021-12-20</lastmod>
+         <lastmod>2022-02-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://a-cgray.github.io/FEMpy/Elements/SerendipityQuad/</loc>
-         <lastmod>2021-12-20</lastmod>
+         <lastmod>2022-02-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://a-cgray.github.io/FEMpy/LinAlg/LinAlg/</loc>
-         <lastmod>2021-12-20</lastmod>
+         <lastmod>2022-02-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
