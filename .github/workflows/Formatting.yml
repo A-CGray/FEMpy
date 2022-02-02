@@ -12,4 +12,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
+    - name: Download flake8 config
+      run: wget https://raw.githubusercontent.com/mdolab/.github/master/.flake8;
     - uses: pre-commit/action@v2.0.3
