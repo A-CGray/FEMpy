@@ -27,12 +27,19 @@ pip install -e .
 ```
 If you want to build documentation locally, or run the unit tests, make sure to install the necessary dependencies:
 ```shell
-pip install -e .[all]
+pip install -e .[docs, dev]
 ```
 And then run:
 ```shell
 make build
 ```
 
+To build the docs locally, or:
+```shell
+testflo -n 1 -v .
+```
+
+To run unit tests.
+
 ## Documentation
-View the documentation (still under construction) [here](https://A-Gray-94.github.io/FEMpy/)
+View the documentation (still under construction) [here](https://A-CGray.github.io/FEMpy/)

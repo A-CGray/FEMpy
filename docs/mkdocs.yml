@@ -1,9 +1,9 @@
 site_name: FEMpy
 site_description: Documentation for FEMpy
 site_author: Ali Gray
-site_url: https://a-gray-94.github.io/FEMpy
-repo_name: A-Gray-94/FEMpy
-repo_url: https://github.com/A-Gray-94/FEMpy
+site_url: https://a-cgray.github.io/FEMpy
+repo_name: A-CGray/FEMpy
+repo_url: https://github.com/A-CGray/FEMpy
 theme:
     font:
         text: Open Sans
