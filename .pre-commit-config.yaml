@@ -24,3 +24,9 @@ repos:
     rev: 4.0.1
     hooks:
     - id: flake8
+- repo: https://github.com/econchick/interrogate
+  rev: 1.5.0  # or master if you're bold
+  hooks:
+    - id: interrogate
+      files: "(?:FEMpy/)"
+      args: [-vv, --ignore-nested-functions, --ignore-init-module, --fail-under=90]
