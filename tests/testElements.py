@@ -22,7 +22,7 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy import QuadElement, Lagrange1dElement, serendipityQuadElement
+from FEMpy import QuadElement, Lagrange1dElement, serendipityQuadElement, TriElement
 
 # --- Elements to test: ---
 # QuadElement: 1st to 4th order
@@ -31,9 +31,13 @@ from FEMpy import QuadElement, Lagrange1dElement, serendipityQuadElement
 
 test_params = []
 
-for el in [Lagrange1dElement, QuadElement, serendipityQuadElement]:
+for el in [Lagrange1dElement, QuadElement, serendipityQuadElement, TriElement]:
     if el in [QuadElement, Lagrange1dElement]:
         for order in range(1, 5):
+            element = el(order=order)
+            test_params.append({"element": element, "name": element.name})
+    elif el in [TriElement]:
+        for order in range(1, 4):
             element = el(order=order)
             test_params.append({"element": element, "name": element.name})
     else:
@@ -46,7 +50,7 @@ class ElementUnitTest(unittest.TestCase):
     def setUp(self) -> None:
         self.tol = 1e-10
         self.numTestPoints = 4
-        np.random.seed(1)
+        np.random.seed(10)
 
     def testGetParamCoord(self):
         error = self.element.testGetParamCoord(self.numTestPoints, maxIter=400, tol=self.tol * 1e-3)

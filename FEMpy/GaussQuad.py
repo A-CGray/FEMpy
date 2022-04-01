@@ -5,14 +5,8 @@ Gauss Quadrature Points and Weights
 @File    :   guassQuad.py
 @Date    :   2021/03/10
 @Author  :   Alasdair Christison Gray
-@Description : This file contains the coordinates and weights (to far too many decimal places) for numerical integration
-on the domain (-1, 1) using Gauss Quadrature. Weights and coordinates are given to 256 decimal places for up to 64 point
-integration which can integrate up to 127th order polynomials exactly. These values were taken from:
-
-https://pomax.github.io/bezierinfo/legendre-gauss.html
-
-To use these values include `from guassQuad import getGaussPoints, getgaussWeights` in your code and then use
-`getGaussPoints(n)`, `getGaussPoints(n)` to get lists of the points and weights for n-point integration.
+@Description : This file contains the coordinates and weights for numerical integration using Gauss quadrature on 1D
+intervals, 2D quads and triangles and 3d hexahedrons
 """
 
 import numpy as np
@@ -26,11 +20,28 @@ with open(os.path.join(dataDir, "GaussQuadWeights.pkl"), "rb") as f:
 with open(os.path.join(dataDir, "GaussQuadCoords.pkl"), "rb") as f:
     gaussCoords = pickle.load(f)
 
+# --- Define gauss quadrature points and weights for triangles ---
+TriGaussPoints = {}
+TriGaussPoints[1] = np.array([[1.0 / 3.0, 1.0 / 3.0]])
+TriGaussPoints[2] = np.array([[1.0 / 6.0, 1.0 / 6.0], [2.0 / 3.0, 1.0 / 6.0], [1.0 / 6.0, 2.0 / 3.0]])
+TriGaussPoints[3] = np.array([[1.0 / 3.0, 1.0 / 3.0], [0.2, 0.2], [0.6, 0.2], [0.2, 0.6]])
+TriGaussPoints[4] = np.array(
+    [[0.0, 0.0], [0.5, 0.0], [1.0, 0.0], [0.5, 0.5], [0.0, 1.0], [0.0, 0.5], [1.0 / 3.0, 1.0 / 3.0]]
+)
+
+TriGaussWeights = {}
+TriGaussWeights[1] = np.array([0.5])
+TriGaussWeights[2] = 1.0 / 6.0 * np.ones(3)
+TriGaussWeights[3] = np.array([-9.0 / 32.0, 25.0 / 96.0, 25.0 / 96.0, 25.0 / 96.0, 25.0 / 96.0])
+TriGaussWeights[4] = np.array([0.025, 1.0 / 15.0, 0.025, 1.0 / 15.0, 0.025, 1.0 / 15.0, 0.225])
+
 
 def getgaussWeights(n):
     """Get the weights for n-point numerical integration using Gauss Quadrature
 
     Gauss Quadrature integration with n points will exactly integrate polynomials of order <= 2n-1
+
+    Values generated using numpy's leggauss function
 
     Parameters
     ----------
@@ -49,6 +60,8 @@ def getGaussPoints(n):
     """Get the coordinates for n-point numerical integration using Gauss Quadrature on the interval (-1, 1))
 
     Gauss Quadrature integration with n points will exactly integrate polynomials of order <= 2n-1
+
+    Values generated using numpy's leggauss function
 
     Parameters
     ----------
@@ -186,3 +199,43 @@ def gaussQuad3d(f, n, a=-1.0, b=1.0):
             intF += totalScale * W[0][i] * W[1][j] * gaussQuad1d(func, n[-1], a[-1], b[-1])
 
     return intF
+
+
+def getTriGaussPoints(n):
+    """Get the coordinates of the points for nth order Gaussian integration over a triangular domain
+
+    Values taken from https://kratos-wiki.cimne.upc.edu/index.php/Numerical_Integration
+    and https://link.springer.com/content/pdf/bbm%3A978-3-540-32609-0%2F1.pdf
+
+    Parameters
+    ----------
+    n : int
+        Order of integration
+
+    Returns
+    -------
+    xGauss : 2 x N array
+        Paramteric coordinates of Gauss integration points
+    """
+
+    return TriGaussPoints[n]
+
+
+def getTriGaussWeights(n):
+    """Get the weights of the points for nth order Gaussian integration over a triangular domain
+
+    Values taken from https://kratos-wiki.cimne.upc.edu/index.php/Numerical_Integration
+    and https://link.springer.com/content/pdf/bbm%3A978-3-540-32609-0%2F1.pdf
+
+    Parameters
+    ----------
+    n : int
+        Order of integration
+
+    Returns
+    -------
+    xGauss : 1 x N array
+        Weights of Gauss integration points
+    """
+
+    return TriGaussWeights[n]

@@ -13,54 +13,21 @@ Element Class
 # ==============================================================================
 import abc
 
+from functools import lru_cache
+
 # ==============================================================================
 # External Python modules
 # ==============================================================================
 import numpy as np
 from numba import njit
-from scipy.optimize import root
+
+# from scipy.optimize import root
 
 # ==============================================================================
 # Extension modules
 # ==============================================================================
 from .GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
 from .LinAlg import det1, det2, det3, inv1, inv2, inv3
-
-
-@njit(cache=True)
-def _makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
-    numPoints = np.shape(NPrime)[0]
-    BMat = np.zeros((numPoints, numStrain, numDim * numNodes))
-    for p in range(numPoints):
-        for n in range(numNodes):
-            for d in range(numDim):
-                BMat[p, :, n * numDim : (n + 1) * numDim] += LMats[d] * NPrime[p, d, n]
-    return BMat
-
-
-@njit(cache=True)
-def _makeNMat(N, numDim):
-    s = np.shape(N)
-    numPoints = s[0]
-    numShapeFunc = s[1]
-    NMat = np.zeros((numPoints, numDim, numDim * numShapeFunc))
-    for p in range(numPoints):
-        for n in range(numShapeFunc):
-            NMat[p, :, numDim * n : numDim * (n + 1)] = N[p, n] * np.eye(numDim)
-    return NMat
-
-
-@njit(cache=True)
-def _computeNTFProduct(F, N):
-    # Compute N^T fb at each point, it's complicated because things are not the right shape
-    nP = np.shape(F)[0]
-    nD = np.shape(F)[1]
-    nN = np.shape(N)[1]
-    Fb = np.zeros((nP, nN, nD))
-    for p in range(nP):
-        for d in range(nD):
-            Fb[p, :, d] = (F[p, d] * N[p]).T
-    return Fb
 
 
 class Element:
@@ -113,7 +80,7 @@ class Element:
 
         return N[:, : self.numNodes] @ nodeCoords
 
-    def getParamCoord(self, realCoords, nodeCoords, maxIter=10, tol=1e-8):
+    def getParamCoord(self, realCoords, nodeCoords, maxIter=10, tol=1e-8, x0=None):
         """Find the parametric coordinates within an element corresponding to a point in real space
 
         Note this function only currently works for finding the parametric coordinates of one point inside one element
@@ -132,21 +99,31 @@ class Element:
         x : array of length numDim
             Parametric coordinates of the desired point
         """
-        # x = np.zeros(self.numDim)
-        # for i in range(maxIter):
+        if x0 is None:
+            x0 = np.zeros(self.numDim)
+        x = np.copy(x0)
+        for _ in range(maxIter):
+            res = realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
+            print(f"x = {x}, R = {res}")
+            if np.max(np.abs(res)) < tol:
+                break
+            else:
+                jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
+                x += np.linalg.solve(jacT, res)
+        return x
+
+        # Alternate implementation using scipy's root finding
+        # def resFunc(x):
         #     res = realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
-        #     if np.max(np.abs(res)) < tol:
-        #         break
-        #     else:
-        #         jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
-        #         x += np.linalg.solve(jacT, res)
-        # return x
+        #     print(f"x = {x}, R = {res}")
+        #     return res
 
-        def resFunc(x):
-            return realCoords - self.getRealCoord(np.array([x]), nodeCoords).flatten()
+        # def jacFunc(x):
+        #     jacT = self.getJacobian(np.array([x]), nodeCoords)[0].T
+        #     return jacT
 
-        sol = root(resFunc, np.zeros(self.numDim), method="krylov", tol=tol)
-        return sol.x
+        # sol = root(resFunc, x0, jac = jacFunc, method="krylov", tol=tol)
+        # return sol.x
 
     def getJacobian(self, paramCoords, nodeCoords):
         """Get the element Jacobians at a set of parametric coordinates
@@ -227,6 +204,80 @@ class Element:
         # getJacobian function
         return self.jacInv(NPrimeParam @ nodeCoords) @ NPrimeParam
 
+    @abc.abstractmethod
+    def getIntegrationPoints(self, order=None):
+        """Get the parametric coordinates of the elements integration points
+
+        Parameters
+        ----------
+        order : int
+            Desired order of accuracy, i.e `order=3` will return integration points for a scheme that integrates cubic
+            polynomials exactly
+
+        Returns
+        -------
+        points : numIntPoint x nD array
+            Parametric coordinates of the integration points
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def getIntegrationWeights(self, order=None):
+        """Get the weights of the elements integration points
+
+        Parameters
+        ----------
+        order : int
+            Desired order of accuracy, i.e `order=3` will return the weights for a scheme that integrates cubic
+            polynomials exactly
+
+        Returns
+        -------
+        points : array of length numIntPoint
+            Parametric coordinates of the integration points
+        """
+        raise NotImplementedError
+
+    @lru_cache(maxsize=None)
+    def getIntegrationPointShapeFunctions(self, order=None):
+        """Compute shape functions at the integration points
+
+        This function is cached so that the values do not need to be recomputed everytime something is integrated over
+        the element
+
+        Parameters
+        ----------
+        order : int
+            Desired order of accuracy, i.e `order=3` will use integration points for a scheme that integrates cubic
+            polynomials exactly
+
+        Returns
+        -------
+        N : numIntPoint x numNode array
+            Shape function values at the integration points
+        """
+        return self.getShapeFunctions(self.getIntegrationPoints(order))
+
+    @lru_cache(maxsize=None)
+    def getIntegrationPointShapeFunctionDerivs(self, order=None):
+        """Compute shape function derivatives at the integration points
+
+        This function is cached so that the values do not need to be recomputed everytime something is integrated over
+        the element
+
+        Parameters
+        ----------
+        order : int
+            Desired order of accuracy, i.e `order=3` will use integration points for a scheme that integrates cubic
+            polynomials exactly
+
+        Returns
+        -------
+        NPrime : numIntPoint x numDim x numNode array
+            Shape function derivatives at the integration points
+        """
+        return self.getShapeFunctionDerivs(self.getIntegrationPoints(order))
+
     def getBMat(self, paramCoords, nodeCoords, constitutive):
         """Compute the element B matrix at a set of parametric coordinates
 
@@ -250,7 +301,7 @@ class Element:
             The B matrices, B[i] returns the 2D B matrix at the ith parametric point
         """
         NPrime = self.getNPrime(paramCoords, nodeCoords)
-        return self._makeBMat(NPrime, constitutive)
+        return self.makeBMat(NPrime, constitutive)
 
     def getStrain(self, paramCoords, nodeCoords, constitutive, uNodes):
         BMat = self.getBMat(paramCoords, nodeCoords, constitutive)
@@ -337,11 +388,34 @@ class Element:
 
     def getMassIntegrand(self, paramCoords, nodeCoords, constitutive):
         N = self.getShapeFunctions(paramCoords)
-        NMat = self._makeNMat(N)
+        NMat = self.makeNMat(N)
         J = self.getJacobian(paramCoords, nodeCoords)
         detJ = self.jacDet(J)
         NTN = np.swapaxes(NMat, 1, 2) @ NMat * constitutive.rho
         return (NTN.T * detJ).T
+
+    def integrate(self, func, n):
+        """Numerically integrate a function over the element
+
+        Parameters
+        ----------
+        func : function
+            Function to be integrated, should be in the form f(x) where x is numIntPoint x numDim array of parametric coordinates
+        n : int
+            Desired order of integration
+
+        Returns
+        -------
+        F : float or array
+            Integrated value
+        """
+        pts = self.getIntegrationPoints(n)
+        w = self.getIntegrationWeights(n)
+        return np.sum(func(pts).T * w, axis=-1).T
+
+    # TODO: Add version of integrate method that integrates a function that takes real coordinates as input
+    # TODO: Convert existing matrix/force assembly methods to use integrate method
+    # TODO: Implement getIntegrationPoints and getIntegrationWeights methods for general nD elements
 
     def integrateBodyForce(self, f, nodeCoords, n=1):
         """Compute equivalent nodal forces due to body forces through numerical integration
@@ -374,24 +448,6 @@ class Element:
             )
             return gaussQuad3d(bodyForceFunc, n)
 
-    def _computeNTFProduct(self, F, N):
-        """A basic wrapper for the jit compiled function _computeNTFProduct"""
-        return _computeNTFProduct(F, N)
-
-    def _makeNMat(self, N):
-        """A basic wrapper for the jit compiled function _makeNMat"""
-        return _makeNMat(N, self.numDim)
-
-    def _makeBMat(self, NPrime, constitutive):
-        """A basic wrapper for the jit compiled function _makeBMat"""
-        return _makeBMat(
-            NPrime,
-            constitutive.LMats,
-            constitutive.numStrain,
-            self.numDim,
-            self.numNodes,
-        )
-
     def bodyForceIntegrad(self, f, paramCoord, nodeCoords):
         # Compute shape functions and Jacobian determinant at parametric coordinates
         N = self.getShapeFunctions(paramCoord)
@@ -400,13 +456,74 @@ class Element:
         # Transform parametric to real coordinates in order to compute body force components
         realCoord = self.getRealCoord(paramCoord, nodeCoords)
         F = f(realCoord)
-        Fb = self._computeNTFProduct(F, N)
+        Fb = self.computeNTFProduct(F, N)
         return (Fb.T * detJ).T
+
+    def makeNMat(self, N):
+        """A basic wrapper for the jit compiled function _makeNMat"""
+        return self._makeNMat(N, self.numDim)
+
+    def makeBMat(self, NPrime, constitutive):
+        """A basic wrapper for the jit compiled function _makeBMat"""
+        return self._makeBMat(NPrime, constitutive.LMats, constitutive.numStrain, self.numDim, self.numNodes)
+
+    @staticmethod
+    @njit(cache=True)
+    def _makeBMat(NPrime, LMats, numStrain, numDim, numNodes):
+        numPoints = np.shape(NPrime)[0]
+        BMat = np.zeros((numPoints, numStrain, numDim * numNodes))
+        for p in range(numPoints):
+            for n in range(numNodes):
+                for d in range(numDim):
+                    BMat[p, :, n * numDim : (n + 1) * numDim] += LMats[d] * NPrime[p, d, n]
+        return BMat
+
+    @staticmethod
+    @njit(cache=True)
+    def _makeNMat(N, numDim):
+        s = np.shape(N)
+        numPoints = s[0]
+        numShapeFunc = s[1]
+        NMat = np.zeros((numPoints, numDim, numDim * numShapeFunc))
+        for p in range(numPoints):
+            for n in range(numShapeFunc):
+                NMat[p, :, numDim * n : numDim * (n + 1)] = N[p, n] * np.eye(numDim)
+        return NMat
+
+    @staticmethod
+    @njit(cache=True)
+    def computeNTFProduct(F, N):
+        """Compute N^T * f at a series of points,
+
+        Required when integrating tractions or body forces, it's complicated because things are not the right shape.
+
+        Parameters
+        ----------
+        F : numPoint x numDim Array
+            Force vectors at points
+        N : numPoint x numNode array
+            Shape function values at points, N[i][j] is the value of the jth shape function at the ith point
+
+        Returns
+        -------
+        Fb : numPoint x numNode x numDim array
+            Force contribution to each node from each point, Fb[i][j][k] is the kth component of the force at node j
+            due to the force at point i
+        """
+        nP = np.shape(F)[0]
+        nD = np.shape(F)[1]
+        nN = np.shape(N)[1]
+        Fb = np.zeros((nP, nN, nD))
+        for p in range(nP):
+            for d in range(nD):
+                Fb[p, :, d] = (F[p, d] * N[p]).T
+        return Fb
 
     # ==============================================================================
     # Functions for testing element implementations
     # ==============================================================================
 
+    # --- Functions for testing element implementations ---
     def getRandParamCoord(self, n=1):
         """Generate a set of random parametric coordinates
 
@@ -423,7 +540,7 @@ class Element:
         paramCoords : n x numDim array
             isoparametric coordinates, one row for each point
         """
-        return np.atleast_2d(np.random.rand(n, self.numDim))
+        return 2.0 * np.atleast_2d(np.random.rand(n, self.numDim)) - 1.0
 
     @abc.abstractmethod
     def getRandomNodeCoords(self):

@@ -25,9 +25,7 @@ from numba import njit
 
 @njit(cache=True)
 def ksAgg(g, rho=100.0):
-    """Compute a smooth approximation to the maximum of a set of values us KS agregation
-
-
+    """Compute a smooth approximation to the maximum of a set of values us KS aggregation
 
     Parameters
     ----------
