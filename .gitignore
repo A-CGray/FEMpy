@@ -1,6 +1,9 @@
 # Gauss quadrature pkl files
 Gauss*.pkl
 
+# flake8 config
+.flake8
+
 # Profiling files
 *.prof
 
