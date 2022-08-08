@@ -21,6 +21,6 @@ repos:
         language_version: python3
         args: ["-l", "120", "--target-version", "py37", "--target-version", "py38", "--target-version", "py39", "--target-version", "py310"]
 -   repo: https://github.com/PyCQA/flake8
-    rev: 5.0.2
+    rev: 5.0.4
     hooks:
     - id: flake8
