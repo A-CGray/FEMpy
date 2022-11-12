@@ -73,7 +73,6 @@ plugins:
     - mkdocstrings:
         handlers:
             python:
-                selection:
+                options:
                     docstring_style: 'numpy'
-                rendering:
                     show_if_no_docstring: True
