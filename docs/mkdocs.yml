@@ -28,11 +28,11 @@ theme:
         - search.highlight
 nav:
     - Home: index.md
-    # - Elements:
-    #      Generic Element: Elements/Element.md
-    #      2D Quad: Elements/QuadElement.md
-    #      Serendipity Quad: Elements/SerendipityQuad.md
-    #      1D Line Element: Elements/Lagrange1dElement.md
+    - Elements:
+         Generic Element: Elements/Element.md
+         2D Quad: Elements/QuadElement.md
+         Serendipity Quad: Elements/SerendipityQuad.md
+         1D Line Element: Elements/Lagrange1dElement.md
     - Utilities:
         Linear Algebra: LinAlg/LinAlg.md
     - Contributing: DevelopmentGuide/DevelopmentGuide.md
