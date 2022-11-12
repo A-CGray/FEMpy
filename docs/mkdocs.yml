@@ -77,6 +77,3 @@ plugins:
                     docstring_style: 'numpy'
                 rendering:
                     show_if_no_docstring: True
-google_analytics:
-  - G-CE4BXN9PR8
-  - auto

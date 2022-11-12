@@ -64,12 +64,9 @@ setup(
     ],
     extras_require={
         "docs": [
-            "mkdocs",
-            "pymdown-extensions",
             "mkdocs-material",
             "mkdocstrings",
             "pytkdocs[numpy-style]",
-            "Jinja2<3.0,>=2.11",
         ],
         "dev": ["parameterized", "testflo", "black==22.10", "flake8==3.9.2", "pre-commit"],
     },
