@@ -21,8 +21,8 @@ import numpy as np
 # Extension modules
 # ==============================================================================
 from .Element import Element
-from . import LagrangePoly as LP
-from .GaussQuad import gaussQuad1d
+from FEMpy.Basis import LagrangePoly as LP
+from FEMpy.Quadrature import gaussQuad1d
 
 
 class QuadElement(Element):

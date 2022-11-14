@@ -22,7 +22,7 @@ import scipy.integrate as integrate
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy.GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
+from FEMpy.Quadrature.GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
 
 
 def TestFunc(x):

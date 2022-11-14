@@ -24,7 +24,7 @@ import timeit
 
 setupString = """
 import numpy as np
-from FEMpy import det2, det3, inv2, inv3
+from FEMpy.LinAlg import det2, det3, inv2, inv3
 
 A2 = np.random.rand(4, 2, 2)
 A3 = np.random.rand(8, 3, 3)

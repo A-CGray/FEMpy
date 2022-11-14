@@ -20,8 +20,8 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy.Element import Element
-from .LagrangePoly import LagrangePoly1d, LagrangePoly1dDeriv
+from .Element import Element
+from FEMpy.Basis.LagrangePoly import LagrangePoly1d, LagrangePoly1dDeriv
 
 
 class Lagrange1dElement(Element):

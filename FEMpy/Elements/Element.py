@@ -23,8 +23,8 @@ from scipy.optimize import root
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from .GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
-from .LinAlg import det1, det2, det3, inv1, inv2, inv3
+from FEMpy.Quadrature.GaussQuad import gaussQuad1d, gaussQuad2d, gaussQuad3d
+from FEMpy.LinAlg import det1, det2, det3, inv1, inv2, inv3
 
 
 @njit(cache=True)

@@ -76,8 +76,8 @@ def createGridMesh(nx, ny, warpFunc=None):
     return np.array([xNodes, yNodes]).T, conn
 
 
-El = fp.QuadElement()
-con = fp.isoPlaneStrain(E=70e9, nu=0.3, t=1.0)
+El = fp.Elements.QuadElement()
+con = fp.Constitutive.isoPlaneStrain(E=70e9, nu=0.3, t=1.0)
 
 numEl = [2, 5, 10, 20, 40, 80, 160, 320]
 forceIntTimeList = []
@@ -94,7 +94,7 @@ for e in numEl:
     minsolveTime = np.inf
 
     nodeCoords, conn = createGridMesh(e, e, warpFunc=warpFunc)
-    nodeEls = fp.makeNodeElsMat(conn)
+    nodeEls = fp.Mesh.makeNodeElsMat(conn)
     numNodes = np.shape(nodeCoords)[0]
     numDOFList.append(2 * numNodes)
 
@@ -111,7 +111,7 @@ for e in numEl:
         # --- Get elements and edge numbers associated with right hand side traction---
         rightEdgeNodes = np.argwhere(nodeCoords[:, 0] == 2.0).flatten()
         edgeInds = [[0, 1], [1, 3], [3, 2], [2, 0]]
-        TractElems, TractEdges = fp.getEdgesfromNodes(rightEdgeNodes, conn, nodeEls, edgeInds)
+        TractElems, TractEdges = fp.Mesh.getEdgesfromNodes(rightEdgeNodes, conn, nodeEls, edgeInds)
 
         FTract = fp.assembleTractions(nodeCoords, conn, El, con, TractElems, TractEdges, tractionForce, knownDisp)
         FBody = fp.assembleBodyForce(nodeCoords, conn, El, con, bodyForce, knownDisp, n=2)

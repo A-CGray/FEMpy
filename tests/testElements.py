@@ -22,7 +22,7 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy import QuadElement, Lagrange1dElement, serendipityQuadElement
+from FEMpy.Elements import QuadElement, Lagrange1dElement, serendipityQuadElement
 
 # --- Elements to test: ---
 # QuadElement: 1st to 4th order

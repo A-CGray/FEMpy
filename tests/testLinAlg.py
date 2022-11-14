@@ -21,7 +21,7 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy import det1, det2, det3, inv1, inv2, inv3
+from FEMpy.LinAlg import det1, det2, det3, inv1, inv2, inv3
 
 
 class LinAlgUnitTest(unittest.TestCase):

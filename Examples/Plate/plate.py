@@ -1,4 +1,4 @@
 import meshio
 
-mesh = meshio.read("../Meshes/WingboxL3.bdf")
+mesh = meshio.read("../Meshes/GMSHTest.msh")
 print("debug")

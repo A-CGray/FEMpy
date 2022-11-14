@@ -21,9 +21,9 @@ def computeGaussQuadValues(n, outdir=None):
     gaussCoords = {}
     for i in range(1, n + 1):
         gaussCoords[i - 1], gaussWeights[i - 1] = leggauss(i)
-    with open(os.path.join(outdir, "FEMpy/GaussQuadWeights.pkl"), "wb") as f:
+    with open(os.path.join(outdir, "FEMpy/Quadrature/GaussQuadWeights.pkl"), "wb") as f:
         pickle.dump(gaussWeights, f, protocol=-1)
-    with open(os.path.join(outdir, "FEMpy/GaussQuadCoords.pkl"), "wb") as f:
+    with open(os.path.join(outdir, "FEMpy/Quadrature/GaussQuadCoords.pkl"), "wb") as f:
         pickle.dump(gaussCoords, f, protocol=-1)
 
 
