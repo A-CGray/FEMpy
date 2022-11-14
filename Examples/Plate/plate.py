@@ -1,4 +1,5 @@
 import meshio
+from FEMpy.mesh.nastranBCreader import readBC
 
-mesh = meshio.read("../Meshes/GMSHTest.msh")
-print("debug")
+mesh = meshio.read("../Meshes/Plate.bdf")
+BCdict = readBC("../Meshes/Plate.bdf")
