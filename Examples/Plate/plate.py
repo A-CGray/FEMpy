@@ -1,5 +1,5 @@
 import meshio
-from FEMpy.mesh.nastranBCreader import readBC
+from FEMpy.Mesh import readNastranSPCs
 
 mesh = meshio.read("../Meshes/Plate.bdf")
-BCdict = readBC("../Meshes/Plate.bdf")
+BCdict = readNastranSPCs("../Meshes/Plate.bdf")

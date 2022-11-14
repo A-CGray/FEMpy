@@ -1,9 +1,9 @@
 from collections import OrderedDict
 
 
-def readBC(filename):
+def readNastranSPCs(filename):
     """
-    This function takes the mesh file name as an input and output the BC data as a dictionary format.
+    This function takes a Nastran mesh file name as an input and output the SPC BC data in a dictionary format.
 
     Parameters
     ----------
