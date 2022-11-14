@@ -14,7 +14,8 @@ from .GaussQuad import *
 from .Assembly import *
 from .Dynamics import *
 from .TecplotIO import *
-from .Mesh import *
+from .mesh.Mesh import *
+from .mesh.nastranBCreader import *
 from .Smoothing import getSmoother
 from .Utils import *
 from .LinAlg import *
