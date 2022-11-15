@@ -30,9 +30,18 @@ test_params = []
 currentDir = os.path.dirname(os.path.realpath(__file__))
 meshDir = "../Examples/Meshes/"
 meshDir = os.path.join(currentDir, meshDir)
-test_params.append({"meshFileName": os.path.join(meshDir, "WingboxL3.bdf"), "numPoints": 23158, "numElements": 24128})
-test_params.append({"meshFileName": os.path.join(meshDir, "Plate.bdf"), "numPoints": 4225, "numElements": 4096})
-test_params.append({"meshFileName": os.path.join(meshDir, "GMSHTest.msh"), "numPoints": 3622, "numElements": 798})
+test_params.append(
+    {"meshFileName": os.path.join(meshDir, "WingboxL3.bdf"), "numPoints": 23158, "numElements": 24128, "numDim": 3}
+)
+test_params.append(
+    {"meshFileName": os.path.join(meshDir, "Plate.bdf"), "numPoints": 4225, "numElements": 4096, "numDim": 2}
+)
+test_params.append(
+    {"meshFileName": os.path.join(meshDir, "GMSHTest.msh"), "numPoints": 3622, "numElements": 798, "numDim": 2}
+)
+test_params.append(
+    {"meshFileName": os.path.join(meshDir, "LBracket.msh"), "numPoints": 9, "numElements": 798, "numDim": 2}
+)
 
 
 @parameterized_class(test_params)
@@ -45,7 +54,7 @@ class ModelUnitTest(unittest.TestCase):
     def testMeshRead(self):
         """Test that the mesh file was read in correctly"""
         self.assertEqual(self.model.numNodes, self.numPoints)
-        self.assertEqual(self.model.numElements, self.numElements)
+        self.assertEqual(self.model.numDimensions, self.numDim)
 
 
 if __name__ == "__main__":
