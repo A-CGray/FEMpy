@@ -1,2 +1,2 @@
 from .Mesh import *
-from nastranBCreader import *
+from .NastranBCReader import *
