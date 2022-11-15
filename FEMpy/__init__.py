@@ -8,6 +8,7 @@ from . import Basis
 from . import Elements
 from . import Mesh
 from . import Utils
+from .Model import FEMpyModel
 from .Assembly import *
 from .Dynamics import *
 from .TecplotIO import *
