@@ -78,9 +78,10 @@ class Element:
         """
         self.numNodes = numNodes
         self.numDim = numDimensions
-        self.numDisp = numDimensions if numDisplacements is None else numDisplacements
-        self.numDOF = numNodes * self.numDisp
-        self.name = f"{self.numNodes}Node-{self.numDisp}Disp-{self.numDim}D-Element"
+        self.numStates = numDimensions if numDisplacements is None else numDisplacements
+        self.numDOF = numNodes * self.numStates
+        self.name = f"{self.numNodes}Node-{self.numStates}Disp-{self.numDim}D-Element"
+        self.defaultIntOrder = 2
 
         # --- Define fast jacobian determinant function based on number of dimensions ---
         if self.numDim == 1:
@@ -92,6 +93,42 @@ class Element:
         elif self.numDim == 3:
             self.jacDet = det3
             self.jacInv = inv3
+
+    def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
+        """Integrate a function over a set of elements
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        integrand : function
+            function to be integrated, should have the signature integrand(x, u, u', dvs)
+        nodeCoords : numElements x numNodes x numDim array
+            Node coordinates for each element,
+        uNodes : NumElements x numDOF array
+            The nodal state values for each element
+        dvs : NumElements x numDV array
+            The design variable values for each element
+        intOrder : int, optional
+            The integration order to use, uses element default if not provided
+        """
+        intOrder = self.defaultIntOrder if intOrder is None else intOrder
+        intPointWeights = self.getIntPointWeights(intOrder)  # NumElements x numIntPoints
+        intPointParamCoords = self.getPointParamCoords(intOrder)  # NumElements x numIntPoints x numDim
+
+        intPointRealCoords = self.getRealCoord(intPointParamCoords, nodeCoords)  # NumElements x numIntPoints x numDim
+        intPointu = self.getU(intPointParamCoords, nodeCoords, uNodes)  # NumElements x numIntPoints x numStates
+        intPointuPrime = self.getUPrime(
+            intPointParamCoords, nodeCoords, uNodes
+        )  # NumElements x numIntPoints x numStates x numDim
+        integrandValues = integrand(intPointRealCoords, intPointu, intPointuPrime, dvs)
+        intPointDetJ = self.jacDet(self.getJacobian(intPointParamCoords, nodeCoords))  # NumElements x numIntPoints
+
+        # Integrate over each element by computing the sum of the integrand values from each integration point, weight
+        # by the integration point weights and the determinant of the jacobian
+        integratedValues = np.tensordot(integrandValues, intPointWeights * intPointDetJ, axes=([1], [0]))
+
+        return integratedValues
 
     def getRealCoord(self, paramCoords, nodeCoords):
         """Compute the real coordinates of a point in isoparametric space
@@ -223,7 +260,7 @@ class Element:
             [description]
         """
         NPrimeParam = self.getShapeFunctionDerivs(paramCoords)
-        # The Jacobian is NPrimeParam * nodeCoords so we don't need to waste time recomputing NPrimeParam inside the
+        # The Jacobian is NPrimeParam @ nodeCoords so we don't need to waste time recomputing NPrimeParam inside the
         # getJacobian function
         return self.jacInv(NPrimeParam @ nodeCoords) @ NPrimeParam
 
@@ -260,7 +297,7 @@ class Element:
         return self.getStrain(paramCoords, nodeCoords, constitutive, uNodes) @ constitutive.DMat
 
     def getU(self, paramCoords, uNodes):
-        """Compute the displacements at a set of parametric coordinates
+        """Compute the states at a set of parametric coordinates
 
 
         Parameters
@@ -268,18 +305,18 @@ class Element:
         paramCoords : n x numDim array
             isoparametric coordinates, one row for each point in isoparametric space to compute the Jacobian at
         uNodes : numNode x numDim array
-            Nodal displacements
+            Nodal states
 
         Returns
         -------
         u : n x numDim array
-            Array of displacement values, u[i,j] is the jth displacement component at the ith point
+            Array of state values, u[i,j] is the jth state component at the ith point
         """
         N = self.getShapeFunctions(paramCoords)
         return N @ uNodes
 
     def getUPrime(self, paramCoords, nodeCoords, uNodes):
-        """Compute the displacement derivatives at a set of parametric coordinates
+        """Compute the state derivatives at a set of parametric coordinates
 
         Parameters
         ----------
@@ -288,7 +325,7 @@ class Element:
         nodeCoords : numNode x numDim array
             Element node real coordinates
         uNodes : numNode x numDim array
-            Nodal displacements
+            Nodal states
 
         Returns
         -------

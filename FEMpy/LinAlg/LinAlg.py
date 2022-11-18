@@ -18,7 +18,7 @@ def det1(A):
     return A.flatten()
 
 
-@njit(cache=True)
+@njit(cache=True, fastmath=True)
 def det2(A):
     """Compute the determinants of a series of 2x2 matrices.
 
@@ -39,7 +39,7 @@ def det2(A):
     return dets
 
 
-@njit(cache=True)
+@njit(cache=True, fastmath=True)
 def det3(A):
     """Compute the determinants of a series of 3x3 matrices.
 
@@ -80,7 +80,7 @@ def inv1(A):
     return 1.0 / A
 
 
-@njit(cache=True)
+@njit(cache=True, fastmath=True)
 def inv2(A):
     """Compute the inverses of a series of 2x2 matrices.
 
@@ -105,7 +105,7 @@ def inv2(A):
     return invs
 
 
-@njit(cache=True)
+@njit(cache=True, fastmath=True)
 def inv3(A):
     """Compute the inverses of a series of 3x3 matrices.
 

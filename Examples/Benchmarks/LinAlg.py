@@ -26,8 +26,8 @@ setupString = """
 import numpy as np
 from FEMpy.LinAlg import det2, det3, inv2, inv3
 
-A2 = np.random.rand(4, 2, 2)
-A3 = np.random.rand(8, 3, 3)
+A2 = np.random.rand(400, 2, 2)
+A3 = np.random.rand(800, 3, 3)
 det2(A2)
 det3(A3)
 inv2(A2)
