@@ -94,42 +94,6 @@ class Element:
             self.jacDet = det3
             self.jacInv = inv3
 
-    def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
-        """Integrate a function over a set of elements
-
-        _extended_summary_
-
-        Parameters
-        ----------
-        integrand : function
-            function to be integrated, should have the signature integrand(x, u, u', dvs)
-        nodeCoords : numElements x numNodes x numDim array
-            Node coordinates for each element,
-        uNodes : NumElements x numDOF array
-            The nodal state values for each element
-        dvs : NumElements x numDV array
-            The design variable values for each element
-        intOrder : int, optional
-            The integration order to use, uses element default if not provided
-        """
-        intOrder = self.defaultIntOrder if intOrder is None else intOrder
-        intPointWeights = self.getIntPointWeights(intOrder)  # NumElements x numIntPoints
-        intPointParamCoords = self.getPointParamCoords(intOrder)  # NumElements x numIntPoints x numDim
-
-        intPointRealCoords = self.getRealCoord(intPointParamCoords, nodeCoords)  # NumElements x numIntPoints x numDim
-        intPointu = self.getU(intPointParamCoords, nodeCoords, uNodes)  # NumElements x numIntPoints x numStates
-        intPointuPrime = self.getUPrime(
-            intPointParamCoords, nodeCoords, uNodes
-        )  # NumElements x numIntPoints x numStates x numDim
-        integrandValues = integrand(intPointRealCoords, intPointu, intPointuPrime, dvs)
-        intPointDetJ = self.jacDet(self.getJacobian(intPointParamCoords, nodeCoords))  # NumElements x numIntPoints
-
-        # Integrate over each element by computing the sum of the integrand values from each integration point, weight
-        # by the integration point weights and the determinant of the jacobian
-        integratedValues = np.tensordot(integrandValues, intPointWeights * intPointDetJ, axes=([1], [0]))
-
-        return integratedValues
-
     def getRealCoord(self, paramCoords, nodeCoords):
         """Compute the real coordinates of a point in isoparametric space
 

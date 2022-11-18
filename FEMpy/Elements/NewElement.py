@@ -219,7 +219,7 @@ class Element:
         computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac)
         return Jac
 
-    def computeStateGradient(self, paramCoords, nodeStates, nodeCoords):
+    def computeStateGradient(self, NPrimeParam, nodeStates, nodeCoords):
         """Given nodal DOF, compute the gradient of the state at given parametric coordinates within the element
 
         This function is vectorised both across multiple elements, and multiple points within each element,
@@ -238,6 +238,23 @@ class Element:
         -------
         stateGradients : numElements x numPoint x numStates x numDim array
         """
+        # J = NPrimeParam * nodeCoords
+        # u' = J^-1 * NPrimeParam * q
+
+        numElements = nodeCoords.shape[0]
+        numPoints = NPrimeParam.shape[0]
+        Jac = np.zeros((numElements, numPoints, self.numDim, self.numDim))
+        computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac)
+        JacInv = self.jacInv(np.reshape(Jac, (numElements * numPoints, self.numDim, self.numDim)))
+        JacInv = np.reshape(JacInv, (numElements, numPoints, self.numDim, self.numDim))
+        # The einsum below is equivalent to the following
+        # result = np.zeros((numElements, numPoints, self.numStates, self.numDim))
+        # for ii in range(numElements):
+        #   for jj in range(numPoints):
+        #       result[ii, jj] = JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]
+        return np.einsum(
+            "epdf,pdn,ens->epsf", JacInv, NPrimeParam, nodeStates, optimize=["einsum_path", (1, 2), (0, 1)]
+        )
 
 
 @guvectorize(
