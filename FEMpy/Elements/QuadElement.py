@@ -26,7 +26,7 @@ from FEMpy.Quadrature import gaussQuad1d
 
 
 class QuadElement(Element):
-    def __init__(self, order=1, numDisplacements=2):
+    def __init__(self, order=1, numStates=2):
         """Instantiate an arbitrary order 2d quadrilateral finite element
 
         Note that this element does not use the typical CCW node ordering, to make it simpler to work with arbitrary
@@ -42,12 +42,12 @@ class QuadElement(Element):
         ----------
         order : int, optional
             Element order, by default 1
-        numDisplacements : int, optional
+        numStates : int, optional
             Number of variables at each node, by default 2
         """
         self.order = order
         nodes = (order + 1) ** 2
-        super().__init__(numNodes=nodes, numDimensions=2, numDisplacements=numDisplacements)
+        super().__init__(numNodes=nodes, numDimensions=2, numStates=numStates)
 
         # bottom, right, top, left order,
         # 0 means psi varies along edge, 1 means eta varies along edge

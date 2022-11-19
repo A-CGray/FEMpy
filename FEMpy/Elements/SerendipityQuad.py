@@ -106,11 +106,11 @@ def serendipityShapeFuncDerivs(x, y):
 class serendipityQuadElement(QuadElement):
     """An 8 noded quadratic quad element, also known as a seredipity quad"""
 
-    def __init__(self, numDisplacements=2):
+    def __init__(self, numStates=2):
         # --- Initialise a 9 noded quad and then change the number of nodes to 8 ---
-        super().__init__(order=2, numDisplacements=numDisplacements)
+        super().__init__(order=2, numStates=numStates)
         self.numNodes = 8
-        self.numDOF = self.numNodes * numDisplacements
+        self.numDOF = self.numNodes * numStates
         self.name = "SerendipityQuad"
 
     def getShapeFunctions(self, paramCoords):

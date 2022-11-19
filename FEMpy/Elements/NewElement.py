@@ -27,6 +27,19 @@ from FEMpy.LinAlg import det1, det2, det3, inv1, inv2, inv3
 
 
 class Element:
+    """_summary_
+
+    ## What do we need an element to do?:
+    - Given nodal DOF, compute state at given parametric coordinates within the element `computeState`
+    - Given nodal DOF, compute state gradients at given parametric coordinates within the element `computeStateGradients`
+    - Given nodal coordinates, compute coordinates at given parametric coordinates within the element
+    - Given real coordinates, find the parametric coordinates of the closes point on the element to that point
+    - Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element
+    - Given a function that can depend on true coordinates, the state, state gradients and some design variables, integrate that function over the element
+    - Given state and design variable values, and a constitutive model, compute a residual
+    - Given state and design variable values, and a constitutive model, compute a residual Jacobian
+    """
+
     def __init__(self, numNodes, numDimensions, numStates=None, quadratureOrder=2):
         """Instantiate an element object
 
@@ -60,6 +73,9 @@ class Element:
         elif self.numDim == 3:
             self.jacDet = det3
             self.jacInv = inv3
+
+        if self.numDim not in [1, 2, 3]:
+            raise ValueError(f"Sorry, FEMpy doesn't support {self.numDim}-dimensional problems")
 
     # ==============================================================================
     # Abstract methods: Must be implemented by derived classes
@@ -222,6 +238,8 @@ class Element:
     def computeStateGradient(self, NPrimeParam, nodeStates, nodeCoords):
         """Given nodal DOF, compute the gradient of the state at given parametric coordinates within the element
 
+        The gradient of the state at each point in each element is a numStates x numDim array.
+
         This function is vectorised both across multiple elements, and multiple points within each element,
         but the parametric coordinates are assumed to be the same across all elements
 
@@ -247,14 +265,13 @@ class Element:
         computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac)
         JacInv = self.jacInv(np.reshape(Jac, (numElements * numPoints, self.numDim, self.numDim)))
         JacInv = np.reshape(JacInv, (numElements, numPoints, self.numDim, self.numDim))
-        # The einsum below is equivalent to the following
-        # result = np.zeros((numElements, numPoints, self.numStates, self.numDim))
+        UPrime = np.zeros((numElements, numPoints, self.numStates, self.numDim))
+        # The function call below is equivalent to the following
         # for ii in range(numElements):
-        #   for jj in range(numPoints):
-        #       result[ii, jj] = JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]
-        return np.einsum(
-            "epdf,pdn,ens->epsf", JacInv, NPrimeParam, nodeStates, optimize=["einsum_path", (1, 2), (0, 1)]
-        )
+        #     for jj in range(numPoints):
+        #         result[ii, jj] = (JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]).T
+        computeUPrimeProduct(JacInv, NPrimeParam, np.ascontiguousarray(nodeStates), UPrime)
+        return UPrime
 
 
 @guvectorize(
@@ -270,7 +287,9 @@ def computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
 
     Given the shape function derivatives at each point NPrimeParam (a numPoints x numDim x numNodes array), and the node
     coordinates at each element (a numElements x numNodes x numDim array), we want to compute:
-    NPrimeParam[jj] x nodeCoords[ii]
+
+    `NPrimeParam[jj] @ nodeCoords[ii]`
+
     For each element ii and parametric point jj, this function does this, but is vectorized by numba to make it fast.
 
     NOTE: It's very important to make sure that the arrays passed into this function are memory contiguous,
@@ -291,3 +310,38 @@ def computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
     for ii in range(numElements):
         for jj in range(numPoints):
             Jac[ii, jj] = NPrimeParam[jj] @ nodeCoords[ii]
+
+
+@guvectorize(
+    [(float64[:, :, :, ::1], float64[:, :, ::1], float64[:, :, ::1], float64[:, :, :, ::1])],
+    "(e,p,d,d),(p,d,n),(e,n,s)->(e,p,s,d)",
+    nopython=True,
+    cache=True,
+    fastmath=True,
+    boundscheck=False,
+)
+def computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
+    """This function computes a nasty product of 3 and 4d arrays that is required when computing state gradients at multiple points within multiple elements
+
+    Given the shape function derivatives in the parametric coordinates at each point, NPrimeParam (a numPoints x numDim x numNodes array), the inverses of the element mapping Jacobians at each point in each element, JacInv (a numElements x numPoints x numDim x numDim array) and the nodal state values for each element, nodeStates (a numElement x numNodes x numStates), we want to compute:
+
+    `UPrime[ii, jj] = (JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]).T`
+
+    For each element ii and parametric point jj, this function does this, but is vectorized by numba to make it fast.
+
+    Parameters
+    ----------
+    JacInv : numElements x numPoints x numDim x numDim
+        Inverse element mapping Jacobians at each point in each element
+    NPrimeParam : numPoints x numDim x numNodes array
+        Shape function gradients in the parametric coordinates at each point
+    nodeStates : numElements x numNodes x numStates array
+        Nodal state values for each element
+    result : numElements x numPoints x numStates x numDim array
+        The state gradient at each point in each element
+    """
+    numElements = JacInv.shape[0]
+    numPoints = JacInv.shape[1]
+    for ii in range(numElements):
+        for jj in range(numPoints):
+            result[ii, jj] = (JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]).T
