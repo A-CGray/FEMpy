@@ -36,6 +36,7 @@ nav:
     - Utilities:
         Linear Algebra: LinAlg/LinAlg.md
     - Contributing: DevelopmentGuide/DevelopmentGuide.md
+    - Theory: Theory/Theory.md
 markdown_extensions:
     - pymdownx.superfences
     - pymdownx.progressbar
