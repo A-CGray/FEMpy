@@ -13,22 +13,26 @@ that the user interfaces with to read in a mesh and setup a finite element model
 # Standard Python modules
 # ==============================================================================
 import os
-from typing import Optional, Callable
+from typing import Optional, Dict
+import copy
+import warnings
 
 # ==============================================================================
 # External Python modules
 # ==============================================================================
 import meshio
+import numpy as np
 
 # ==============================================================================
 # Extension modules
 # ==============================================================================
+from FEMpy import Elements
 
 
 class FEMpyModel(object):
     """_summary_
 
-    _extended_summary_
+    A FEMpy model uses
 
     Parameters
     ----------
@@ -40,7 +44,7 @@ class FEMpyModel(object):
     # Public methods
     # ==============================================================================
 
-    def __init__(self, meshFileName: str, elemCallback: Optional[Callable] = None) -> None:
+    def __init__(self, meshFileName: str, constitutiveModel, elementMap: Optional[Dict] = None) -> None:
         """Create a FEMpy model
 
         _extended_summary_
@@ -49,9 +53,13 @@ class FEMpyModel(object):
         ----------
         meshFileName : str
             Filename of the mesh file to load
-        elemCallback : function, optional
-            An element type callback function which should return a FEMpy element type given a meshio element type name,
-            if not supplied then the default FEMpy element type for each meshio element type will be used
+        constitutiveModel : FEMpy constitutive model object
+            Filename of the mesh file to load
+        elementMap : function, optional
+            A dictionary that maps from meshio element types to the FEMpy element types, the user can use this to
+            specify what type of elements FEMpy should use, if the map returns None then this element type is ignored
+            and not included in the model. If not supplied then the default FEMpy element type for each meshio element
+            type will be used.
         """
 
         # --- Save the mesh file name and extension ---
@@ -63,7 +71,7 @@ class FEMpyModel(object):
         self.numNodes = self.mesh.points.shape[0]
 
         # Extract mesh coordinates, detect whether the mesh is 1D, 2D or 3D and only keep the active dimensions
-        self.nodeCoords = self.mesh.points
+        self.nodeCoords = copy.deepcopy(self.mesh.points)
         self.activeDimensions = []
 
         # Keep track of the inactive coordinates so we can add them back in when writing output files
@@ -76,6 +84,73 @@ class FEMpyModel(object):
         self.nodeCoords = self.nodeCoords[:, self.activeDimensions]
         self.numDimensions = len(self.activeDimensions)
 
+        # --- Set the consitutive model ---
+        self.constitutiveModel = constitutiveModel
+        self.numStates = self.constitutiveModel.numStates
+
+        self.elementMap = {}
+        if elementMap is not None:
+            self.elementMap.update(elementMap)
+
+        # --- For each element type in the mesh, we need to assign a FEMpy element object ---
+        self.cells_dict = copy.deepcopy(self.mesh.cells_dict)
+        for elType in self.cells_dict:
+            elObject = self._getElementObject(elType)
+            if elObject is None:
+                warnings.warn(f"Element type {elType} is not supported by FEMpy and will be ignored")
+                del self.cells_dict[elType]
+            else:
+                self.cells_dict["FEMpy-Element"] = self._getElementObject(elType)
+
     # ==============================================================================
     # Private methods
     # ==============================================================================
+    def _getElementObject(self, meshioName):
+        """Given the meshio name for an element type return the corresponding FEMpy element object
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        meshioName : str
+            meshio element type name
+
+        Returns
+        -------
+        An instantiated FEMpy element object
+        """
+        elName = meshioName.lower()
+        elObject = None
+
+        # --- 2D Quad elements ---
+        if elName[:4] == "quad":
+            if elName == "quad":
+                elObject = Elements.QuadElement(order=1, numStates=self.numStates)
+            else:
+                numNodes = int(elName[4:])
+                if numNodes == 8:
+                    elObject = Elements.serendipityQuadElement(numStates=self.numStates)
+                else:
+                    # If the sqrt of the number of nodes is a whole number then this is a valid quad element
+                    order = np.sqrt(numNodes) - 1
+                    if int(order) == order:
+                        elObject = Elements.QuadElement(order=int(order), numStates=self.numStates)
+
+        # --- 2D Triangle elements ---
+        if elName == "triangle":
+            elObject = Elements.TriElement(order=1, numStates=self.numStates)
+        if elName == "triangle6":
+            elObject = Elements.TriElement(order=2, numStates=self.numStates)
+        if elName == "triangle10":
+            elObject = Elements.TriElement(order=3, numStates=self.numStates)
+
+        # --- 1D Line Elements ---
+        if elName[:4] == "line":
+            if elName == "line":
+                elObject = Elements.QuadElement(order=1, numStates=self.numStates)
+            else:
+                numNodes = int(elName[4:])
+                order = numNodes - 1
+                elObject = Elements.QuadElement(order=order, numStates=self.numStates)
+
+        return elObject
