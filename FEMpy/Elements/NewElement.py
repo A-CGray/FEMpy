@@ -17,7 +17,9 @@ import abc
 # External Python modules
 # ==============================================================================
 import numpy as np
-from numba import guvectorize, float64
+from numba import guvectorize, float64, njit
+from scipy.optimize import minimize, bounds, LinearConstraint
+from scipy.spatial.transform import Rotation
 
 
 # ==============================================================================
@@ -32,8 +34,8 @@ class Element:
     ## What do we need an element to do?:
     - Given nodal DOF, compute state at given parametric coordinates within the element `computeState`
     - Given nodal DOF, compute state gradients at given parametric coordinates within the element `computeStateGradients`
-    - Given nodal coordinates, compute coordinates at given parametric coordinates within the element
-    - Given real coordinates, find the parametric coordinates of the closes point on the element to that point
+    - Given nodal coordinates, compute coordinates at given parametric coordinates within the element `computeCoordinates`
+    - Given real coordinates, find the parametric coordinates of the closest point on the element to that point
     - Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element
     - Given a function that can depend on true coordinates, the state, state gradients and some design variables, integrate that function over the element
     - Given state and design variable values, and a constitutive model, compute a residual
@@ -62,6 +64,15 @@ class Element:
         self.numDOF = self.numNodes * self.numStates
         self.quadOrder = quadratureOrder
         self.name = f"{self.numNodes}Node-{self.numStates}Disp-{self.numDim}D-Element"
+
+        # --- Parametric coordinate bounds ---
+        # By default it is assumed that the parametric coordinates are in the range [-1, 1] in each dimension, for
+        # elements where this is not true (e.g a 2d triangular element), these attributes should be overwritten
+        self.paramCoordLowerBounds = -np.ones(self.numDim)
+        self.paramCoordUpperBounds = np.ones(self.numDim)
+        self.paramCoordLinearConstaintMat = None
+        self.paramCoordLinearConstaintUBounds = None
+        self.paramCoordLinearConstaintLBounds = None
 
         # --- Define fast jacobian determinant function based on number of dimensions ---
         if self.numDim == 1:
@@ -138,6 +149,19 @@ class Element:
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def getReferenceElementCoordinates(self):
+        """Get the node coordinates for the reference element, a.k.a the elementon which the shape functions are defined
+
+        _extended_summary_
+
+        Returns
+        -------
+        numNodes x numDim array
+            Element node coordinates
+        """
+        raise NotImplementedError
+
     # ==============================================================================
     # Implemented methods
     # ==============================================================================
@@ -177,7 +201,7 @@ class Element:
 
         return integratedValues
 
-    def computeState(self, paramCoords, nodeStates):
+    def computeStates(self, paramCoords, nodeStates):
         """Given nodal DOF, compute the state at given parametric coordinates within the element
 
         This function is vectorised both across multiple elements, and multiple points within each element,
@@ -185,7 +209,7 @@ class Element:
 
         Parameters
         ----------
-        paramCoords : numPoint x numState array
+        paramCoords : numPoint x numDim array
             Array of parametric point coordinates to compute state at
         nodeStates : numElements x numNodes x numStates array
             State values at the nodes of each element
@@ -204,7 +228,26 @@ class Element:
         #     product[ii] = N @ nodeStates[ii]
         return np.einsum("pn,ens->eps", N, nodeStates)
 
-    def computeJacobian(self, paramCoords, nodeCoords):
+    def computeCoordinates(self, paramCoords, nodeCoords):
+        """Given nodal coordinates, compute the real coordinates at given parametric coordinates within the element
+
+        Parameters
+        ----------
+        paramCoords : numPoint x numDim array
+            Array of parametric point coordinates to compute real coordinates of
+        nodeCoords : numElements x numNodes x numDim array
+            Node coordinates for each element
+        """
+        # Compute shape functions at the given parametric coordinates
+        N = self.computeShapeFunctions(paramCoords)
+
+        # Then for each element, compute the states at the points, the einsum below is equivalent to:
+        # product = np.zeros((numElements, numPoints, numStates))
+        # for ii in range(numElements):
+        #     product[ii] = N[:, : self.numNodes] @ nodeStates[ii]
+        return np.einsum("pn,ens->eps", N[:, : self.numNodes], nodeCoords)
+
+    def computeJacobians(self, paramCoords, nodeCoords):
         """Compute the Jacobian at a set of parametric coordinates within a set of elements
 
         This function is vectorised both across multiple elements, and multiple points within each element,
@@ -212,7 +255,7 @@ class Element:
 
         Parameters
         ----------
-        paramCoords : numPoint x numState array
+        paramCoords : numPoint x numDim array
             Array of parametric point coordinates to compute Jacobians at
         nodeCoords : numElements x numNodes x numDim array
             Node coordinates for each element
@@ -232,10 +275,10 @@ class Element:
         # for ii in range(numElements):
         #   for jj in range(numPoints):
         #     Jac[ii, jj] = NPrimeParam[jj] @ nodeCoords[ii]
-        computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac)
+        _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac)
         return Jac
 
-    def computeStateGradient(self, NPrimeParam, nodeStates, nodeCoords):
+    def computeStateGradients(self, NPrimeParam, nodeStates, nodeCoords):
         """Given nodal DOF, compute the gradient of the state at given parametric coordinates within the element
 
         The gradient of the state at each point in each element is a numStates x numDim array.
@@ -245,7 +288,7 @@ class Element:
 
         Parameters
         ----------
-        paramCoords : numPoint x numState array
+        paramCoords : numPoint x numDim array
             Array of parametric point coordinates to compute state at
         nodeStates : numElements x numNodes x numStates array
             State values at the nodes of each element
@@ -262,7 +305,7 @@ class Element:
         numElements = nodeCoords.shape[0]
         numPoints = NPrimeParam.shape[0]
         Jac = np.zeros((numElements, numPoints, self.numDim, self.numDim))
-        computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac)
+        _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac)
         JacInv = self.jacInv(np.reshape(Jac, (numElements * numPoints, self.numDim, self.numDim)))
         JacInv = np.reshape(JacInv, (numElements, numPoints, self.numDim, self.numDim))
         UPrime = np.zeros((numElements, numPoints, self.numStates, self.numDim))
@@ -270,8 +313,155 @@ class Element:
         # for ii in range(numElements):
         #     for jj in range(numPoints):
         #         result[ii, jj] = (JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]).T
-        computeUPrimeProduct(JacInv, NPrimeParam, np.ascontiguousarray(nodeStates), UPrime)
+        _computeUPrimeProduct(JacInv, NPrimeParam, np.ascontiguousarray(nodeStates), UPrime)
         return UPrime
+
+    # Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element
+
+    def computeResidual(self, nodeCoords, nodeStates, dvs, constitutiveModel):
+        """Compute the local residual for a series of elements
+
+        Parameters
+        ----------
+        nodeCoords : numElements x numNodes x numDim array
+            Node coordinates for each element
+        nodeStates : numElements x numNodes x numStates array
+            State values at the nodes of each element
+        dvs : numElements x numDVs array
+            Design variable values for each element
+        constitutiveModel : FEMpy constitutive model object
+            The constitutive model of the element
+
+        Returns
+        -------
+        numElement x (numNodes * numStates) array
+            The local residual for each element
+        """
+        return None
+
+    # - Given node coordinates and states, design variable values, and a constitutive model, compute a residual Jacobian
+    def computeJacobian(self, nodeCoords, nodeStates, dvs, constitutiveModel):
+        """Compute the local residual Jacobian (dR/dq) for a series of elements
+
+        Parameters
+        ----------
+        nodeCoords : numElements x numNodes x numDim array
+            Node coordinates for each element
+        nodeStates : numElements x numNodes x numStates array
+            State values at the nodes of each element
+        dvs : numElements x numDVs array
+            Design variable values for each element
+        constitutiveModel : FEMpy constitutive model object
+            The constitutive model of the element
+
+        Returns
+        -------
+        numElement x (numNodes * numStates) x (numNodes * numStates) array
+            The local jacobian for each element
+        """
+        return None
+
+    def getClosestPoints(self, nodeCoords, point):
+        """Given real coordinates of a point, find the parametric coordinates of the closest point on a series of
+        elements to that point
+
+        Computing the closest point is an optimization problem of the form:
+
+        min ||X(x) - P||^2
+
+        s.t Ax <= b
+            lb <= x <= ub
+
+        Where X are the real coordinates of a point in the element, x the parametric coordinates of that point, and P is
+        the target point. lb <= x <= ub and Ax <= b are a set of bounds and linear constraints on the parametric
+        coordinates that encode the bounds of the element.
+
+        Parameters
+        ----------
+        nodeCoords : numElements x numNodes x numDim array
+            The coordinates of the elements
+        point : array of length numDim
+            Target point coordinates
+
+        Returns
+        -------
+        closestParamCoords : numElements x numDim array
+            The parametric coordinates of the closest point in each element
+        closestDistances : numElements array
+            The distances from the closest point in each element to the target point
+        """
+        numElements = nodeCoords.shape[0]
+        closestDistances = np.zeros(numElements)
+        closestParamCoords = np.zeros((numElements, self.numDim))
+
+        paramCoordBounds = bounds(lb=self.paramCoordLowerBounds, ub=self.paramCoordUpperBounds)
+        if self.paramCoordLinearConstaintMatrix is not None:
+            paramCoordLinearConstraints = LinearConstraint(
+                self.paramCoordLinearConstaintMat,
+                self.paramCoordLinearConstaintLowerBounds,
+                self.paramCoordLinearConstaintUpperBounds,
+                keep_feasible=True,
+            )
+        else:
+            paramCoordLinearConstraints = None
+
+        for ii in range(numElements):
+            closestParamCoords[ii], closestDistances[ii] = self._getClosestPoint(
+                nodeCoords[ii], point, paramCoordBounds, paramCoordLinearConstraints
+            )
+
+        return closestParamCoords, closestDistances
+
+    def _getClosestPoint(self, nodeCoords, point, paramCoordBounds, paramCoordLinearConstraints):
+        nodeCoordCopy = np.zeros((1, self.numNodes, self.numDim))
+        nodeCoordCopy[0] = nodeCoords
+
+        def r(xParam):
+            xTrue = self.computeCoordinates(np.atleast_2d(xParam), nodeCoordCopy)
+            return np.linalg.norm(xTrue.flatten() - point)
+
+        def drdxParam(xParam):
+            xTrue = self.computeCoordinates(np.atleast_2d(xParam), nodeCoordCopy)
+            Jac = self.computeJacobians(np.atleast_2d(xParam), nodeCoordCopy)
+            return 2 * (xTrue.flatten() - point) @ Jac[0, 0].T
+
+        sol = minimize(
+            r,
+            np.zeros(self.numDim),
+            jac=drdxParam,
+            bounds=paramCoordBounds,
+            constraints=paramCoordLinearConstraints,
+            method="SLSQP",
+            tol=1e-10,
+        )
+
+        return sol.x, sol.fun
+
+    def getRandomElementCoordinates(self):
+        """Compute random node coordinates for an element
+
+        The random node coordinates are computed by taking the reference element coordinates and then applying:
+        - Random perturbations to each node
+        - Random translation in each dimension
+        - Random scalings in each dimension
+        - Random rotations around each available axis
+        """
+        rng = np.random.default_rng()
+        coords = self.getReferenceElementCoordinates()  # numNodes x numDim array
+
+        # Perturb coordinates by up to 10% of the maximum distance between any two nodes
+        maxDistance, _ = _computeMaxMinDistance(coords)
+        coords += rng.random(coords.shape) * 0.1 * maxDistance
+
+        # Scale each dimension by a random factor between 0.1 and 10
+        for dim in range(self.numDim):
+            scalingPower = rng.random() * 2 - 1
+            coords[:, dim] *= 10**scalingPower
+
+        # Rotate the element around each axis by a random angle
+        if self.numDim == 2:
+            R = Rotation.from_rotvec(np.array([0, 0, 1]) * rng.random() * 2 * np.pi)
+            coords = R.as_matrix()[:2, :2] @ coords
 
 
 @guvectorize(
@@ -282,7 +472,7 @@ class Element:
     fastmath=True,
     boundscheck=False,
 )
-def computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
+def _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
     """This function computes a nasty product of two 3d arrays that is required when computing element mapping Jacobians
 
     Given the shape function derivatives at each point NPrimeParam (a numPoints x numDim x numNodes array), and the node
@@ -320,7 +510,7 @@ def computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
     fastmath=True,
     boundscheck=False,
 )
-def computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
+def _computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
     """This function computes a nasty product of 3 and 4d arrays that is required when computing state gradients at multiple points within multiple elements
 
     Given the shape function derivatives in the parametric coordinates at each point, NPrimeParam (a numPoints x numDim x numNodes array), the inverses of the element mapping Jacobians at each point in each element, JacInv (a numElements x numPoints x numDim x numDim array) and the nodal state values for each element, nodeStates (a numElement x numNodes x numStates), we want to compute:
@@ -345,3 +535,30 @@ def computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
     for ii in range(numElements):
         for jj in range(numPoints):
             result[ii, jj] = (JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]).T
+
+
+@njit(cache=True, fastmath=True, boundscheck=False)
+def _computeMaxMinDistance(coords):
+    """Compute the maximum distance between any two points in a set of coordinates
+
+    Parameters
+    ----------
+    coords : numPoints x numDim array
+        The coordinates to compute the distances between
+
+    Returns
+    -------
+    maxDistance : float
+        The maximum distance between any two points in the set of coordinates
+    minDistance : float
+        The minimum distance between any two points in the set of coordinates
+    """
+    numPoints = coords.shape[0]
+    maxDistance = 0.0
+    minDistance = np.inf
+    for ii in range(numPoints):
+        for jj in range(ii + 1, numPoints):
+            distance = np.linalg.norm(coords[ii] - coords[jj])
+            maxDistance = max(maxDistance, distance)
+            maxDistance = max(maxDistance, distance)
+    return maxDistance, minDistance

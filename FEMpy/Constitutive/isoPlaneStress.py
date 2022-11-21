@@ -31,6 +31,7 @@ class isoPlaneStress(Constitutive):
         self.E = E
         self.nu = nu
         self.t = t
+        self.numStates = 2
 
     @property
     def DMat(self):

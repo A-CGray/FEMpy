@@ -13,7 +13,7 @@ that the user interfaces with to read in a mesh and setup a finite element model
 # Standard Python modules
 # ==============================================================================
 import os
-from typing import Optional, Dict
+from typing import Iterable, Union
 import copy
 import warnings
 
@@ -32,7 +32,15 @@ from FEMpy import Elements
 class FEMpyModel(object):
     """_summary_
 
-    A FEMpy model uses
+    A FEMpy model contains overall information about the finite element model, including but not limited to:
+    - The node coordinates
+    - The element-node associativity
+    - The constitutive model
+    - The constitutive model design variables
+
+    It also contains methods for:
+    - Setting/Getting node coordinates
+    - Setting/Getting design variable values
 
     Parameters
     ----------
@@ -44,7 +52,7 @@ class FEMpyModel(object):
     # Public methods
     # ==============================================================================
 
-    def __init__(self, meshFileName: str, constitutiveModel, elementMap: Optional[Dict] = None) -> None:
+    def __init__(self, meshFileName: str, constitutiveModel) -> None:
         """Create a FEMpy model
 
         _extended_summary_
@@ -88,19 +96,49 @@ class FEMpyModel(object):
         self.constitutiveModel = constitutiveModel
         self.numStates = self.constitutiveModel.numStates
 
-        self.elementMap = {}
-        if elementMap is not None:
-            self.elementMap.update(elementMap)
-
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
-        self.cells_dict = copy.deepcopy(self.mesh.cells_dict)
+        self.cells_dict = {}
         for elType in self.cells_dict:
             elObject = self._getElementObject(elType)
             if elObject is None:
                 warnings.warn(f"Element type {elType} is not supported by FEMpy and will be ignored")
-                del self.cells_dict[elType]
             else:
-                self.cells_dict["FEMpy-Element"] = self._getElementObject(elType)
+                self.cells_dict[elType] = copy.deepcopy(self.mesh.cells_dict[elType])
+                self.cells_dict[elType]["FEMpy-Element"] = self._getElementObject(elType)
+
+    def getCoordinates(self) -> np.ndarray:
+        """Get the current node coordinates
+
+        Returns
+        -------
+        numNodes x numDimensions array
+            Node coordinates
+        """
+        return np.copy(self.nodeCoords)
+
+    def addGlobalBC(
+        self, name, nodeInds: Iterable[int], dof: Union[int, Iterable[int]], values: Union[float, Iterable[float]]
+    ) -> None:
+        """Add a boundary condition that is applied to all problems
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        name : str
+            Name for this boundary condition
+        nodeInds : int or iterable of ints
+            Indicies of nodes to apply the boundary condition to
+        dof : int or iterable of ints
+            Degrees of freedom to apply this boundary condition to
+        values : float or iterable of floats
+            _description_
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
 
     # ==============================================================================
     # Private methods
