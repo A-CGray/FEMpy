@@ -37,13 +37,14 @@ constitutiveModel = fp.Constitutive.isoPlaneStress(E, nu, t)
 # ==============================================================================
 # Create the FEMpy model by loading in a mesh
 # ==============================================================================
-model = fp.FEMpyModel("../Meshes/LBracket.msh", constitutiveModel)
+options = {"outputDir": "ExampleOutput"}
+model = fp.FEMpyModel("../Meshes/LBracket.msh", constitutiveModel, options=options)
 
 # --- Define a boundary condition that will be applied in all problems, fixing the top edge of the bracket in x and y ---
 # For now I will just manually find the nodes that are on the top edge of the mesh, maybe we can add better functionality for doing things like this in future
 nodeCoords = model.getCoordinates()
 topEdgeNodeInds = np.argwhere(nodeCoords[:, 1] == np.max(nodeCoords[:, 1])).flatten()
-model.addGlobalFixedBC(name="Fixed", nodeInds=topEdgeNodeInds, dof=[0, 1], value=0.0)
+model.addGlobalFixedBC(name="Fixed", nodeInds=topEdgeNodeInds, dof=[0, 1], values=0.0)
 
 # ==============================================================================
 # Setup FEMpy problems

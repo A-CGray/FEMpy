@@ -57,6 +57,7 @@ setup(
     license="Apache License Version 2.0",
     packages=["FEMpy"],
     install_requires=[
+        "mdolab-baseclasses",
         "meshio",
         "numpy",
         "numba",

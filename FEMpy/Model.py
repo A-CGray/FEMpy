@@ -13,7 +13,7 @@ that the user interfaces with to read in a mesh and setup a finite element model
 # Standard Python modules
 # ==============================================================================
 import os
-from typing import Iterable, Union
+from typing import Iterable, Union, Optional
 import copy
 import warnings
 
@@ -22,14 +22,16 @@ import warnings
 # ==============================================================================
 import meshio
 import numpy as np
+from baseclasses.solvers import BaseSolver
 
 # ==============================================================================
 # Extension modules
 # ==============================================================================
 from FEMpy import Elements
+from FEMpy import __version__
 
 
-class FEMpyModel(object):
+class FEMpyModel(BaseSolver):
     """_summary_
 
     A FEMpy model contains overall information about the finite element model, including but not limited to:
@@ -41,21 +43,14 @@ class FEMpyModel(object):
     It also contains methods for:
     - Setting/Getting node coordinates
     - Setting/Getting design variable values
-
-    Parameters
-    ----------
-    object : _type_
-        _description_
     """
 
     # ==============================================================================
     # Public methods
     # ==============================================================================
 
-    def __init__(self, meshFileName: str, constitutiveModel) -> None:
+    def __init__(self, meshFileName: str, constitutiveModel, options: Optional[dict] = None) -> None:
         """Create a FEMpy model
-
-        _extended_summary_
 
         Parameters
         ----------
@@ -68,7 +63,17 @@ class FEMpyModel(object):
             specify what type of elements FEMpy should use, if the map returns None then this element type is ignored
             and not included in the model. If not supplied then the default FEMpy element type for each meshio element
             type will be used.
+        options : dict, optional
+            Dictionary of options to pass to the model, by default None, for a list of options see the documentation
         """
+
+        # --- Set solver options by getting the defaults and updating them with any that the user supplied ---
+        defaultOptions = self._getDefaultOptions()
+
+        # instantiate the solver
+        super().__init__("FEMpy", "FEA Solver", defaultOptions=defaultOptions, options=options)
+
+        self._printWelcomeMessage()
 
         # --- Save the mesh file name and extension ---
         self.meshFileName = meshFileName
@@ -137,9 +142,26 @@ class FEMpyModel(object):
         """
         return None
 
+    def addProblem(self, name):
+        """Add a problem to the model
+
+        Parameters
+        ----------
+        name : str
+            Name of the problem to add
+        """
+        return None
+
     # ==============================================================================
     # Private methods
     # ==============================================================================
+    @staticmethod
+    def _getDefaultOptions():
+        defaultOptions = {
+            "outputDir": [str, "./"],
+        }
+        return defaultOptions
+
     def _getElementObject(self, meshioName):
         """Given the meshio name for an element type return the corresponding FEMpy element object
 
@@ -189,3 +211,20 @@ class FEMpyModel(object):
                 elObject = Elements.QuadElement(order=order, numStates=self.numStates)
 
         return elObject
+
+    def _printWelcomeMessage(self) -> None:
+        """Print a welcome message to the console"""
+        self.pp("\nWelcome to")
+        self.pp(
+            """  ______ ______ __  __
+|  ____|  ____|  \/  |
+| |__  | |__  | \  / |_ __  _   _
+|  __| |  __| | |\/| | '_ \| | | |
+| |    | |____| |  | | |_) | |_| |
+|_|    |______|_|  |_| .__/ \__, |
+                    | |     __/ |
+                    |_|    |___/
+"""
+        )
+        self.pp("Version: " + __version__)
+        self.pp("")
