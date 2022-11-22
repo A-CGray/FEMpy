@@ -124,6 +124,24 @@ class FEMpyModel(BaseSolver):
         """
         return np.copy(self.nodeCoords)
 
+    def setCoordinates(self, nodeCoords: np.ndarray) -> None:
+        """Set the current node coordinates
+
+        Parameters
+        ----------
+        nodeCoords : numNodes x numDimensions array
+            Node coordinates
+        """
+        size = nodeCoords.shape[1]
+        if size == self.numDimensions:
+            return np.copy(nodeCoords)
+        if self.numDimensions != 3 and size == 3:
+            self.nodeCoords = nodeCoords[:, self.activeDimensions]
+        else:
+            raise ValueError(
+                f"Invalid number of coordinate dimensions, problem is {self.numDimensions}D but {size}D coordinates were supplied"
+            )
+
     def addGlobalFixedBC(
         self, name, nodeInds: Iterable[int], dof: Union[int, Iterable[int]], values: Union[float, Iterable[float]]
     ) -> None:
