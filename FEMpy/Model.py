@@ -106,6 +106,9 @@ class FEMpyModel(object):
                 self.cells_dict[elType] = copy.deepcopy(self.mesh.cells_dict[elType])
                 self.cells_dict[elType]["FEMpy-Element"] = self._getElementObject(elType)
 
+        # --- List for keeping track of all problems associated with this model ---
+        self.problems = []
+
     def getCoordinates(self) -> np.ndarray:
         """Get the current node coordinates
 
@@ -116,12 +119,10 @@ class FEMpyModel(object):
         """
         return np.copy(self.nodeCoords)
 
-    def addGlobalBC(
+    def addGlobalFixedBC(
         self, name, nodeInds: Iterable[int], dof: Union[int, Iterable[int]], values: Union[float, Iterable[float]]
     ) -> None:
-        """Add a boundary condition that is applied to all problems
-
-        _extended_summary_
+        """Add a boundary condition that is applied to all problems associated with this model
 
         Parameters
         ----------
@@ -132,13 +133,9 @@ class FEMpyModel(object):
         dof : int or iterable of ints
             Degrees of freedom to apply this boundary condition to
         values : float or iterable of floats
-            _description_
-
-        Returns
-        -------
-        _type_
-            _description_
+            Values to fix states at, if a single value is supplied then this value is applied to all specified degrees of freedom
         """
+        return None
 
     # ==============================================================================
     # Private methods
