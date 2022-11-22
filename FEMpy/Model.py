@@ -103,13 +103,17 @@ class FEMpyModel(BaseSolver):
 
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
         self.cells_dict = {}
-        for elType in self.cells_dict:
+        for elType in self.mesh.cells_dict:
             elObject = self._getElementObject(elType)
             if elObject is None:
                 warnings.warn(f"Element type {elType} is not supported by FEMpy and will be ignored")
             else:
-                self.cells_dict[elType] = copy.deepcopy(self.mesh.cells_dict[elType])
-                self.cells_dict[elType]["FEMpy-Element"] = self._getElementObject(elType)
+                self.cells_dict[elType] = {}
+                self.cells_dict[elType]["connectivity"] = copy.deepcopy(self.mesh.cells_dict[elType])
+                self.cells_dict[elType]["DOF"] = self.getDOF(self.cells_dict[elType]["connectivity"])
+                self.cells_dict[elType]["FEMpy-Element"] = elObject
+                self.cells_dict[elType]["numElements"] = self.cells_dict[elType]["connectivity"].shape[0]
+                self.cells_dict[elType]["numNodes"] = self.cells_dict[elType]["connectivity"].shape[1]
 
         # --- List for keeping track of all problems associated with this model ---
         self.problems = []
@@ -123,6 +127,23 @@ class FEMpyModel(BaseSolver):
             Node coordinates
         """
         return np.copy(self.nodeCoords)
+
+    def getDOF(self, index):
+        """Get the current node coordinates
+
+        Returns
+        -------
+        numNodes x numDimensions array
+            Node coordinates
+        """
+        index_dof = []
+        for i in range(len(index)):
+            index_dof.append([])
+            for j in range(len(index[i])):
+                ind = range(index[i][j] * self.numStates, (index[i][j] + 1) * (self.numStates))
+                index_dof[i] += list(ind)
+
+        return np.array(index_dof)
 
     def setCoordinates(self, nodeCoords: np.ndarray) -> None:
         """Set the current node coordinates
@@ -168,6 +189,41 @@ class FEMpyModel(BaseSolver):
         name : str
             Name of the problem to add
         """
+        return None
+
+    def assembleMatrix(self):
+        """Assemble the global residual Jacobian matrix for the problem (a.k.a the stiffness matrix)
+
+        - For each element type:
+            - Get the node coordinates, node states and design variable values for all elements of that type
+            - Compute the local matrix for all elements of that type
+            - Convert to COO row, col, value lists
+        - Combine the lists from all element types
+        - Apply boundary conditions
+        - Create sparse matrix from lists
+        """
+
+        # ==============================================================================
+        # Compute local matrices
+        # ==============================================================================
+        # MatRows = []
+        # MatColumns = []
+        # MatEntries = []
+        # RHSRows = []
+        # RHSEntries = []
+
+        for elementType, elementData in self.cells_dict.items():
+            # element = elementData["FEMpy-Element"]
+            numElements = elementData["numElements"]
+            numNodes = elementData["numNodes"]
+            nodeCoords = np.zeros((numElements, numNodes, self.numDimensions))
+            # nodeStates = np.zeros((numElements, numNodes, self.numStates))
+            for ii in range(numElements):
+                nodeInds = self.cells_dict[elementType]["connectivity"][ii]
+                nodeCoords[ii] = self.nodeCoords[nodeInds]
+
+            # localMats = element.computeJacobian(self, nodeCoords, nodeStates, dvs, self.constitutiveModel)
+
         return None
 
     # ==============================================================================
