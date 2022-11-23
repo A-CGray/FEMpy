@@ -174,7 +174,7 @@ class FEMpyModel(BaseSolver):
         """
         return None
 
-    def assembleMatrix(self, stateVector: np.ndarray) -> csc_array:
+    def assembleMatrix(self, stateVector: np.ndarray, applyBCs: Optional[bool] = True) -> csc_array:
         """Assemble the global residual Jacobian matrix for the problem (a.k.a the stiffness matrix)
 
         _extended_summary_
@@ -183,6 +183,8 @@ class FEMpyModel(BaseSolver):
         ----------
         stateVector : np.ndarray
             The current system states
+        applyBCs : bool, optional
+            Whether to modify the matrix to include the boundary conditions, by default True
 
         Returns
         -------
@@ -197,9 +199,6 @@ class FEMpyModel(BaseSolver):
         # - Apply boundary conditions
         # - Create sparse matrix from lists
 
-        # ==============================================================================
-        # Compute local matrices
-        # ==============================================================================
         # MatRows = []
         # MatColumns = []
         # MatEntries = []
@@ -222,6 +221,7 @@ class FEMpyModel(BaseSolver):
     # ==============================================================================
     @staticmethod
     def _getDefaultOptions():
+        """Return the default FEMpy model options"""
         defaultOptions = {
             "outputDir": [str, "./"],
         }

@@ -51,7 +51,7 @@ def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType
 
     numNodes = np.shape(nodeCoords)[0]
     numEl = np.shape(conn)[0]
-    numDisp = element.numDisp
+    numStates = element.numStates
 
     MatRows = []
     MatColumns = []
@@ -75,7 +75,7 @@ def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType
 
     for e in range(numEl):
         elNodes = conn[e]
-        elDOF = (np.array([numDisp * elNodes]).T + np.arange(numDisp)).flatten()
+        elDOF = (np.array([numStates * elNodes]).T + np.arange(numStates)).flatten()
         elNodeCoords = nodeCoords[elNodes]
 
         # --- Compute the local  matrix ---
@@ -126,9 +126,9 @@ def assembleMatrix(nodeCoords, conn, element, constitutive, knownStates, matType
     # ==============================================================================
     Mat = sp.coo_matrix(
         (MatEntries, (MatRows, MatColumns)),
-        shape=(numNodes * numDisp, numNodes * numDisp),
+        shape=(numNodes * numStates, numNodes * numStates),
     ).tocsr()
-    RHS = sp.coo_matrix((RHSEntries, (RHSRows, np.zeros_like(RHSRows))), shape=(numNodes * numDisp, 1)).tocsr()
+    RHS = sp.coo_matrix((RHSEntries, (RHSRows, np.zeros_like(RHSRows))), shape=(numNodes * numStates, 1)).tocsr()
 
     return Mat, RHS
 
@@ -144,7 +144,7 @@ def assembleTractions(
     knownStates,
 ):
     numNodes = np.shape(nodeCoords)[0]
-    numDisp = element.numDisp
+    numStates = element.numStates
 
     FRows = []
     FEntries = []
@@ -158,7 +158,7 @@ def assembleTractions(
     for i in range(len(tractElems)):
         e = tractElems[i]
         elNodes = conn[e]
-        elDOF = (np.array([numDisp * elNodes]).T + np.arange(numDisp)).flatten()
+        elDOF = (np.array([numStates * elNodes]).T + np.arange(numStates)).flatten()
         elNodeCoords = nodeCoords[elNodes]
         FLocal[:] = element.integrateTraction(tractFunc, elNodeCoords, ConList[i], edges=tractEdges[i], n=2).flatten()
 
@@ -167,13 +167,13 @@ def assembleTractions(
         FRows += elDOF[usefulDOF].tolist()
         FEntries += FLocal[usefulDOF].tolist()
 
-    return sparseVec(FEntries, FRows, numNodes * numDisp)
+    return sparseVec(FEntries, FRows, numNodes * numStates)
 
 
 def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownStates, n=2):
     numNodes = np.shape(nodeCoords)[0]
     numEl = np.shape(conn)[0]
-    numDisp = element.numDisp
+    numStates = element.numStates
 
     if isinstance(constitutive, Iterable):
         ConList = constitutive
@@ -185,7 +185,7 @@ def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownS
     FLocal = np.zeros(element.numDOF)
     for e in range(numEl):
         elNodes = conn[e]
-        elDOF = (np.array([numDisp * elNodes]).T + np.arange(numDisp)).flatten()
+        elDOF = (np.array([numStates * elNodes]).T + np.arange(numStates)).flatten()
         elNodeCoords = nodeCoords[elNodes]
         FLocal[:] = element.integrateBodyForce(forceFunc, elNodeCoords, ConList[e], n=n).flatten()
 
@@ -194,7 +194,7 @@ def assembleBodyForce(nodeCoords, conn, element, constitutive, forceFunc, knownS
         FRows += elDOF[usefulDOF].tolist()
         FEntries += FLocal[usefulDOF].tolist()
 
-    return sparseVec(FEntries, FRows, numNodes * numDisp)
+    return sparseVec(FEntries, FRows, numNodes * numStates)
 
 
 def computeStresses(Element, ParamCoords, constitutive, nodeCoords, Conn, nodalDisp):
