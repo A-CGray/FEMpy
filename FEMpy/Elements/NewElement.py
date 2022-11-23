@@ -165,41 +165,92 @@ class Element:
     # ==============================================================================
     # Implemented methods
     # ==============================================================================
-    def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
-        """Integrate a function over a set of elements
-
-        _extended_summary_
+    def computeResidual(self, nodeStates, nodeCoords, designVars, constitutiveModel, intOrder=None):
+        """Compute the local residual for a series of elements
 
         Parameters
         ----------
-        integrand : function
-            function to be integrated, should have the signature integrand(x, u, u', dvs)
         nodeCoords : numElements x numNodes x numDim array
-            Node coordinates for each element,
-        uNodes : NumElements x numDOF array
-            The nodal state values for each element
-        dvs : NumElements x numDV array
-            The design variable values for each element
-        intOrder : int, optional
-            The integration order to use, uses element default if not provided
+            Node coordinates for each element
+        nodeStates : numElements x numNodes x numStates array
+            State values at the nodes of each element
+        dvs : numElements x numDVs array
+            Design variable values for each element
+        constitutiveModel : FEMpy constitutive model object
+            The constitutive model of the element
+
+        Returns
+        -------
+        numElement x (numNodes * numStates) array
+            The local residual for each element
         """
+        numElements = nodeCoords.shape[0]
+        nodeCoords = np.ascontiguousarray(nodeCoords)
+        # - Get integration point parametric coordinates and weights (same for all elements of same type)
         intOrder = self.defaultIntOrder if intOrder is None else intOrder
         intPointWeights = self.getIntPointWeights(intOrder)  # NumElements x numIntPoints
         intPointParamCoords = self.getPointParamCoords(intOrder)  # NumElements x numIntPoints x numDim
+        numIntPoints = len(intPointWeights)
 
-        intPointRealCoords = self.getRealCoord(intPointParamCoords, nodeCoords)  # NumElements x numIntPoints x numDim
-        intPointu = self.getU(intPointParamCoords, nodeCoords, uNodes)  # NumElements x numIntPoints x numStates
-        intPointuPrime = self.getUPrime(
-            intPointParamCoords, nodeCoords, uNodes
-        )  # NumElements x numIntPoints x numStates x numDim
-        integrandValues = integrand(intPointRealCoords, intPointu, intPointuPrime, dvs)
-        intPointDetJ = self.jacDet(self.getJacobian(intPointParamCoords, nodeCoords))  # NumElements x numIntPoints
+        # - Get shape functions N (du/dq) and their gradients in parametric coordinates at integration points
+        # (same for all elements of same type)
+        N = self.computeShapeFunctions(intPointParamCoords)  # numIntPoints x numNodes
+        NPrimeParam = self.computeShapeFunctionGradients(intPointParamCoords)  # numIntPoints x numDim x numNodes
 
-        # Integrate over each element by computing the sum of the integrand values from each integration point, weight
-        # by the integration point weights and the determinant of the jacobian
-        integratedValues = np.tensordot(integrandValues, intPointWeights * intPointDetJ, axes=([1], [0]))
+        # - Compute real coordinates at integration points (different for each element)
+        self._interpolationProduct(N[:, : self.numDim], nodeCoords)  # numElements x numIntPoints x numDim
 
-        return integratedValues
+        # - Compute states at integration points (different for each element)
+        self._interpolationProduct(N, nodeStates)  # numElements x numIntPoints x numStates
+
+        # - Compute Jacobians, their inverses, and their determinants at integration points (different for each element)
+        Jacs = np.zeros(numElements, numIntPoints, self.numDim, self.numDim)
+        _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jacs)
+        # JacInvs = self.jacInv(Jacs)
+        # JacDets = self.jacDet(Jacs)
+
+        # - Compute du'/dq at integration points (different for each element)
+
+        # - Compute u' at integration points (different for each element)
+        # - Compute function f(x_real, dvs, u, u') at integration points (different for each constitutive model)
+        # - Compute r = du'/dq^T * f
+        # - Compute R, weighted sum of r * detJ over each set of integration points
+
+    # def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
+    #     """Integrate a function over a set of elements
+
+    #     _extended_summary_
+
+    #     Parameters
+    #     ----------
+    #     integrand : function
+    #         function to be integrated, should have the signature integrand(x, u, u', dvs)
+    #     nodeCoords : numElements x numNodes x numDim array
+    #         Node coordinates for each element,
+    #     uNodes : NumElements x numDOF array
+    #         The nodal state values for each element
+    #     dvs : NumElements x numDV array
+    #         The design variable values for each element
+    #     intOrder : int, optional
+    #         The integration order to use, uses element default if not provided
+    #     """
+    #     intOrder = self.defaultIntOrder if intOrder is None else intOrder
+    #     intPointWeights = self.getIntPointWeights(intOrder)  # NumElements x numIntPoints
+    #     intPointParamCoords = self.getPointParamCoords(intOrder)  # NumElements x numIntPoints x numDim
+
+    #     intPointRealCoords = self.getRealCoord(intPointParamCoords, nodeCoords)  # NumElements x numIntPoints x numDim
+    #     intPointu = self.getU(intPointParamCoords, nodeCoords, uNodes)  # NumElements x numIntPoints x numStates
+    #     intPointuPrime = self.getUPrime(
+    #         intPointParamCoords, nodeCoords, uNodes
+    #     )  # NumElements x numIntPoints x numStates x numDim
+    #     integrandValues = integrand(intPointRealCoords, intPointu, intPointuPrime, dvs)
+    #     intPointDetJ = self.jacDet(self.getJacobian(intPointParamCoords, nodeCoords))  # NumElements x numIntPoints
+
+    #     # Integrate over each element by computing the sum of the integrand values from each integration point, weight
+    #     # by the integration point weights and the determinant of the jacobian
+    #     integratedValues = np.tensordot(integrandValues, intPointWeights * intPointDetJ, axes=([1], [0]))
+
+    #     return integratedValues
 
     def computeStates(self, paramCoords, nodeStates):
         """Given nodal DOF, compute the state at given parametric coordinates within the element
@@ -226,7 +277,7 @@ class Element:
         # product = np.zeros((numElements, numPoints, numStates))
         # for ii in range(numElements):
         #     product[ii] = N @ nodeStates[ii]
-        return np.einsum("pn,ens->eps", N, nodeStates)
+        return self._interpolationProduct(N, nodeStates)
 
     def computeCoordinates(self, paramCoords, nodeCoords):
         """Given nodal coordinates, compute the real coordinates at given parametric coordinates within the element
@@ -245,7 +296,7 @@ class Element:
         # product = np.zeros((numElements, numPoints, numStates))
         # for ii in range(numElements):
         #     product[ii] = N[:, : self.numNodes] @ nodeStates[ii]
-        return np.einsum("pn,ens->eps", N[:, : self.numNodes], nodeCoords)
+        return self._interpolationProduct(N[:, : self.numNodes], nodeCoords)
 
     def computeJacobians(self, paramCoords, nodeCoords):
         """Compute the Jacobian at a set of parametric coordinates within a set of elements
@@ -317,27 +368,6 @@ class Element:
         return UPrime
 
     # Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element
-
-    def computeResidual(self, nodeCoords, nodeStates, dvs, constitutiveModel):
-        """Compute the local residual for a series of elements
-
-        Parameters
-        ----------
-        nodeCoords : numElements x numNodes x numDim array
-            Node coordinates for each element
-        nodeStates : numElements x numNodes x numStates array
-            State values at the nodes of each element
-        dvs : numElements x numDVs array
-            Design variable values for each element
-        constitutiveModel : FEMpy constitutive model object
-            The constitutive model of the element
-
-        Returns
-        -------
-        numElement x (numNodes * numStates) array
-            The local residual for each element
-        """
-        return None
 
     # - Given node coordinates and states, design variable values, and a constitutive model, compute a residual Jacobian
     def computeJacobian(self, nodeCoords, nodeStates, dvs, constitutiveModel):
@@ -462,6 +492,28 @@ class Element:
         if self.numDim == 2:
             R = Rotation.from_rotvec(np.array([0, 0, 1]) * rng.random() * 2 * np.pi)
             coords = R.as_matrix()[:2, :2] @ coords
+
+    @staticmethod
+    def _interpolationProduct(N, nodeValues):
+        """Compute the product of the interpolation matrix and a set of node values
+
+        Parameters
+        ----------
+        N : numPoints x numNodes array
+            Shape function values at each point
+        nodeValues : numElements x numNodes x numValues array
+            Nodal values for each element
+
+        Returns
+        -------
+        numElements x numPoints x numStates array
+            Interpolated values for each element
+        """
+        # the einsum below is equivalent to:
+        # product = np.zeros((numElements, numPoints, numStates))
+        # for ii in range(numElements):
+        #     product[ii] = N @ nodeStates[ii]
+        return np.einsum("pn,ens->eps", N, nodeValues)
 
 
 @guvectorize(

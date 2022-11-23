@@ -118,6 +118,42 @@ class FEMpyModel(BaseSolver):
         # --- List for keeping track of all problems associated with this model ---
         self.problems = []
 
+    def createOutputData(self, nodeValues, elementValues):
+        """Create the meshio data structure for writing out results
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        nodeValues : dictionary
+            {"Temperature": array(one value per node), "Pressure": array()}
+        elementValues : _type_
+            {"elementType1":{"VariableName1": array(one value per element), "VariableName2": array()},
+            "elementType2":{"VariableName1": array(one value per element), "VariableName2": array()}}
+
+        Returns
+        -------
+        meshio mesh object
+            Mesh object containing the results
+        """
+
+        if nodeValues:  # if dictionary is not empty
+            point_data = nodeValues
+
+        # {'square': {'A': [0.1, 0.2, [0.3]], 'B': [0.1, 0.2, [0.3]]}, 'triangle': {'A': [0.3], 'B': [0.3]}}
+        if elementValues:  # if dictionary is not empty
+            cell_data = {}
+            for elType in elementValues:
+                for varName in elementValues[elType]:
+                    if varName in cell_data:
+                        cell_data[varName].append(elementValues[elType][varName])
+                    else:
+                        cell_data[varName] = [elementValues[elType][varName]]
+
+        outputMesh = meshio.Mesh(self.mesh.points, self.mesh.cells, point_data, cell_data)
+
+        return outputMesh
+
     def getCoordinates(self) -> np.ndarray:
         """Get the current node coordinates
 
@@ -213,6 +249,8 @@ class FEMpyModel(BaseSolver):
                 nodeCoords[ii] = self.nodeCoords[nodeInds]
 
             # localMats = element.computeJacobian(self, nodeCoords, nodeStates, dvs, self.constitutiveModel)
+
+        # assemble local matrices into global matrix
 
         return None
 
