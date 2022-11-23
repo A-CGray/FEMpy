@@ -23,18 +23,19 @@ import numpy as np
 # ==============================================================================
 
 
-def applyBCsToMatrix(self, rows, cols, values, bcDOF, bcValues):
+def applyBCsToMatrix(rows, cols, values, bcDOF):
     """Given the COO data for a sparse matrix, modify the data to apply a set of fixed state boundary conditions
 
     In the original matrix, the ith row of the linear system looks something like:
 
-        ``[A_i1, ..., A_ii, ..., A_in] @ [u_1, ..., u_i, ..., u_n].T = [b_i]``
+        ``[A_i1, ..., A_ii, ..., A_in] @ [du_1, ..., du_i, ..., du_n].T = [b_i]``
 
     To enforce the boundary condition ``u_i = c``, we alter the ith row of the matrix to represent this equation:
 
-        ``[0, ..., 1, ..., 0] @ [u_1, ..., u_i, ..., u_n].T = [c]``
+        ``[0, ..., 1, ..., 0] @ [du_1, ..., du_i, ..., du_n].T = [c - u_i]``
 
-    This function modifies the supplied row, column and value arrays in-place, so returns nothing
+    This function performs the modification of the matrix data, the modification of the right hand side vector is
+    performed by the function :func:`applyBCsToVector`.
 
     Parameters
     ----------
@@ -46,33 +47,58 @@ def applyBCsToMatrix(self, rows, cols, values, bcDOF, bcValues):
         Values of the matrix entries
     bcDOF : array of int
         Degrees of freedom to apply boundary conditions to
-    bcValues : array of float
-        Values to fix degrees of freedom at
     """
     # TODO: Implement this
-    return None
+    appendIndx = np.array([], dtype=np.int64)
+    for i in bcDOF:
+        indices = np.where(rows == i)[0]
+        appendIndx = np.append(appendIndx, indices)
+
+    rows = np.delete(rows, appendIndx)
+    cols = np.delete(cols, appendIndx)
+    values = np.delete(values, appendIndx)
+
+    rows = np.append(rows, bcDOF)
+    cols = np.append(cols, bcDOF)
+    oneVec = np.ones(len(bcDOF))
+    values = np.append(values, oneVec)
+
+    return rows, cols, values
 
 
-def applyBCsToVector(self, vector, state, bcDOF, bcValues):
-    """_summary_
+def applyBCsToVector(vector, state, bcDOF, bcValues):
+    """Given the current state and RHS vectors, modify the data to apply a set of fixed state boundary conditions
 
-    _extended_summary_
+    Take a linear system that we are solving to find an update in the state: K @ du = b
+    In this system of equation, the ith row looks something like:
+
+        ``[A_i1, ..., A_ii, ..., A_in] @ [du_1, ..., du_i, ..., du_n].T = [b_i]``
+
+    To enforce the boundary condition ``u_i = c``, we alter the ith row of the matrix like this:
+
+        ``[0, ..., 1, ..., 0] @ [du_1, ..., du_i, ..., du_n].T = [c - u_i]``
+
+    This function performs the modification of the RHS vector, the modification of the matrix data is performed by the
+    function :func:`applyBCsToMatrix`.
 
     Parameters
     ----------
-    rows : _type_
-        _description_
-    values : _type_
-        _description_
-    bcDOF : _type_
-        _description_
-    bcValues : _type_
-        _description_
+    vector : numpy array
+        Vector to apply boundary conditions to
+    state : numpy array
+        The current state vector
+    bcDOF : array of int
+        Degrees of freedom to apply boundary conditions to
+    vector : numpy array
+        Vector to apply boundary conditions to
+    bcValues : array of float
+        Values to fix degrees of freedom at
     """
-    return None
+    vector[bcDOF] = bcValues - state[bcDOF]
+    return vector
 
 
-def convertBCDictToLists(bcDict, numStates):
+def convertBCDictToLists(bcDict):
     """Convert a dictionary of boundary conditions to lists of DOF and values
 
     The boundary condition dictionary stores boundary conditions in this form::
@@ -110,6 +136,9 @@ def convertBCDictToLists(bcDict, numStates):
     bcDOF = []
     bcValues = []
     # TODO: Implement this
+    for key in bcDict:
+        bcDOF += bcDict[key]["DOF"]
+        bcValues += bcDict[key]["Value"]
     return bcDOF, bcValues
 
 
@@ -160,3 +189,22 @@ def localMatricesToCOOArrays(localMats, localDOF):
     values = values[nonzeroEntries]
 
     return rows, cols, values
+
+
+if __name__ == "__main__":
+
+    rows = np.array([0, 0, 1, 2], dtype=np.int64)
+    cols = np.array([1, 2, 2, 0], dtype=np.int64)
+    values = np.array([1, 0.5, 2, 3])
+    bcDOF = np.array([1, 2], dtype=np.int64)
+    bcValues = np.array([10, 15])
+    rows, cols, values = applyBCsToMatrix(rows, cols, values, bcDOF)
+    print(rows, cols, values)
+
+    BCDict = {
+        "BC1Name": {"DOF": [0, 1, 2], "Value": [0, 0, 0]},
+        "BC2Name": {"DOF": [13, 46, 1385], "Value": [1.0, 1.0, -1.0]},
+        "BC3Name": {"DOF": [837, 25], "Value": [1.0, 1.0]},
+    }
+    bcDOF, bcValues = convertBCDictToLists(BCDict)
+    print(bcDOF, bcValues)
