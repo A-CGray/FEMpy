@@ -23,6 +23,7 @@ import warnings
 import meshio
 import numpy as np
 from baseclasses.solvers import BaseSolver
+from scipy.sparse import csc_array  # ,coo_array
 
 # ==============================================================================
 # Extension modules
@@ -102,18 +103,17 @@ class FEMpyModel(BaseSolver):
         self.numStates = self.constitutiveModel.numStates
 
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
-        self.cells_dict = {}
+        self.elements = {}
         for elType in self.mesh.cells_dict:
             elObject = self._getElementObject(elType)
             if elObject is None:
                 warnings.warn(f"Element type {elType} is not supported by FEMpy and will be ignored")
             else:
-                self.cells_dict[elType] = {}
-                self.cells_dict[elType]["connectivity"] = copy.deepcopy(self.mesh.cells_dict[elType])
-                self.cells_dict[elType]["DOF"] = self.getDOF(self.cells_dict[elType]["connectivity"])
-                self.cells_dict[elType]["FEMpy-Element"] = elObject
-                self.cells_dict[elType]["numElements"] = self.cells_dict[elType]["connectivity"].shape[0]
-                self.cells_dict[elType]["numNodes"] = self.cells_dict[elType]["connectivity"].shape[1]
+                self.elements[elType] = {}
+                self.elements[elType]["connectivity"] = copy.deepcopy(self.mesh.cells_dict[elType])
+                self.elements[elType]["DOF"] = self._getDOFfromNodeInds(self.elements[elType]["connectivity"])
+                self.elements[elType]["elementObject"] = elObject
+                self.elements[elType]["numElements"] = self.elements[elType]["connectivity"].shape[0]
 
         # --- List for keeping track of all problems associated with this model ---
         self.problems = []
@@ -127,23 +127,6 @@ class FEMpyModel(BaseSolver):
             Node coordinates
         """
         return np.copy(self.nodeCoords)
-
-    def getDOF(self, index):
-        """Get the current node coordinates
-
-        Returns
-        -------
-        numNodes x numDimensions array
-            Node coordinates
-        """
-        index_dof = []
-        for i in range(len(index)):
-            index_dof.append([])
-            for j in range(len(index[i])):
-                ind = range(index[i][j] * self.numStates, (index[i][j] + 1) * (self.numStates))
-                index_dof[i] += list(ind)
-
-        return np.array(index_dof)
 
     def setCoordinates(self, nodeCoords: np.ndarray) -> None:
         """Set the current node coordinates
@@ -191,17 +174,28 @@ class FEMpyModel(BaseSolver):
         """
         return None
 
-    def assembleMatrix(self):
+    def assembleMatrix(self, stateVector: np.ndarray) -> csc_array:
         """Assemble the global residual Jacobian matrix for the problem (a.k.a the stiffness matrix)
 
-        - For each element type:
-            - Get the node coordinates, node states and design variable values for all elements of that type
-            - Compute the local matrix for all elements of that type
-            - Convert to COO row, col, value lists
-        - Combine the lists from all element types
-        - Apply boundary conditions
-        - Create sparse matrix from lists
-        """
+        _extended_summary_
+
+        Parameters
+        ----------
+        stateVector : np.ndarray
+            The current system states
+
+        Returns
+        -------
+        scipy csc_array
+            The residual Jacobian
+        """ """"""
+        # - For each element type:
+        #     - Get the node coordinates, node states and design variable values for all elements of that type
+        #     - Compute the local matrix for all elements of that type
+        #     - Convert to COO row, col, value lists
+        # - Combine the lists from all element types
+        # - Apply boundary conditions
+        # - Create sparse matrix from lists
 
         # ==============================================================================
         # Compute local matrices
@@ -209,17 +203,14 @@ class FEMpyModel(BaseSolver):
         # MatRows = []
         # MatColumns = []
         # MatEntries = []
-        # RHSRows = []
-        # RHSEntries = []
 
-        for elementType, elementData in self.cells_dict.items():
-            # element = elementData["FEMpy-Element"]
+        for elementType, elementData in self.elements.items():
+            element = elementData["elementObject"]
             numElements = elementData["numElements"]
-            numNodes = elementData["numNodes"]
-            nodeCoords = np.zeros((numElements, numNodes, self.numDimensions))
+            nodeCoords = np.zeros((numElements, element.numNodes, self.numDimensions))
             # nodeStates = np.zeros((numElements, numNodes, self.numStates))
             for ii in range(numElements):
-                nodeInds = self.cells_dict[elementType]["connectivity"][ii]
+                nodeInds = self.elements[elementType]["connectivity"][ii]
                 nodeCoords[ii] = self.nodeCoords[nodeInds]
 
             # localMats = element.computeJacobian(self, nodeCoords, nodeStates, dvs, self.constitutiveModel)
@@ -285,6 +276,28 @@ class FEMpyModel(BaseSolver):
                 elObject = Elements.QuadElement(order=order, numStates=self.numStates)
 
         return elObject
+
+    def _getDOFfromNodeInds(self, index):
+        """Convert an array of node indices to an array of DOF indices
+
+        Parameters
+        ----------
+        index : numpy array of ints
+            array of node indices
+
+        Returns
+        -------
+        numpy array of ints
+            array of DOF indices
+        """
+        index_dof = []
+        for i in range(len(index)):
+            index_dof.append([])
+            for j in range(len(index[i])):
+                ind = range(index[i][j] * self.numStates, (index[i][j] + 1) * (self.numStates))
+                index_dof[i] += list(ind)
+
+        return np.array(index_dof)
 
     def _printWelcomeMessage(self) -> None:
         """Print a welcome message to the console"""
