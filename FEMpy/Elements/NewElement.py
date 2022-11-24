@@ -186,14 +186,13 @@ class Element:
         intOrder = self.defaultIntOrder if intOrder is None else intOrder
         intPointWeights = self.getIntPointWeights(intOrder)  # NumElements x numIntPoints
         intPointParamCoords = self.getPointParamCoords(intOrder)  # NumElements x numIntPoints x numDim
+        intPointN = None  # NumPoints x numNodes
+        intPointNPrimeParam = None  # NumPoints x numDim x numNodes
 
-        intPointRealCoords = self.getRealCoord(intPointParamCoords, nodeCoords)  # NumElements x numIntPoints x numDim
-        intPointu = self.getU(intPointParamCoords, nodeCoords, uNodes)  # NumElements x numIntPoints x numStates
-        intPointuPrime = self.getUPrime(
-            intPointParamCoords, nodeCoords, uNodes
-        )  # NumElements x numIntPoints x numStates x numDim
+        intPointRealCoords = None  # NumElements x numIntPoints x numDim
+        intPointu = None  # NumElements x numIntPoints x numStates
+        intPointuPrime = None  # NumElements x numIntPoints x numStates x numDim
         integrandValues = integrand(intPointRealCoords, intPointu, intPointuPrime, dvs)
-        intPointDetJ = self.jacDet(self.getJacobian(intPointParamCoords, nodeCoords))  # NumElements x numIntPoints
 
         # Integrate over each element by computing the sum of the integrand values from each integration point, weight
         # by the integration point weights and the determinant of the jacobian
@@ -453,6 +452,11 @@ class Element:
         maxDistance, _ = _computeMaxMinDistance(coords)
         coords += rng.random(coords.shape) * 0.1 * maxDistance
 
+        # Apply random translation
+        for ii in range(self.numDim):
+            translation = rng.random() * 2 * maxDistance - maxDistance
+            coords[:, ii] += translation
+
         # Scale each dimension by a random factor between 0.1 and 10
         for dim in range(self.numDim):
             scalingPower = rng.random() * 2 - 1
@@ -462,6 +466,11 @@ class Element:
         if self.numDim == 2:
             R = Rotation.from_rotvec(np.array([0, 0, 1]) * rng.random() * 2 * np.pi)
             coords = R.as_matrix()[:2, :2] @ coords
+        elif self.numDim == 3:
+            R = Rotation.random(random_state=rng)
+            coords = R.as_matrix() @ coords
+
+        return coords
 
 
 @guvectorize(
