@@ -118,7 +118,7 @@ class FEMpyModel(BaseSolver):
         # --- List for keeping track of all problems associated with this model ---
         self.problems = []
 
-    def createOutputData(self, nodeValues, elementValues):
+    def createOutputData(self, nodeValues={}, elementValues={}):
         """Create the meshio data structure for writing out results
 
         _extended_summary_
@@ -137,20 +137,17 @@ class FEMpyModel(BaseSolver):
             Mesh object containing the results
         """
 
-        if nodeValues:  # if dictionary is not empty
-            point_data = nodeValues
-
-        # {'square': {'A': [0.1, 0.2, [0.3]], 'B': [0.1, 0.2, [0.3]]}, 'triangle': {'A': [0.3], 'B': [0.3]}}
+        cellData = {}
         if elementValues:  # if dictionary is not empty
-            cell_data = {}
             for elType in elementValues:
                 for varName in elementValues[elType]:
-                    if varName in cell_data:
-                        cell_data[varName].append(elementValues[elType][varName])
+                    if varName in cellData:
+                        cellData[varName].append(elementValues[elType][varName])
                     else:
-                        cell_data[varName] = [elementValues[elType][varName]]
+                        cellData[varName] = [elementValues[elType][varName]]
 
-        outputMesh = meshio.Mesh(self.mesh.points, self.mesh.cells, point_data, cell_data)
+        outputMesh = meshio.Mesh(self.mesh.points, self.mesh.cells, point_data=nodeValues, cell_data=cellData)
+        # outputMesh.write(outputFilename) # write output mesh to file
 
         return outputMesh
 
