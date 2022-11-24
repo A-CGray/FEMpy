@@ -1,6 +1,7 @@
 # Gauss quadrature pkl files
 Gauss*.pkl
 
+
 # Profiling files
 *.prof
 
@@ -142,3 +143,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+**.autosave.ipe

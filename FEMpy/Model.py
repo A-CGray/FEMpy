@@ -23,6 +23,7 @@ import warnings
 import meshio
 import numpy as np
 from baseclasses.solvers import BaseSolver
+from scipy.sparse import csc_array  # ,coo_array
 
 # ==============================================================================
 # Extension modules
@@ -102,17 +103,53 @@ class FEMpyModel(BaseSolver):
         self.numStates = self.constitutiveModel.numStates
 
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
-        self.cells_dict = {}
-        for elType in self.cells_dict:
+        self.elements = {}
+        for elType in self.mesh.cells_dict:
             elObject = self._getElementObject(elType)
             if elObject is None:
                 warnings.warn(f"Element type {elType} is not supported by FEMpy and will be ignored")
             else:
-                self.cells_dict[elType] = copy.deepcopy(self.mesh.cells_dict[elType])
-                self.cells_dict[elType]["FEMpy-Element"] = self._getElementObject(elType)
+                self.elements[elType] = {}
+                self.elements[elType]["connectivity"] = copy.deepcopy(self.mesh.cells_dict[elType])
+                self.elements[elType]["DOF"] = self._getDOFfromNodeInds(self.elements[elType]["connectivity"])
+                self.elements[elType]["elementObject"] = elObject
+                self.elements[elType]["numElements"] = self.elements[elType]["connectivity"].shape[0]
 
         # --- List for keeping track of all problems associated with this model ---
         self.problems = []
+
+    def createOutputData(self, nodeValues={}, elementValues={}):
+        """Create the meshio data structure for writing out results
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        nodeValues : dictionary
+            {"Temperature": array(one value per node), "Pressure": array()}
+        elementValues : _type_
+            {"elementType1":{"VariableName1": array(one value per element), "VariableName2": array()},
+            "elementType2":{"VariableName1": array(one value per element), "VariableName2": array()}}
+
+        Returns
+        -------
+        meshio mesh object
+            Mesh object containing the results
+        """
+
+        cellData = {}
+        if elementValues:  # if dictionary is not empty
+            for elType in elementValues:
+                for varName in elementValues[elType]:
+                    if varName in cellData:
+                        cellData[varName].append(elementValues[elType][varName])
+                    else:
+                        cellData[varName] = [elementValues[elType][varName]]
+
+        outputMesh = meshio.Mesh(self.mesh.points, self.mesh.cells, point_data=nodeValues, cell_data=cellData)
+        # outputMesh.write(outputFilename) # write output mesh to file
+
+        return outputMesh
 
     def getCoordinates(self) -> np.ndarray:
         """Get the current node coordinates
@@ -170,11 +207,56 @@ class FEMpyModel(BaseSolver):
         """
         return None
 
+    def assembleMatrix(self, stateVector: np.ndarray, applyBCs: Optional[bool] = True) -> csc_array:
+        """Assemble the global residual Jacobian matrix for the problem (a.k.a the stiffness matrix)
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        stateVector : np.ndarray
+            The current system states
+        applyBCs : bool, optional
+            Whether to modify the matrix to include the boundary conditions, by default True
+
+        Returns
+        -------
+        scipy csc_array
+            The residual Jacobian
+        """ """"""
+        # - For each element type:
+        #     - Get the node coordinates, node states and design variable values for all elements of that type
+        #     - Compute the local matrix for all elements of that type
+        #     - Convert to COO row, col, value lists
+        # - Combine the lists from all element types
+        # - Apply boundary conditions
+        # - Create sparse matrix from lists
+
+        # MatRows = []
+        # MatColumns = []
+        # MatEntries = []
+
+        for elementType, elementData in self.elements.items():
+            element = elementData["elementObject"]
+            numElements = elementData["numElements"]
+            nodeCoords = np.zeros((numElements, element.numNodes, self.numDimensions))
+            # nodeStates = np.zeros((numElements, numNodes, self.numStates))
+            for ii in range(numElements):
+                nodeInds = self.elements[elementType]["connectivity"][ii]
+                nodeCoords[ii] = self.nodeCoords[nodeInds]
+
+            # localMats = element.computeJacobian(self, nodeCoords, nodeStates, dvs, self.constitutiveModel)
+
+        # assemble local matrices into global matrix
+
+        return None
+
     # ==============================================================================
     # Private methods
     # ==============================================================================
     @staticmethod
     def _getDefaultOptions():
+        """Return the default FEMpy model options"""
         defaultOptions = {
             "outputDir": [str, "./"],
         }
@@ -229,6 +311,28 @@ class FEMpyModel(BaseSolver):
                 elObject = Elements.QuadElement(order=order, numStates=self.numStates)
 
         return elObject
+
+    def _getDOFfromNodeInds(self, index):
+        """Convert an array of node indices to an array of DOF indices
+
+        Parameters
+        ----------
+        index : numpy array of ints
+            array of node indices
+
+        Returns
+        -------
+        numpy array of ints
+            array of DOF indices
+        """
+        index_dof = []
+        for i in range(len(index)):
+            index_dof.append([])
+            for j in range(len(index[i])):
+                ind = range(index[i][j] * self.numStates, (index[i][j] + 1) * (self.numStates))
+                index_dof[i] += list(ind)
+
+        return np.array(index_dof)
 
     def _printWelcomeMessage(self) -> None:
         """Print a welcome message to the console"""

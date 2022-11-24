@@ -61,7 +61,7 @@ setup(
         "meshio",
         "numpy",
         "numba",
-        "scipy",
+        "scipy>=1.8.0",
         "pyComposite @ git+https://github.com/A-Gray-94/pyComposite.git",
     ],
     extras_require={
