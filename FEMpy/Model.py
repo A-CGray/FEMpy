@@ -97,12 +97,17 @@ class FEMpyModel(BaseSolver):
                 self.activeDimensions.append(ii)
             else:
                 self.inactiveDimensions.append(ii)
+
+        if self.numDimensions != len(self.activeDimensions):
+            raise ValueError(
+                f"You have chosen a {self.numDimensions}D constitutive model model but the mesh is {len(self.activeDimensions)}D"
+            )
+
         self.nodeCoords = self.nodeCoords[:, self.activeDimensions]
-        self.numDimensions = len(self.activeDimensions)
 
         # --- Set the consitutive model ---
         self.constitutiveModel = constitutiveModel
-        self.numStates = self.constitutiveModel.numStates
+        self.numDOFs = self.numNodes * self.numStates
 
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
         self.elements = {}
@@ -117,8 +122,31 @@ class FEMpyModel(BaseSolver):
                 self.elements[elType]["elementObject"] = elObject
                 self.elements[elType]["numElements"] = self.elements[elType]["connectivity"].shape[0]
 
+                # --- Store dersign variable values for each element set ---
+                # The constitutive model has a certain number of design variables, each of which has a name, we store
+                # the values of the design variables for each element set in a dictionary with the design variable name
+                # as the key and the values as a numElements array
+                self.elements[elType]["DVs"] = {}
+
+                for dvName in self.constitutiveModel.designVariables:
+                    defaultVal = self.constitutiveModel.designVariables[dvName]["defaultValue"]
+                    self.elements[elType]["DVs"][dvName] = defaultVal * np.ones(self.elements[elType]["numElements"])
+
         # --- List for keeping track of all problems associated with this model ---
         self.problems = []
+
+        # --- Dictionary of global boundary conditions ---
+        self.BCDict = {}
+
+    @property
+    def numDimensions(self):
+        """Number of active dimensions in the model"""
+        return self.constitutiveModel.numDimensions
+
+    @property
+    def numStates(self):
+        """Number of states in the model"""
+        return self.constitutiveModel.numStates
 
     def createOutputData(self, nodeValues={}, elementValues={}):
         """Create the meshio data structure for writing out results
@@ -138,30 +166,57 @@ class FEMpyModel(BaseSolver):
         meshio mesh object
             Mesh object containing the results
         """
+        if nodeValues:  # if dictionary is not empty
+            for varName in nodeValues:
+                # check arrays are correct length
+                assert (
+                    nodeValues[varName].shape[0] == self.numNodes
+                ), f"nodeValues array for variable {varName} must be length of number of nodes"
 
         cellData = {}
         if elementValues:  # if dictionary is not empty
             for elType in elementValues:
                 for varName in elementValues[elType]:
+                    # first, check arrays are the correct length
+                    assert (
+                        elementValues[elType][varName].shape[0] == self.elements[elType]["numElements"]
+                    ), f"elementValues array of element type {elType} for variable {varName} must be length number of {elType} elements"
+
+                    # store values in meshio element data format
                     if varName in cellData:
                         cellData[varName].append(elementValues[elType][varName])
                     else:
                         cellData[varName] = [elementValues[elType][varName]]
 
-        outputMesh = meshio.Mesh(self.mesh.points, self.mesh.cells, point_data=nodeValues, cell_data=cellData)
-        # outputMesh.write(outputFilename) # write output mesh to file
-
+        outputMesh = meshio.Mesh(
+            self.getCoordinates(force3D=True), self.mesh.cells, point_data=nodeValues, cell_data=cellData
+        )
         return outputMesh
 
-    def getCoordinates(self) -> np.ndarray:
+    # Element.computeFunction(paramCoordinates, nodeCoordinates, nodeStates, elementDVs, function, elementReductionType)
+    # problem.computeFunction(name="", elementReductionType, globalReductionType)
+    # constitutiveModel.computeFunction(name="", other inputs)
+
+    def getCoordinates(self, force3D: Optional[bool] = False) -> np.ndarray:
         """Get the current node coordinates
+
+        Parameters
+        ----------
+        force3D : bool, optional
+            If True then 3D coordinates will be returned, even if the model is 1D or 2D, by default False
 
         Returns
         -------
         numNodes x numDimensions array
             Node coordinates
         """
-        return np.copy(self.nodeCoords)
+        currentCoords = np.copy(self.nodeCoords)
+        if not force3D or self.numDimensions == 3:
+            return currentCoords
+        else:
+            coords = np.zeros((self.numNodes, 3))
+            coords[:, self.activeDimensions] = currentCoords
+            return coords
 
     def setCoordinates(self, nodeCoords: np.ndarray) -> None:
         """Set the current node coordinates

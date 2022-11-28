@@ -172,6 +172,41 @@ class Element:
     # ==============================================================================
     # Implemented methods
     # ==============================================================================
+    def computeFunction(self, nodeCoords, nodeStates, elementDVs, function, elementReductionType):
+        """Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        nodeCoords : numElements x numNodes x numDim array
+            Node coordinates for each element
+        nodeStates : numElements x numNodes x numStates array
+            State values at the nodes of each element
+        dvs : numElements x numDVs array
+            Design variable values for each element
+        function : callable
+            Function to evaluate at each point within each element, must have signature f(x, u, u', dvs), where:
+                x is an n x numDim array of coordinates
+                u is an n x numStates array of state values
+                u' is an n x (numStates*numDim) array of state gradients
+                dvs is an n x numDVs array of design variable values
+        elementReductionType : _type_
+            Type of reduction to do to get a single value for each element, can be:
+                - 'sum' : sum all values
+                - 'mean' : average all values
+                - `integrate` : integrate the function over the element
+                - 'max' : take the maximum value
+                - 'min' : take the minimum value
+                - 'ksmax' : Compute a smooth approximation of the maximum value using KS aggregation
+                - 'ksmin' : Compute a smooth approximation of the minimum value using KS aggregation
+
+        Returns
+        -------
+        values : numElements array
+            Value of the function for each element
+        """
+
     def computeResidual(self, nodeStates, nodeCoords, designVars, constitutiveModel, intOrder=None):
         """Compute the local residual for a series of elements
 
@@ -214,7 +249,7 @@ class Element:
         Jacs = np.zeros(numElements, numIntPoints, self.numDim, self.numDim)
         _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jacs)
         JacInvs = self.jacInv(Jacs)
-        JacDets = self.jacDet(Jacs)
+        # JacDets = self.jacDet(Jacs)
 
         # - Compute du'/dq at integration points (different for each element)
         dUPrimedq = np.zeros(numElements, numIntPoints, self.numDim, self.numNodes)
