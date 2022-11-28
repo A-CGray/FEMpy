@@ -5,19 +5,103 @@ Gauss Quadrature Points and Weights
 @File    :   guassQuad.py
 @Date    :   2021/03/10
 @Author  :   Alasdair Christison Gray
-@Description : This file contains the coordinates and weights (to far too many decimal places) for numerical integration
-on the domain (-1, 1) using Gauss Quadrature. Weights and coordinates are given to 256 decimal places for up to 64 point
-integration which can integrate up to 127th order polynomials exactly. These values were taken from:
-
-https://pomax.github.io/bezierinfo/legendre-gauss.html
-
-To use these values include `from guassQuad import getGaussPoints, getgaussWeights` in your code and then use
-`getGaussPoints(n)`, `getGaussPoints(n)` to get lists of the points and weights for n-point integration.
+@Description : Methods for computing Gauss Quadrature points and weights
 """
 
 import numpy as np
 import pickle
 import os
+from functools import lru_cache
+
+
+@lru_cache(maxsize=None)
+def getGaussQuadWeights(numDimensions, order):
+    """Compute arbitrary order Gauss Quadrature weights in up to 3 dimensions
+
+    Parameters
+    ----------
+    numDimensions : int
+        Number of dimensions to compute weights for
+    order : int
+        Order of the quadrature rule
+
+    Returns
+    -------
+    np.array of length order ** numDimensions
+        Gauss quadrature weights
+
+    Raises
+    ------
+    ValueError
+        If requested number of dimensions is not supported
+    """
+    W, _ = _getGaussQuad1dData(order)
+    if numDimensions == 1:
+        return W
+    elif numDimensions >= 2:
+        W1 = np.repeat(W, order)  # Rows
+        W2 = np.tile(W, order)  # Columns
+        if numDimensions == 2:
+            return W1 * W2
+        elif numDimensions == 3:
+            W1 = np.tile(W1, order)
+            W2 = np.tile(W2, order)
+            W3 = np.repeat(W, order**2)  # 3rd dimension
+            return W1 * W2 * W3
+        else:
+            raise ValueError(
+                f"Gauss quadrature weights only computable for 1, 2 or 3 dimensions, you asked for {numDimensions} dimensions"
+            )
+
+
+@lru_cache(maxsize=None)
+def getGaussQuadPoints(numDimensions, order):
+    """Compute arbitrary order Gauss Quadrature point coordinates in up to 3 dimensions
+
+    Parameters
+    ----------
+    numDimensions : int
+        Number of dimensions to compute points for
+    order : int
+        Order of the quadrature rule
+
+    Returns
+    -------
+    (order ** numDimensions) x numDimensions np.array
+        Gauss quadrature point coordinates
+
+    Raises
+    ------
+    ValueError
+        If requested number of dimensions is not supported
+    """
+    _, points = _getGaussQuad1dData(order)
+    if numDimensions == 1:
+        return points
+    elif numDimensions >= 2:
+        X = np.repeat(points, order)  # Rows
+        Y = np.tile(points, order)  # Columns
+        if numDimensions == 2:
+            return np.vstack((X, Y)).T
+        elif numDimensions == 3:
+            X = np.tile(X, order)
+            Y = np.tile(Y, order)
+            Z = np.repeat(points, order**2)  # 3rd dimension
+            return np.vstack((X, Y, Z)).T
+        else:
+            raise ValueError(
+                f"Gauss quadrature weights only computable for 1, 2 or 3 dimensions, you asked for {numDimensions} dimensions"
+            )
+
+
+@lru_cache(maxsize=None)
+def _getGaussQuad1dData(order):
+    return np.polynomial.legendre.leggauss(order)
+
+
+# ==============================================================================
+# EVERYTHING BELOW HERE SHOULD BE DELETED ONCE NEW FEMPY IS COMPLETE
+# ==============================================================================
 
 # --- Load the Gauss quadrature weights and coordinates ---
 dataDir = os.path.dirname(os.path.abspath(__file__))

@@ -70,6 +70,8 @@ class FEMpyModel(BaseSolver):
 
         # --- Set solver options by getting the defaults and updating them with any that the user supplied ---
         defaultOptions = self._getDefaultOptions()
+        if options is None:
+            options = {}
 
         # instantiate the solver
         super().__init__("FEMpy", "FEA Solver", defaultOptions=defaultOptions, options=options)

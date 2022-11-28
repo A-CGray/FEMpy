@@ -1,2 +1,2 @@
 from .KSAgg import *
-import AssemblyUtils
+from . import AssemblyUtils

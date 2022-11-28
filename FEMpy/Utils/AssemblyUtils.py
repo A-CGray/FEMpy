@@ -48,7 +48,6 @@ def applyBCsToMatrix(rows, cols, values, bcDOF):
     bcDOF : array of int
         Degrees of freedom to apply boundary conditions to
     """
-    # TODO: Implement this
     appendIndx = np.array([], dtype=np.int64)
     for i in bcDOF:
         indices = np.where(rows == i)[0]
@@ -135,7 +134,6 @@ def convertBCDictToLists(bcDict):
     """
     bcDOF = []
     bcValues = []
-    # TODO: Implement this
     for key in bcDict:
         bcDOF += bcDict[key]["DOF"]
         bcValues += bcDict[key]["Value"]

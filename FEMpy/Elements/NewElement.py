@@ -18,7 +18,7 @@ import abc
 # ==============================================================================
 import numpy as np
 from numba import guvectorize, float64, njit
-from scipy.optimize import minimize, bounds, LinearConstraint
+from scipy.optimize import minimize, Bounds, LinearConstraint
 from scipy.spatial.transform import Rotation
 
 
@@ -121,39 +121,46 @@ class Element:
 
         Returns
         -------
-        NGrad: numPoint x numNodes x numDim array
-            Shape function gradient values, NGrad[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
-            parametric coordinate
+        NPrimeParam: numPoint x numDim x numNodes array
+            Shape function gradient values, NPrimeParam[i][j][k] is the derivative of the kth shape function at the ith point w.r.t the jth parametric coordinate
         """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def getIntegrationPointWeights(self, order):
+    def getIntegrationPointWeights(self, order=None):
         """Compute the integration point weights for a given quadrature order on this element
 
         Parameters
         ----------
-        order : int
+        order : int, optional
             Integration order
+
+        Returns
+        -------
+        array of length numIntpoint
+            Integration point weights
         """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def getIntegrationPointCoords(self, order):
+    def getIntegrationPointCoords(self, order=None):
         """Compute the integration point parameteric coordinates for a given quadrature order on this element
 
         Parameters
         ----------
-        order : int
+        order : int, optional
             Integration order
+
+        Returns
+        -------
+        numIntpoint x numDim array
+            Integration point coordinates
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def getReferenceElementCoordinates(self):
-        """Get the node coordinates for the reference element, a.k.a the elementon which the shape functions are defined
-
-        _extended_summary_
+        """Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined
 
         Returns
         -------
@@ -206,10 +213,12 @@ class Element:
         # - Compute Jacobians, their inverses, and their determinants at integration points (different for each element)
         Jacs = np.zeros(numElements, numIntPoints, self.numDim, self.numDim)
         _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jacs)
-        # JacInvs = self.jacInv(Jacs)
-        # JacDets = self.jacDet(Jacs)
+        JacInvs = self.jacInv(Jacs)
+        JacDets = self.jacDet(Jacs)
 
         # - Compute du'/dq at integration points (different for each element)
+        dUPrimedq = np.zeros(numElements, numIntPoints, self.numDim, self.numNodes)
+        _computeDUPrimeDqProduct(JacInvs, NPrimeParam, dUPrimedq)
 
         # - Compute u' at integration points (different for each element)
         # - Compute function f(x_real, dvs, u, u') at integration points (different for each constitutive model)
@@ -329,7 +338,7 @@ class Element:
         _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac)
         return Jac
 
-    def computeStateGradients(self, NPrimeParam, nodeStates, nodeCoords):
+    def computeStateGradients(self, paramCoords, nodeStates, nodeCoords):
         """Given nodal DOF, compute the gradient of the state at given parametric coordinates within the element
 
         The gradient of the state at each point in each element is a numStates x numDim array.
@@ -354,7 +363,8 @@ class Element:
         # u' = J^-1 * NPrimeParam * q
 
         numElements = nodeCoords.shape[0]
-        numPoints = NPrimeParam.shape[0]
+        numPoints = paramCoords.shape[0]
+        NPrimeParam = self.computeShapeFunctionGradients(paramCoords)
         Jac = np.zeros((numElements, numPoints, self.numDim, self.numDim))
         _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac)
         JacInv = self.jacInv(np.reshape(Jac, (numElements * numPoints, self.numDim, self.numDim)))
@@ -391,7 +401,7 @@ class Element:
         """
         return None
 
-    def getClosestPoints(self, nodeCoords, point):
+    def getClosestPoints(self, nodeCoords, point, **kwargs):
         """Given real coordinates of a point, find the parametric coordinates of the closest point on a series of
         elements to that point
 
@@ -424,8 +434,8 @@ class Element:
         closestDistances = np.zeros(numElements)
         closestParamCoords = np.zeros((numElements, self.numDim))
 
-        paramCoordBounds = bounds(lb=self.paramCoordLowerBounds, ub=self.paramCoordUpperBounds)
-        if self.paramCoordLinearConstaintMatrix is not None:
+        paramCoordBounds = Bounds(lb=self.paramCoordLowerBounds, ub=self.paramCoordUpperBounds)
+        if self.paramCoordLinearConstaintMat is not None:
             paramCoordLinearConstraints = LinearConstraint(
                 self.paramCoordLinearConstaintMat,
                 self.paramCoordLinearConstaintLowerBounds,
@@ -437,33 +447,43 @@ class Element:
 
         for ii in range(numElements):
             closestParamCoords[ii], closestDistances[ii] = self._getClosestPoint(
-                nodeCoords[ii], point, paramCoordBounds, paramCoordLinearConstraints
+                nodeCoords[ii], point, paramCoordBounds, paramCoordLinearConstraints, **kwargs
             )
 
         return closestParamCoords, closestDistances
 
-    def _getClosestPoint(self, nodeCoords, point, paramCoordBounds, paramCoordLinearConstraints):
+    def _getClosestPoint(self, nodeCoords, point, paramCoordBounds, paramCoordLinearConstraints, **kwargs):
         nodeCoordCopy = np.zeros((1, self.numNodes, self.numDim))
         nodeCoordCopy[0] = nodeCoords
 
         def r(xParam):
-            xTrue = self.computeCoordinates(np.atleast_2d(xParam), nodeCoordCopy)
-            return np.linalg.norm(xTrue.flatten() - point)
+            xTrue = self.computeCoordinates(np.atleast_2d(xParam), nodeCoordCopy).flatten()
+            print(f"{xParam=}, {xTrue=}, {point=}")
+            return np.linalg.norm(xTrue - point)
 
         def drdxParam(xParam):
-            xTrue = self.computeCoordinates(np.atleast_2d(xParam), nodeCoordCopy)
+            xTrue = self.computeCoordinates(np.atleast_2d(xParam), nodeCoordCopy).flatten()
             Jac = self.computeJacobians(np.atleast_2d(xParam), nodeCoordCopy)
-            return 2 * (xTrue.flatten() - point) @ Jac[0, 0].T
+            return 2 * (xTrue - point) @ Jac[0, 0].T
 
-        sol = minimize(
-            r,
-            np.zeros(self.numDim),
-            jac=drdxParam,
-            bounds=paramCoordBounds,
-            constraints=paramCoordLinearConstraints,
-            method="SLSQP",
-            tol=1e-10,
-        )
+        if "tol" not in kwargs:
+            kwargs["tol"] = 1e-10
+
+        maxAttempts = 10
+        closestPointFound = False
+        for _ in range(maxAttempts):
+            sol = minimize(
+                r,
+                np.random.rand(self.numDim),
+                jac=drdxParam,
+                bounds=paramCoordBounds,
+                constraints=paramCoordLinearConstraints,
+                method="trust-constr",
+                **kwargs,
+            )
+            closestPointFound = sol.success
+            if closestPointFound:
+                break
 
         return sol.x, sol.fun
 
@@ -495,11 +515,14 @@ class Element:
 
         # Rotate the element around each axis by a random angle
         if self.numDim == 2:
-            R = Rotation.from_rotvec(np.array([0, 0, 1]) * rng.random() * 2 * np.pi)
-            coords = R.as_matrix()[:2, :2] @ coords
+            angle = rng.random() * 2 * np.pi
+            print(f"{angle=}")
+            c, s = np.cos(angle), np.sin(angle)
+            R = np.array(((c, s), (-s, c)))
+            coords = coords @ R.T
         elif self.numDim == 3:
             R = Rotation.random(random_state=rng)
-            coords = R.as_matrix() @ coords
+            coords = coords @ R.as_matrix().T
 
         return coords
 
@@ -524,6 +547,124 @@ class Element:
         # for ii in range(numElements):
         #     product[ii] = N @ nodeStates[ii]
         return np.einsum("pn,ens->eps", N, nodeValues)
+
+    # ==============================================================================
+    # Testing methods
+    # ==============================================================================
+
+    def getRandParamCoord(self, n):
+        """Get a random set of parametric coordinates within the element
+
+        By default this method assumes the the valid parametric coordinates are between -1 and 1 in each direction. If this is not the case for a particular element then that element should reimplemnt this method.
+
+        Parameters
+        ----------
+        n : int
+            Number of points to generate
+        """
+        return np.random.rand(n, self.numDim) * 2 - 1
+
+    def testShapeFunctionDerivatives(self, n=10):
+        """Test the implementation of the shape function derivatives using the complex-step method
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of random coordinates to generate, by default 10
+        """
+        paramCoords = self.getRandParamCoord(n)
+        coordPert = np.zeros_like(paramCoords, dtype="complex128")
+        dN = self.computeShapeFunctionGradients(paramCoords)
+        dNApprox = np.zeros_like(dN)
+        for i in range(self.numDim):
+            np.copyto(coordPert, paramCoords)
+            coordPert[:, i] += 1e-200 * 1j
+            dNApprox[:, i, :] = 1e200 * np.imag(self.computeShapeFunctions(coordPert))
+        return dN - dNApprox
+
+    def testShapeFunctionSum(self, n=10):
+        """Test the basic property that shape function values should sum to 1 everywhere within an element
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of points to test at, by default 10
+        """
+        paramCoords = self.getRandParamCoord(n)
+        N = self.computeShapeFunctions(paramCoords)
+        return np.sum(N, axis=1)
+
+    def testIdentityJacobian(self, n=10):
+        """Validate that, when the element geometry matches the reference element exactly, the mapping Jacobian is the identity matrix everywhere.
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of points to test at, by default 10
+        """
+        nodeCoords = np.zeros((1, self.numNodes, self.numDim))
+        nodeCoords[0] = self.getReferenceElementCoordinates()
+        paramCoords = self.getRandParamCoord(n)
+
+        # The expected Jacobians are a stack of n identity matrices
+        expectedJacs = np.tile(np.eye(self.numDim), (1, n, 1, 1))
+        Jacs = self.computeJacobians(paramCoords, nodeCoords)
+        return Jacs - expectedJacs
+
+    def testStateGradient(self, n=10):
+        """Test that the state gradient is correctly reconstructed within the element
+
+        This test works by generating random node coordinates, then computing the states at each node using the
+        following equation:
+
+        u_i = a_i * x + b_i * y + c_i * z + d_i
+
+        This field has a gradient, du/dx, of [a_i, b_i, c_i] everywhere in the element, which should be exactly reproduced by
+        the state gradient computed by the element.
+
+        Parameters
+        ----------
+        n : int, optional
+            _description_, by default 10
+        """
+        nodeCoords = np.zeros((1, self.numNodes, self.numDim))
+        nodeCoords[0] = self.getRandomElementCoordinates()
+        paramCoords = self.getRandParamCoord(n)
+
+        randStateGradient = np.random.rand(self.numStates, self.numDim)
+        ExpectedStateGradients = np.tile(
+            randStateGradient, (1, n, 1, 1)
+        )  # np.ones((1, n, self.numStates, self.numDim))
+
+        nodeStates = np.zeros((1, self.numNodes, self.numStates))
+        for ii in range(self.numNodes):
+            for jj in range(self.numStates):
+                nodeStates[:, ii, jj] = np.dot(nodeCoords[0, ii], randStateGradient[jj])
+
+        stateGradient = self.computeStateGradients(paramCoords, nodeStates, nodeCoords)
+
+        return stateGradient - ExpectedStateGradients
+
+    def testGetClosestPoints(self, n=10, tol=1e-10):
+        """Test the getClosestPoints method
+
+        This test works by generating a set of random parametric coordinates, converting them to real coordinates, and
+        then checking that the parametric coordinates returned by getClosestPoints match the original random values.
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of random coordinates to generate, by default 10
+        """
+        nodeCoords = np.zeros((1, self.numNodes, self.numDim))
+        nodeCoords[0] = self.getRandomElementCoordinates()
+        paramCoords = self.getRandParamCoord(n)
+        realCoords = self.computeCoordinates(paramCoords, nodeCoords)
+        error = np.zeros_like(realCoords)
+        for i in range(n):
+            coords, _ = self.getClosestPoints(nodeCoords, realCoords[0, i], tol=tol)
+            error[0, i] = coords - paramCoords[i]
+        return error
 
 
 @guvectorize(
@@ -573,9 +714,12 @@ def _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
     boundscheck=False,
 )
 def _computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
-    """This function computes a nasty product of 3 and 4d arrays that is required when computing state gradients at multiple points within multiple elements
+    """Compute the nasty product of 3 and 4d arrays required when computing state gradients at multiple points within multiple elements
 
-    Given the shape function derivatives in the parametric coordinates at each point, NPrimeParam (a numPoints x numDim x numNodes array), the inverses of the element mapping Jacobians at each point in each element, JacInv (a numElements x numPoints x numDim x numDim array) and the nodal state values for each element, nodeStates (a numElement x numNodes x numStates), we want to compute:
+    Given the shape function derivatives in the parametric coordinates at each point, NPrimeParam (a numPoints x numDim
+    x numNodes array), the inverses of the element mapping Jacobians at each point in each element, JacInv
+    (a numElements x numPoints x numDim x numDim array) and the nodal state values for each element, nodeStates
+    (a numElement x numNodes x numStates), we want to compute:
 
     `UPrime[ii, jj] = (JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]).T`
 
@@ -597,6 +741,35 @@ def _computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
     for ii in range(numElements):
         for jj in range(numPoints):
             result[ii, jj] = (JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]).T
+
+
+@guvectorize(
+    [(float64[:, :, :, ::1], float64[:, :, ::1], float64[:, :, :, ::1])],
+    "(e,p,d,d),(p,d,n)->(e,p,d,n)",
+    nopython=True,
+    cache=True,
+    fastmath=True,
+    boundscheck=False,
+)
+def _computeDUPrimeDqProduct(JacInv, NPrimeParam, result):
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    JacInv : numElements x numPoints x numDim x numDim
+        Inverse element mapping Jacobians at each point in each element
+    NPrimeParam : numPoints x numDim x numNodes array
+        Shape function gradients in the parametric coordinates at each point
+    result : numElements x numPoints x numDim x numNodes array
+        result[i, j, k, l] contains the sensitvity of du/dx_k at the jth point in the ith element to the state at the lth node
+    """
+    numElements = JacInv.shape[0]
+    numPoints = JacInv.shape[1]
+    for ii in range(numElements):
+        for jj in range(numPoints):
+            result[ii, jj] = JacInv[ii, jj] @ NPrimeParam[jj]
 
 
 @njit(cache=True, fastmath=True, boundscheck=False)
