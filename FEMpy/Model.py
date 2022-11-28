@@ -170,8 +170,10 @@ class FEMpyModel(BaseSolver):
             for varName in nodeValues:
                 # check arrays are correct length
                 assert (
-                    nodeValues[varName].shape[0] == self.numNodes
-                ), f"nodeValues array for variable {varName} must be length of number of nodes"
+                    nodeValues[varName].shape[0]
+                    == self.numNodes
+                    # len(nodeValues[varName]) == self.numNodes # if values are stored as python list
+                ), f"nodeValues array for variable '{varName}' must be length of number of nodes"
 
         cellData = {}
         if elementValues:  # if dictionary is not empty
@@ -179,8 +181,10 @@ class FEMpyModel(BaseSolver):
                 for varName in elementValues[elType]:
                     # first, check arrays are the correct length
                     assert (
-                        elementValues[elType][varName].shape[0] == self.elements[elType]["numElements"]
-                    ), f"elementValues array of element type {elType} for variable {varName} must be length number of {elType} elements"
+                        elementValues[elType][varName].shape[0]
+                        == self.elements[elType]["numElements"]
+                        # len(elementValues[elType][varName]) == self.elements[elType]["numElements"] # if values are stored as list
+                    ), f"elementValues array of element type '{elType}' for variable '{varName}' must be length number of '{elType}' elements"
 
                     # store values in meshio element data format
                     if varName in cellData:
