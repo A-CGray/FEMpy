@@ -140,6 +140,34 @@ def convertBCDictToLists(bcDict):
     return bcDOF, bcValues
 
 
+def convertLoadsDictToVector(loadsDict, numDOF: int):
+    """Convert a dictionary of loads to a global load vector
+
+    The loads dictionary stores loads in this form::
+
+        loadsDict = {
+            "Load1Name": {"DOF": [0, 1, 2], "Value": [0, 0, 0]},
+            "Load2Name": {"DOF": [13, 46, 1385], "Value": [1.0, 1.0, -1.0]},
+            "Load3Name": {"DOF": [837, 25], "Value": [1.0, 1.0]},
+        }
+
+
+    Parameters
+    ----------
+    loadsDict : dict
+        Dictionary of loads
+
+    Returns
+    -------
+    loads : array of float
+        global load vector, with loads applied to the correct DOF
+    """
+    loadForce = np.zeros(numDOF)
+    for key in loadsDict:
+        loadForce[loadsDict[key]["DOF"]] += loadsDict[key]["Value"]
+    return loadForce
+
+
 @njit(cache=True)
 def localMatricesToCOOArrays(localMats, localDOF):
     """Convert a set of local matrices for a set of elements to COO format data for a global matrix
@@ -189,6 +217,22 @@ def localMatricesToCOOArrays(localMats, localDOF):
     return rows, cols, values
 
 
+@njit(cache=True)
+def scatterLocalResiduals(localResiduals, elementDOF, globalResidual):
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    localResiduals : numElements x
+        _description_
+    elementDOF : _type_
+        _description_
+    globalResidual : numpy array
+    """
+
+
 if __name__ == "__main__":
 
     rows = np.array([0, 0, 1, 2], dtype=np.int64)
@@ -205,4 +249,5 @@ if __name__ == "__main__":
         "BC3Name": {"DOF": [837, 25], "Value": [1.0, 1.0]},
     }
     bcDOF, bcValues = convertBCDictToLists(BCDict)
+
     print(bcDOF, bcValues)
