@@ -206,6 +206,8 @@ class Element:
         values : numElements array
             Value of the function for each element
         """
+        numElements = nodeCoords.shape[0]
+        return np.random.rand(numElements)
 
     def computeResidual(self, nodeStates, nodeCoords, designVars, constitutiveModel, intOrder=None):
         """Compute the local residual for a series of elements
@@ -216,7 +218,7 @@ class Element:
             Node coordinates for each element
         nodeStates : numElements x numNodes x numStates array
             State values at the nodes of each element
-        dvs : numElements x numDVs array
+        designVars : dict of numElements arrays
             Design variable values for each element
         constitutiveModel : FEMpy constitutive model object
             The constitutive model of the element

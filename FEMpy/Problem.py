@@ -11,17 +11,19 @@ FEMpy Problem Class
 # ==============================================================================
 # Standard Python modules
 # ==============================================================================
-from typing import Iterable, Union, Callable
+from typing import Iterable, Union, Callable, Optional
 
 # ==============================================================================
 # External Python modules
 # ==============================================================================
 import numpy as np
+from scipy.sparse import csc_array  # ,coo_array
 
 
 # ==============================================================================
 # Extension modules
 # ==============================================================================
+from FEMpy.Utils import AssemblyUtils
 
 
 class FEMpyProblem:
@@ -29,7 +31,7 @@ class FEMpyProblem:
     single FEMpy model to represent different loading and boundary conditions.
 
     The problem class contains:
-    - The state vactor
+    - The state vector
     - The residual vector
     - The Jacobian matrix
 
@@ -47,7 +49,8 @@ class FEMpyProblem:
         self.RHS = np.zeros(self.numNodes * self.numStates)
 
         # --- Dictionary of boundary conditions ---
-        self.BCDict = {}
+        self.BCs = {}
+        self.loads = {}
 
     @property
     def constitutiveModel(self):
@@ -108,7 +111,12 @@ class FEMpyProblem:
         """
         return self.constitutiveModel.numStates
 
-    def computeFunction(name, elementReductionType=None, globalReductionType=None):
+    @property
+    def elements(self):
+        """The element data structure"""
+        return self.model.elements
+
+    def computeFunction(self, name, elementReductionType=None, globalReductionType=None):
         """Compute a function over the whole model
 
         Parameters
@@ -119,6 +127,13 @@ class FEMpyProblem:
             Type of reduction to do over each element (average, min, max, sum, integral etc), by default None
         globalReductionType : _type_, optional
             Type of reduction to do over all elements (average, sum, min, max etc), by default None
+
+        Returns
+        -------
+        int
+            for global reduction
+        dict
+            for element reduction
         """
         # for each element type:
         #   - Get the node coordinates and states and DVs for those elements
@@ -127,19 +142,65 @@ class FEMpyProblem:
         # Then, if globalReductionType is not None:
         #   - Do the global reduction, return single value
 
-        # nodeCoords : numElements x numNodes x numDim array
-        #     Node coordinates for each element
-        # nodeStates : numElements x numNodes x numStates array
-        #     State values at the nodes of each element
-        # dvs : numElements x numDVs array
-        #     Design variable values for each element
-        # values: array of length numElements
-        #     Values of the function at each element
+        functionValues = {}
+
+        elementDvs = self.model.dvs  # need to confirm size
+        eval_func = self.model.constitutiveModel.getFunction(name)
+        for elType in self.model.elements:
+            elObject = self.model.elements[elType]["elementObject"]
+            numElements = self.model.elements[elType]["numElements"]
+
+            nodeCoords = self.getElementCoordinates(elType)
+
+            nodeStates = np.zeros((numElements, elObject.numNodes, self.numStates))
+            for e in range(numElements):
+                for n in range(elObject.numNodes):
+                    nodeStates[e][n] = self.states[self.model.elements[elType]["connectivity"][e][n]]
+
+            # nodeCoords : numElements x numNodes x numDim array
+            #     Node coordinates for each element
+            # nodeStates : numElements x numNodes x numStates array
+            #     State values at the nodes of each element
+            # dvs : numElements x numDVs array
+            #     Design variable values for each element
+            # values: array of length numElements
+            #     Values of the function at each element
+            functionValues[elType] = elObject.computeFunction(
+                nodeCoords, nodeStates, elementDvs, eval_func, elementReductionType
+            )
+
+        # perform global reduction if specified
+        if globalReductionType is not None:
+            assert globalReductionType in ["average", "sum", "min", "max"], "globalReductionType not valid"
+
+            # create reduction function
+            if globalReductionType == "average":
+                reductionFunc = np.average
+            if globalReductionType == "sum":
+                reductionFunc = np.sum
+            if globalReductionType == "min":
+                reductionFunc = np.min
+            if globalReductionType == "max":
+                reductionFunc = np.max
+
+            globalValues = np.zeros(len(self.model.elements))
+            for i, elType in enumerate(functionValues):
+                globalValues[i] = reductionFunc(functionValues[elType])
+
+            return reductionFunc(globalValues)
+
+        return functionValues
 
     def addFixedBC(
-        self, name: str, nodeInds: Iterable[int], dof: Union[int, Iterable[int]], value: Union[float, Iterable[float]]
+        self,
+        name: str,
+        nodeInds: Union[int, Iterable[int]],
+        dof: Union[int, Iterable[int]],
+        value: Union[float, Iterable[float]],
     ) -> None:
         """Add a fixed boundary condition to a set of nodes
+
+        For example ``addFixedBC("BCName", [0, 1, 2], [0,1], 0.0)`` would fix DOF 0 and 1 of nodes 0, 1 and 2 to 0.0
 
         Parameters
         ----------
@@ -148,11 +209,34 @@ class FEMpyProblem:
         nodeInds : int or iterable of ints
             Indicies of nodes to apply the boundary condition to
         dof : int or iterable of ints
-            Degrees of freedom to apply this boundary condition to
+            Degrees of freedom to apply this boundary condition to, the same DOF are fixed at every node in ``nodeInds``
         values : float or iterable of floats
             Values to fix states at, if a single value is supplied then this value is applied to all specified degrees of freedom
         """
-        return None
+
+        # store the BC
+        self.BCs[name] = {}
+        dofNodes = []
+        valDOF = []
+
+        if isinstance(nodeInds, int):
+            nodeInds = [nodeInds]
+
+        if isinstance(dof, int):
+            dof = [dof]
+
+        if len(value) == 1:
+            value = (np.ones(len(dof)) * value).tolist()
+        elif len(value) != len(dof):
+            raise Exception("value should be a single entry or a list of values the same length as the DOF list.")
+            # value = np.ones(len(nodeInds)) * value
+
+        for i in range(len(nodeInds)):
+            for j in range(len(dof)):
+                dofNodes.append(nodeInds[i] * self.numStates + dof[j])
+                valDOF.append(value[j])
+        self.BCs[name]["DOF"] = dofNodes
+        self.BCs[name]["Value"] = valDOF
 
     def addLoadToNodes(
         self,
@@ -177,7 +261,34 @@ class FEMpyProblem:
         totalLoad : bool, optional
             If true then the `values` are treated as total loads and split uniformly between the nodes, by default False, in which case the `values` are applied at each node
         """
-        return None
+
+        # store the BC
+        totalNodes = 1
+        if totalLoad:
+            totalNodes = len(nodeInds)
+
+        self.loads[name] = {}
+        dofNodes = []
+        valDOF = []
+
+        if isinstance(nodeInds, int):
+            nodeInds = [nodeInds]
+
+        if isinstance(dof, int):
+            dof = [dof]
+
+        if len(value) == 1:
+            value = (np.ones(len(dof)) * value).tolist()
+        elif len(value) != len(dof):
+            raise Exception("value should be a single entry or a list of values the same length as the DOF list.")
+            # value = np.ones(len(nodeInds)) * value
+
+        for i in range(len(nodeInds)):
+            for j in range(len(dof)):
+                dofNodes.append(nodeInds[i] * self.numStates + dof[j])
+                valDOF.append((value[j] / totalNodes))
+        self.loads[name]["DOF"] = dofNodes
+        self.loads[name]["Value"] = valDOF
 
     def addBodyLoad(self, name: str, loadingFunction: Union[Callable, Iterable[float]]) -> None:
         """Add a volumetric forcing term, commonly known as a "body force"
@@ -192,3 +303,123 @@ class FEMpyProblem:
             Pass an array to define a uniform field, otherwise, pass a function with the signature `F = loadingFunction(coord)` where coord is an n x numDimensions array of coordinates and F is an n x numDimensions array of loads at each point.
         """
         return None
+
+    def assembleMatrix(self, states: np.ndarray, applyBCs: Optional[bool] = True) -> csc_array:
+        """Assemble the global residual Jacobian matrix for the problem (a.k.a the stiffness matrix)
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        stateVector : numNodes x numStates array
+            The current system states
+        applyBCs : bool, optional
+            Whether to modify the matrix to include the boundary conditions, by default True
+
+        Returns
+        -------
+        scipy csc_array
+            The residual Jacobian
+        """
+        # - For each element type:
+        #     - Get the node coordinates, node states and design variable values for all elements of that type
+        #     - Compute the local matrix for all elements of that type
+        #     - Convert to COO row, col, value lists
+        # - Combine the lists from all element types
+        # - Apply boundary conditions
+        # - Create sparse matrix from lists
+
+        # MatRows = []
+        # MatColumns = []
+        # MatEntries = []
+
+        for elementType, elementData in self.elements.items():
+            element = elementData["elementObject"]
+            numElements = elementData["numElements"]
+            nodeCoords = self.getElementCoordinates(elementType)
+            nodeStates = self.getElementStates(elementType)
+            elementDVs = self.model.getElementDVs(elementType)
+
+            # localMats = element.computeJacobian(self, nodeCoords, nodeStates, dvs, self.constitutiveModel)
+
+        # assemble local matrices into global matrix
+
+        return None
+
+    def assembleResidual(self, states: np.ndarray, applyBCs: Optional[bool] = True):
+        """Assemble the global residual for the problem
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        states : numNodes x numStates array
+            The current system states
+        applyBCs : bool, optional
+            Whether to modify the vector to include the boundary conditions, by default True
+
+        Returns
+        -------
+        numDOF array
+            The residual vector
+        """
+        # - For each element type:
+        #     - Get the node coordinates, node states and design variable values for all elements of that type
+        #     - Compute the local residual for all elements of that type
+        #     - Scatter local residuals into global residual vector
+        # - Add loads to residual to the global residual vector
+        # - Apply boundary conditions to global residual vector
+
+        globalResidual = np.zeros(self.numDOF)
+
+        for elementType, elementData in self.elements.items():
+            element = elementData["elementObject"]
+            numElements = elementData["numElements"]
+            nodeCoords = self.getElementCoordinates(elementType)
+            nodeStates = self.getElementStates(elementType)
+            elementDVs = self.model.getElementDVs(elementType)
+            elementDOF = self.model.getDOFfromNodeInds(elementData["connectivity"])
+
+            elementResiduals = element.computeResidual(self, nodeCoords, nodeStates, elementDVs, self.constitutiveModel)
+
+    def getElementCoordinates(self, elementType: str) -> np.ndarray:
+        """Get the coordinates of the nodes for all elements of the specified type
+
+        Parameters
+        ----------
+        elementType : str
+            Name of the element type to get the coordinates for
+
+        Returns
+        -------
+        numElements x numNodes x numDimensions array
+            Node coordinates
+        """
+        numElements = self.elements[elementType]["numElements"]
+        element = self.elements[elementType]["elementObject"]
+        nodeCoords = np.zeros((numElements, element.numNodes, self.numDimensions))
+        for ii in range(numElements):
+            nodeInds = self.elements[elementType]["connectivity"][ii]
+            nodeCoords[ii] = self.nodeCoords[nodeInds]
+        return nodeCoords
+
+    def getElementStates(self, elementType: str) -> np.ndarray:
+        """Get the states of the nodes for all elements of the specified type
+
+        Parameters
+        ----------
+        elementType : str
+            Name of the element type to get the coordinates for
+
+        Returns
+        -------
+        numElements x numNodes x numStates array
+            Node coordinates
+        """
+        numElements = self.elements[elementType]["numElements"]
+        element = self.elements[elementType]["elementObject"]
+        nodeStates = np.zeros((numElements, element.numNodes, self.numStates))
+        for ii in range(numElements):
+            nodeInds = self.elements[elementType]["connectivity"][ii]
+            nodeStates[ii] = self.states[nodeInds]
+        return nodeStates
