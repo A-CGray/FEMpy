@@ -43,6 +43,8 @@ class ConstitutiveModel:
         - The sensitivities of the stress components
         - The pointwise mass
         - The volume integral scaling parameter (e.g thickness for 2D plane models or 2*pi*r for 2D axisymmetric problems)
+        - The weak form residual
+        - The weak form residual Jacobian
         - Other arbitrary output values (e.g failure criterion)
     """
 
@@ -84,6 +86,9 @@ class ConstitutiveModel:
 
         self.functionNames = functionNames
 
+    # ==============================================================================
+    # Abstract methods: To be implemented by derived classes
+    # ==============================================================================
     @abc.abstractmethod
     def computeStrains(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the strains at each one
@@ -97,7 +102,7 @@ class ConstitutiveModel:
         stateGradients : numPoints x numStates x numDim array
             State gradients at each point
         coords : numPoints x numDim array
-            _description_
+            Coordinates of each point
         dvs : _type_
             _description_
 
@@ -107,3 +112,130 @@ class ConstitutiveModel:
             Strain components at each point
         """
         raise NotImplementedError
+
+    @abc.abstractmethod
+    def computeStrainStateGradSens(self, states, stateGradients, coords, dvs):
+        """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
+        sensitivity of the strains to the state gradient at each one
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        states : numPoints x numStates array
+            State values at each point
+        stateGradients : numPoints x numStates x numDim array
+            State gradients at each point
+        coords : numPoints x numDim array
+            Coordinates of each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        numPoints x numStrains x numStates x numDim array
+            Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def computeStresses(self, strains, dvs):
+        """Given the strains and design variables at a bunch of points, compute the stresses at each one
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        strains : numPoints x numStrains array
+            Strain components at each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        numPoints x numStresses array
+            Stress components at each point
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def computeStressStrainSens(self, strains, dvs):
+        """Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        strains : numPoints x numStrains array
+            Strain components at each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        numPoints x numStresses array
+            Stress components at each point
+        """
+        raise NotImplementedError
+
+    @abc.abstractclassmethod
+    def computeVolumingScaling(self, coords, dvs):
+        """Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one
+
+        The volume scaling parameter is used to scale functions that are integrated over the element to get a true
+        volume integral. For example, in a 2D plane stress model, we need to multiply by the thickness of the element
+        to get a true volume integral. In a 2D axisymmetric model, we need to multiply by 2*pi*r to get a true volume
+        integral.
+
+        Parameters
+        ----------
+        coords : numPoints x numDim array
+            Coordinates of each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        numPoints length array
+            Volume scaling parameter at each point
+        """
+        raise NotImplementedError
+
+    # ==============================================================================
+    # Public methods
+    # ==============================================================================
+    def computeWeakResidual(self, states, stateGradients, coords, dvs):
+        """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the weak residual integrand
+
+        For an elasticity problem, the weak residual, derived from the virtual work principle is:
+
+        R = int r dV = int du'/dq^T * de/du'^T * sigma * scale d(element)
+
+        Where:
+        - du'/dq is the sensitivity of the state gradient to the nodal state values, this is handled by the element
+        - de/du' is the sensitivity of the strain to the state gradient
+        - sigma are the stresses
+        - scale is the volume scaling parameter
+
+        This function computes `de/du'^T * sigma * scale` at each point
+
+        Parameters
+        ----------
+        states : numPoints x numStates array
+            State values at each point
+        stateGradients : numPoints x numStates x numDim array
+            State gradients at each point
+        coords : numPoints x numDim array
+            Coordinates of each point
+        dvs : _type_
+            _description_
+        """
+        # strain = self.computeStrains(states, stateGradients, coords, dvs)
+        # stress = self.computeStresses(strain, dvs)
+        # scale = self.computeVolumingScaling(coords, dvs)
+
+        # strainSens = self.computeStrainStateGradSens(states, stateGradients, coords, dvs)
+
+    # ==============================================================================
+    # Private methods
+    # ==============================================================================
