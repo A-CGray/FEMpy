@@ -16,6 +16,7 @@ import abc
 # ==============================================================================
 # External Python modules
 # ==============================================================================
+import numpy as np
 
 # ==============================================================================
 # Extension modules
@@ -173,13 +174,13 @@ class ConstitutiveModel:
 
         Returns
         -------
-        numPoints x numStresses array
-            Stress components at each point
+        sens : numPoints x numStrains x numStates x numDim array
+            Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
         """
         raise NotImplementedError
 
-    @abc.abstractclassmethod
-    def computeVolumingScaling(self, coords, dvs):
+    @abc.abstractmethod
+    def computeVolumeScaling(self, coords, dvs):
         """Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one
 
         The volume scaling parameter is used to scale functions that are integrated over the element to get a true
@@ -198,6 +199,22 @@ class ConstitutiveModel:
         -------
         numPoints length array
             Volume scaling parameter at each point
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def getFunction(self, name):
+        """Return a function that can be computed for this constitutive model
+
+        Parameters
+        ----------
+        name : str
+            Name of the function to compute
+
+        Returns
+        -------
+        callable
+            A function that can be called to compute the desired function at a bunch of points with the signature, f(states, stateGradients, coords, dvs)
         """
         raise NotImplementedError
 
@@ -229,13 +246,57 @@ class ConstitutiveModel:
             Coordinates of each point
         dvs : _type_
             _description_
-        """
-        # strain = self.computeStrains(states, stateGradients, coords, dvs)
-        # stress = self.computeStresses(strain, dvs)
-        # scale = self.computeVolumingScaling(coords, dvs)
 
-        # strainSens = self.computeStrainStateGradSens(states, stateGradients, coords, dvs)
+        Returns
+        -------
+        numPoints x self.numDim x self.numStates array
+
+        """
+        numPoints = states.shape[0]
+        strain = self.computeStrains(states, stateGradients, coords, dvs)
+        stress = self.computeStresses(strain, dvs)
+        scale = self.computeVolumeScaling(coords, dvs)
+
+        strainSens = self.computeStrainStateGradSens(states, stateGradients, coords, dvs)
+
+        r = np.zeros((numPoints, self.numDim, self.numStates))
+
+        _computeWeakResidualProduct(strainSens, stress, scale, r)
+
+        return r
 
     # ==============================================================================
     # Private methods
     # ==============================================================================
+
+
+@njit(cache=True, fastmath=True, boundscheck=False)
+def _computeWeakResidualProduct(dStraindUPrime, stress, volScaling, result):
+    """Compute a nasty product of high dimensional arrays to compute the weak residual
+
+    Computing the weak residual requires computing the following product at each point:
+
+    `de/du'^T * sigma * scale`
+
+    Where:
+        - de/du' is the sensitivity of the strain to the state gradient
+        - sigma are the stresses
+        - scale is the volume scaling parameter
+
+    Parameters
+    ----------
+    dStraindUPrime : numPoints x numStrains x numStates x numDim array
+            Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
+    stress : numPoints x numStrains array
+        Stresses at each point
+    volScaling : numPoints array
+        Volume scaling at each point
+    result : numPoints x numDim x numStates array
+        _description_
+    """
+    numPoints = dStraindUPrime.shape[0]
+    numStrains = dStraindUPrime.shape[1]
+
+    for ii in range(numPoints):
+        for jj in range(numStrains):
+            result[ii] += dStraindUPrime[ii, jj].T * stress[ii, jj] * volScaling[ii]

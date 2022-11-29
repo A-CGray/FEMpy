@@ -13,7 +13,7 @@ that the user interfaces with to read in a mesh and setup a finite element model
 # Standard Python modules
 # ==============================================================================
 import os
-from typing import Iterable, Union, Optional
+from typing import Iterable, Union, Optional, Dict
 import copy
 import warnings
 
@@ -23,13 +23,14 @@ import warnings
 import meshio
 import numpy as np
 from baseclasses.solvers import BaseSolver
-from scipy.sparse import csc_array  # ,coo_array
 
 # ==============================================================================
 # Extension modules
 # ==============================================================================
 from FEMpy import Elements
 from FEMpy import __version__
+
+from Problem import FEMpyProblem
 
 
 class FEMpyModel(BaseSolver):
@@ -111,6 +112,7 @@ class FEMpyModel(BaseSolver):
 
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
         self.elements = {}
+        self.numElements = 0
         for elType in self.mesh.cells_dict:
             elObject = self._getElementObject(elType)
             if elObject is None:
@@ -118,25 +120,32 @@ class FEMpyModel(BaseSolver):
             else:
                 self.elements[elType] = {}
                 self.elements[elType]["connectivity"] = copy.deepcopy(self.mesh.cells_dict[elType])
-                self.elements[elType]["DOF"] = self._getDOFfromNodeInds(self.elements[elType]["connectivity"])
+                self.elements[elType]["DOF"] = self.getDOFfromNodeInds(self.elements[elType]["connectivity"])
                 self.elements[elType]["elementObject"] = elObject
                 self.elements[elType]["numElements"] = self.elements[elType]["connectivity"].shape[0]
 
-                # --- Store dersign variable values for each element set ---
-                # The constitutive model has a certain number of design variables, each of which has a name, we store
-                # the values of the design variables for each element set in a dictionary with the design variable name
-                # as the key and the values as a numElements array
-                self.elements[elType]["DVs"] = {}
+                # Create element indices for this set of elements, starting from the current max element index
+                self.elements[elType]["elementIDs"] = np.arange(
+                    self.numElements, self.numElements + self.elements[elType]["numElements"]
+                )
 
-                for dvName in self.constitutiveModel.designVariables:
-                    defaultVal = self.constitutiveModel.designVariables[dvName]["defaultValue"]
-                    self.elements[elType]["DVs"][dvName] = defaultVal * np.ones(self.elements[elType]["numElements"])
+                # Update the element count
+                self.numElements += self.elements[elType]["numElements"]
+
+        # --- Store dersign variable values for each element set ---
+        # The constitutive model has a certain number of design variables, each of which has a name, we store
+        # the values of each design variable
+        self.dvs = {}
+
+        for dvName in self.constitutiveModel.designVariables:
+            defaultVal = self.constitutiveModel.designVariables[dvName]["defaultValue"]
+            self.dvs[dvName] = defaultVal * np.ones(self.numElements)
 
         # --- List for keeping track of all problems associated with this model ---
-        self.problems = []
+        self.problems = {}
 
         # --- Dictionary of global boundary conditions ---
-        self.BCDict = {}
+        self.BCs = {}
 
     @property
     def numDimensions(self):
@@ -170,30 +179,26 @@ class FEMpyModel(BaseSolver):
             for varName in nodeValues:
                 # check arrays are correct length
                 assert (
-                    nodeValues[varName].shape[0]
-                    == self.numNodes
-                    # len(nodeValues[varName]) == self.numNodes # if values are stored as python list
+                    nodeValues[varName].shape[0] == self.numNodes
                 ), f"nodeValues array for variable '{varName}' must be length of number of nodes"
 
-        cellData = {}
+        elementData = {}
         if elementValues:  # if dictionary is not empty
             for elType in elementValues:
                 for varName in elementValues[elType]:
                     # first, check arrays are the correct length
                     assert (
-                        elementValues[elType][varName].shape[0]
-                        == self.elements[elType]["numElements"]
-                        # len(elementValues[elType][varName]) == self.elements[elType]["numElements"] # if values are stored as list
+                        elementValues[elType][varName].shape[0] == self.elements[elType]["numElements"]
                     ), f"elementValues array of element type '{elType}' for variable '{varName}' must be length number of '{elType}' elements"
 
                     # store values in meshio element data format
-                    if varName in cellData:
-                        cellData[varName].append(elementValues[elType][varName])
+                    if varName in elementData:
+                        elementData[varName].append(elementValues[elType][varName])
                     else:
-                        cellData[varName] = [elementValues[elType][varName]]
+                        elementData[varName] = [elementValues[elType][varName]]
 
         outputMesh = meshio.Mesh(
-            self.getCoordinates(force3D=True), self.mesh.cells, point_data=nodeValues, cell_data=cellData
+            self.getCoordinates(force3D=True), self.mesh.cells_dict, point_data=nodeValues, cell_data=elementData
         )
         return outputMesh
 
@@ -240,8 +245,45 @@ class FEMpyModel(BaseSolver):
                 f"Invalid number of coordinate dimensions, problem is {self.numDimensions}D but {size}D coordinates were supplied"
             )
 
+    def setDesignVariables(self, dvs: Dict[str, np.ndarray]) -> None:
+        """Set the design variables for the model
+
+        Parameters
+        ----------
+        dvs : dictionary
+            {"VariableName1": array(one value per element), "VariableName2": array()}
+        """
+        for dvName in dvs:
+            self.dvs[dvName] = dvs[dvName]
+
+    def getElementDVs(self, elementType: str):
+        """Get the design variable values for a given element set
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        elementType : str
+            Element type name
+
+        Returns
+        -------
+        dict of arrays
+            Dictionary of design variable values for this element sets, one array per design variable
+        """
+        elementDVs = {}
+        elementInds = self.elements[elementType]["elementIDs"]
+        for dv in self.dvs:
+            elementDVs[dv] = self.dvs[dv][elementInds]
+
+        return elementDVs
+
     def addGlobalFixedBC(
-        self, name, nodeInds: Iterable[int], dof: Union[int, Iterable[int]], values: Union[float, Iterable[float]]
+        self,
+        name,
+        nodeInds: Union[int, Iterable[int]],
+        dof: Union[int, Iterable[int]],
+        value: Union[float, Iterable[float]],
     ) -> None:
         """Add a boundary condition that is applied to all problems associated with this model
 
@@ -253,10 +295,32 @@ class FEMpyModel(BaseSolver):
             Indicies of nodes to apply the boundary condition to
         dof : int or iterable of ints
             Degrees of freedom to apply this boundary condition to
-        values : float or iterable of floats
-            Values to fix states at, if a single value is supplied then this value is applied to all specified degrees of freedom
+        value : float or iterable of floats
+            Value to fix states at, if a single value is supplied then this value is applied to all specified degrees of freedom
         """
-        return None
+        # store the BC
+        self.BCs[name] = {}
+        dofNodes = []
+        valDOF = []
+
+        if isinstance(nodeInds, int):
+            nodeInds = [nodeInds]
+
+        if isinstance(dof, int):
+            dof = [dof]
+
+        if len(value) == 1:
+            value = (np.ones(len(dof)) * value).tolist()
+        elif len(value) != len(dof):
+            raise Exception("value should be a single entry or a list of values the same length as the DOF list.")
+            # value = np.ones(len(nodeInds)) * value
+
+        for i in range(len(nodeInds)):
+            for j in range(len(dof)):
+                dofNodes.append(nodeInds[i] * self.numStates + dof[j])
+                valDOF.append(value[j])
+        self.BCs[name]["DOF"] = dofNodes
+        self.BCs[name]["Value"] = valDOF
 
     def addProblem(self, name):
         """Add a problem to the model
@@ -266,51 +330,31 @@ class FEMpyModel(BaseSolver):
         name : str
             Name of the problem to add
         """
-        return None
+        self.problems[name] = FEMpyProblem(name, self)
 
-    def assembleMatrix(self, stateVector: np.ndarray, applyBCs: Optional[bool] = True) -> csc_array:
-        """Assemble the global residual Jacobian matrix for the problem (a.k.a the stiffness matrix)
-
-        _extended_summary_
+    def getDOFfromNodeInds(self, index):
+        """Convert an array of node indices to an array of DOF indices
 
         Parameters
         ----------
-        stateVector : np.ndarray
-            The current system states
-        applyBCs : bool, optional
-            Whether to modify the matrix to include the boundary conditions, by default True
+        index : numpy array of ints
+            array of node indices
 
         Returns
         -------
-        scipy csc_array
-            The residual Jacobian
-        """ """"""
-        # - For each element type:
-        #     - Get the node coordinates, node states and design variable values for all elements of that type
-        #     - Compute the local matrix for all elements of that type
-        #     - Convert to COO row, col, value lists
-        # - Combine the lists from all element types
-        # - Apply boundary conditions
-        # - Create sparse matrix from lists
+        numpy array of ints
+            array of DOF indices
+        """
+        shape = index.shape()
+        shape[-1] *= self.numStates
+        inputIndex = index.flatten()
+        index_dof = []
+        for i in range(len(inputIndex)):
 
-        # MatRows = []
-        # MatColumns = []
-        # MatEntries = []
+            ind = range(inputIndex[i] * self.numStates, (inputIndex[i] + 1) * (self.numStates))
+            index_dof += list(ind)
 
-        for elementType, elementData in self.elements.items():
-            element = elementData["elementObject"]
-            numElements = elementData["numElements"]
-            nodeCoords = np.zeros((numElements, element.numNodes, self.numDimensions))
-            # nodeStates = np.zeros((numElements, numNodes, self.numStates))
-            for ii in range(numElements):
-                nodeInds = self.elements[elementType]["connectivity"][ii]
-                nodeCoords[ii] = self.nodeCoords[nodeInds]
-
-            # localMats = element.computeJacobian(self, nodeCoords, nodeStates, dvs, self.constitutiveModel)
-
-        # assemble local matrices into global matrix
-
-        return None
+        return np.reshape(np.array(index_dof), shape)
 
     # ==============================================================================
     # Private methods
@@ -372,28 +416,6 @@ class FEMpyModel(BaseSolver):
                 elObject = Elements.QuadElement(order=order, numStates=self.numStates)
 
         return elObject
-
-    def _getDOFfromNodeInds(self, index):
-        """Convert an array of node indices to an array of DOF indices
-
-        Parameters
-        ----------
-        index : numpy array of ints
-            array of node indices
-
-        Returns
-        -------
-        numpy array of ints
-            array of DOF indices
-        """
-        index_dof = []
-        for i in range(len(index)):
-            index_dof.append([])
-            for j in range(len(index[i])):
-                ind = range(index[i][j] * self.numStates, (index[i][j] + 1) * (self.numStates))
-                index_dof[i] += list(ind)
-
-        return np.array(index_dof)
 
     def _printWelcomeMessage(self) -> None:
         """Print a welcome message to the console"""
