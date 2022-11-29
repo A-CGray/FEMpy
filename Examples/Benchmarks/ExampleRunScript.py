@@ -93,5 +93,9 @@ for problem in model.problems:
     problem.solve()
     problem.writeSolution(format="plt")
 
+# ==============================================================================
+# Compute function
+# ==============================================================================
+
 # TODO: Add something related to computing functions of interest
 # TODO: How should we set DV bounds?
