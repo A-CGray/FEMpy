@@ -153,10 +153,7 @@ class IsoPlaneStress(ConstitutiveModel):
     def computeVolumeScaling(self, coords, dvs):
         """Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one
 
-        The volume scaling parameter is used to scale functions that are integrated over the element to get a true
-        volume integral. For example, in a 2D plane stress model, we need to multiply by the thickness of the element
-        to get a true volume integral. In a 2D axisymmetric model, we need to multiply by 2*pi*r to get a true volume
-        integral.
+        For this 2D model, the volume scaling is just the thickness
 
         Parameters
         ----------
