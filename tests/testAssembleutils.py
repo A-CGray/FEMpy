@@ -71,9 +71,9 @@ class AssemUnitTest(unittest.TestCase):
                 np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 2, 2], [0, 0, 0, 2]]),
             ]
         )
-        COO_expected_rows = np.array([0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 7])
-        COO_expected_cols = np.array([0, 6, 1, 7, 0, 1, 2, 1, 3, 4, 5, 5, 6, 7, 7])
-        COO_expected_vals = np.array([1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 2, 3, 2, 2, 2])
+        COO_expected_rows = np.array([0, 1, 2, 2, 3, 2, 3, 4, 4, 5, 4, 5, 6, 6, 7, 6, 7, 0, 0, 1])
+        COO_expected_cols = np.array([0, 1, 1, 2, 3, 2, 3, 4, 5, 5, 4, 5, 6, 7, 7, 6, 7, 0, 1, 1])
+        COO_expected_vals = np.array([1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2])
         localDOF = np.array([[0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7], [6, 7, 0, 1]])
 
         COO_comp_rows, COO_comp_cols, COO_comp_vals = AssemblyUtils.localMatricesToCOOArrays(localMats, localDOF)

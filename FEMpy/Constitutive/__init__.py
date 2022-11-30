@@ -5,3 +5,4 @@
 from .NewConstitutive import ConstitutiveModel
 from .NewIsoPlaneStress import IsoPlaneStress
 from . import StrainModels
+from . import StressModels

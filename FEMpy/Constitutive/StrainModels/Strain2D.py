@@ -58,7 +58,54 @@ def Planar2DStrain(UPrime, nonlinear=False):
         # e_yy = du_y/dy + 0.5 * (du_x/dy^2 + du_y/dy^2)
         strains[:, 1] += 0.5 * (UPrime[:, 0, 1] ** 2 + UPrime[:, 1, 1] ** 2)
 
-        # gamma_xy = du_x/dy + du_y/dx + du_x/dx * du_x/dy + du_y/dx * du_y/dy
+        # gamma_xy = du_x/dy + du_y/dx + (du_x/dx * du_x/dy + du_y/dx * du_y/dy)
         strains[:, 2] += UPrime[:, 0, 0] * UPrime[:, 0, 1] + UPrime[:, 1, 0] * UPrime[:, 1, 1]
 
     return strains
+
+
+def Planar2DStrainSens(UPrime, nonlinear=False):
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    UPrime : _type_
+        _description_
+    nonlinear : bool, optional
+        _description_, by default False
+
+    Returns
+    -------
+    strainSens : numPoints x numStrains x numStates x numDim array
+        Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
+    """
+    numPoints = UPrime.shape[0]
+    strainSens = np.zeros((numPoints, 3, 2, 2))
+
+    # e_xx = du_x/dx
+    strainSens[:, 0, 0, 0] = 1.0
+    # e_yy = du_y/dy
+    strainSens[:, 1, 1, 1] = 1.0
+    # gamma_xy = du_x/dy + du_y/dx
+    strainSens[:, 2, 0, 1] = 1.0
+    strainSens[:, 2, 1, 0] = 1.0
+
+    if nonlinear:
+        # e_xx = du_x/dx + 0.5 * (du_x/dx^2 + du_y/dx^2)
+        strainSens[:, 0, 0, 0] += UPrime[:, 0, 0]
+        strainSens[:, 0, 1, 0] += UPrime[:, 1, 0]
+
+        # e_yy = du_y/dy + 0.5 * (du_x/dy^2 + du_y/dy^2)
+        strainSens[:, 1, 0, 1] += UPrime[:, 0, 1]
+        strainSens[:, 1, 1, 1] += UPrime[:, 1, 1]
+
+        # gamma_xy = du_x/dy + du_y/dx + (du_x/dx * du_x/dy + du_y/dx * du_y/dy)
+        strainSens[:, 2, 0, 0] += UPrime[:, 0, 1]
+        strainSens[:, 2, 0, 1] += UPrime[:, 0, 0]
+
+        strainSens[:, 2, 1, 0] += UPrime[:, 1, 1]
+        strainSens[:, 2, 1, 1] += UPrime[:, 1, 0]
+
+    return strainSens
