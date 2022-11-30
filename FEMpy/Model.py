@@ -22,6 +22,7 @@ import warnings
 # ==============================================================================
 import meshio
 import numpy as np
+from numba import njit
 from baseclasses.solvers import BaseSolver
 
 # ==============================================================================
@@ -332,29 +333,21 @@ class FEMpyModel(BaseSolver):
         """
         self.problems[name] = FEMpyProblem(name, self)
 
-    def getDOFfromNodeInds(self, index):
+    def getDOFfromNodeInds(self, nodeIndices):
         """Convert an array of node indices to an array of DOF indices
 
         Parameters
         ----------
         index : numpy array of ints
-            array of node indices
+            array of node indices in arbitrary dimensions
 
         Returns
         -------
         numpy array of ints
-            array of DOF indices
+            array of DOF indices, has same dimensions as input array, except that the last dimension is larger by a
+            factor of the number of DOF per node
         """
-        shape = index.shape()
-        shape[-1] *= self.numStates
-        inputIndex = index.flatten()
-        index_dof = []
-        for i in range(len(inputIndex)):
-
-            ind = range(inputIndex[i] * self.numStates, (inputIndex[i] + 1) * (self.numStates))
-            index_dof += list(ind)
-
-        return np.reshape(np.array(index_dof), shape)
+        return _convertNodeIndsToDOF(nodeIndices, self.numStates)
 
     # ==============================================================================
     # Private methods
@@ -433,3 +426,19 @@ class FEMpyModel(BaseSolver):
         )
         self.pp("Version: " + __version__)
         self.pp("")
+
+
+@njit(cache=True)
+def _convertNodeIndsToDOF(nodeIndices, numStates):
+    # Figure out the output shape
+    shape = nodeIndices.shape()
+    shape[-1] *= numStates
+
+    # Flatten the input array and convert to a flattened array of DOF indices
+    nodeIndices = nodeIndices.flatten()
+    dofIndices = []
+    for i in range(len(nodeIndices)):
+        ind = range(nodeIndices[i] * numStates, (nodeIndices[i] + 1) * (numStates))
+        dofIndices += list(ind)
+
+    return np.reshape(np.array(dofIndices), shape)

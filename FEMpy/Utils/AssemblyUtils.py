@@ -225,11 +225,12 @@ def scatterLocalResiduals(localResiduals, elementDOF, globalResidual):
 
     Parameters
     ----------
-    localResiduals : numElements x
-        _description_
-    elementDOF : _type_
+    localResiduals : numElements x numNodes x numStates array
+        Element local residuals
+    elementDOF : numElements x (numNodes * numStates) array
         _description_
     globalResidual : numpy array
+        The global residual vector
     """
 
 
