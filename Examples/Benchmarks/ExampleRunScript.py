@@ -32,7 +32,7 @@ nu = 0.33
 # This thickness value is a design variable, by default all elements will use this value, but we can change it later if
 # we want
 t = 5e-3
-constitutiveModel = fp.Constitutive.isoPlaneStress(E, nu, t)
+constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, t)
 
 # ==============================================================================
 # Create the FEMpy model by loading in a mesh

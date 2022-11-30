@@ -21,7 +21,7 @@ import numpy as np
 # Extension modules
 # ==============================================================================
 from FEMpy.Constitutive.StrainModels import Planar2DStrain, Planar2DStrainSens
-from FEMpy.Constitutive.StressModels import isoPlaneStress
+from FEMpy.Constitutive.StressModels import isoPlaneStress, isoPlaneStressStrainSens
 from FEMpy.Constitutive import ConstitutiveModel
 
 
@@ -110,3 +110,64 @@ class IsoPlaneStress(ConstitutiveModel):
         numPoints x numStrains x numStates x numDim array
             Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
         """
+        return Planar2DStrainSens(UPrime=stateGradients, nonlinear=not self.linear)
+
+    def computeStresses(self, strains, dvs):
+        """Given the strains and design variables at a bunch of points, compute the stresses at each one
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        strains : numPoints x numStrains array
+            Strain components at each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        numPoints x numStresses array
+            Stress components at each point
+        """
+        return isoPlaneStress(strains, E=self.E, nu=self.nu)
+
+    def computeStressStrainSens(self, strains, dvs):
+        """Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        strains : numPoints x numStrains array
+            Strain components at each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        sens : numPoints x numStrains x numStates x numDim array
+            Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
+        """
+        return isoPlaneStressStrainSens(strains, E=self.E, nu=self.nu)
+
+    def computeVolumeScaling(self, coords, dvs):
+        """Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one
+
+        The volume scaling parameter is used to scale functions that are integrated over the element to get a true
+        volume integral. For example, in a 2D plane stress model, we need to multiply by the thickness of the element
+        to get a true volume integral. In a 2D axisymmetric model, we need to multiply by 2*pi*r to get a true volume
+        integral.
+
+        Parameters
+        ----------
+        coords : numPoints x numDim array
+            Coordinates of each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        numPoints length array
+            Volume scaling parameter at each point
+        """
+        return dvs["Thickness"]
