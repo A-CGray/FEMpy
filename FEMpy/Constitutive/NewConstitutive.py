@@ -17,6 +17,7 @@ import abc
 # External Python modules
 # ==============================================================================
 import numpy as np
+from numba import njit
 
 # ==============================================================================
 # Extension modules
@@ -221,7 +222,7 @@ class ConstitutiveModel:
     # ==============================================================================
     # Public methods
     # ==============================================================================
-    def computeWeakResidual(self, states, stateGradients, coords, dvs):
+    def computeWeakResiduals(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the weak residual integrand
 
         For an elasticity problem, the weak residual, derived from the virtual work principle is:
@@ -252,18 +253,24 @@ class ConstitutiveModel:
         numPoints x self.numDim x self.numStates array
 
         """
-        numPoints = states.shape[0]
         strain = self.computeStrains(states, stateGradients, coords, dvs)
         stress = self.computeStresses(strain, dvs)
         scale = self.computeVolumeScaling(coords, dvs)
 
         strainSens = self.computeStrainStateGradSens(states, stateGradients, coords, dvs)
 
-        r = np.zeros((numPoints, self.numDim, self.numStates))
+        # r = np.zeros((numPoints, self.numDim, self.numStates))
 
-        _computeWeakResidualProduct(strainSens, stress, scale, r)
+        # _computeWeakResidualProduct(strainSens, stress, scale, r)
 
-        return r
+        # return r
+
+        # The einsum below is equivalent to:
+        # r = np.zeros((numPoints, self.numDim, self.numStates))
+        # numPoints = strainSens.shape[0]
+        # for ii in range(numPoints):
+        #     r[ii] += strainSens[ii].T @ stress[ii] * volScaling[ii]
+        return np.einsum("pesd,pe,p->pds", strainSens, stress, scale, optimize=["einsum_path", (0, 1), (0, 1)])
 
     # ==============================================================================
     # Private methods

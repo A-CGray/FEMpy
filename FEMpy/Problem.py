@@ -130,7 +130,7 @@ class FEMpyProblem:
 
         Returns
         -------
-        int
+        float
             for global reduction
         dict
             for element reduction
@@ -333,14 +333,14 @@ class FEMpyProblem:
         # MatColumns = []
         # MatEntries = []
 
-        for elementType, elementData in self.elements.items():
-            element = elementData["elementObject"]
-            numElements = elementData["numElements"]
-            nodeCoords = self.getElementCoordinates(elementType)
-            nodeStates = self.getElementStates(elementType)
-            elementDVs = self.model.getElementDVs(elementType)
+        # for elementType, elementData in self.elements.items():
+        # element = elementData["elementObject"]
+        # numElements = elementData["numElements"]
+        # nodeCoords = self.getElementCoordinates(elementType)
+        # nodeStates = self.getElementStates(elementType)
+        # elementDVs = self.model.getElementDVs(elementType)
 
-            # localMats = element.computeJacobian(self, nodeCoords, nodeStates, dvs, self.constitutiveModel)
+        # localMats = element.computeJacobian(self, nodeCoords, nodeStates, dvs, self.constitutiveModel)
 
         # assemble local matrices into global matrix
 
@@ -374,13 +374,15 @@ class FEMpyProblem:
 
         for elementType, elementData in self.elements.items():
             element = elementData["elementObject"]
-            numElements = elementData["numElements"]
             nodeCoords = self.getElementCoordinates(elementType)
             nodeStates = self.getElementStates(elementType)
             elementDVs = self.model.getElementDVs(elementType)
-            elementDOF = self.model.getDOFfromNodeInds(elementData["connectivity"])
 
             elementResiduals = element.computeResidual(self, nodeCoords, nodeStates, elementDVs, self.constitutiveModel)
+            AssemblyUtils.scatterLocalResiduals(elementResiduals, elementData["connectivity"], globalResidual)
+
+        # Add external loads to the residual
+        globalResidual += AssemblyUtils.convertLoadsDictToVector(self.loads, self.numDOF)
 
     def getElementCoordinates(self, elementType: str) -> np.ndarray:
         """Get the coordinates of the nodes for all elements of the specified type

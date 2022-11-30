@@ -19,10 +19,14 @@ def nastyProduct(dStraindUPrime, stress, volScaling, result):
     result : numPoints x numDim x numStates array
         _description_
     """
-    numPoints = dStraindUPrime.shape[0]
+    # numPoints = dStraindUPrime.shape[0]
 
-    for ii in range(numPoints):
-        result[ii] += dStraindUPrime[ii].T @ stress[ii] * volScaling[ii]
+    # for ii in range(numPoints):
+    #     result[ii] += dStraindUPrime[ii].T @ stress[ii] * volScaling[ii]
+
+    result[:] = np.einsum(
+        "pesd,pe,p->pds", dStraindUPrime, stress, volScaling, optimize=["einsum_path", (0, 1), (0, 1)]
+    )
 
 
 @njit(cache=True, fastmath=True)
@@ -57,6 +61,7 @@ def nastyProductJIT(dStraindUPrime, stress, volScaling, result):
     cache=True,
     fastmath=True,
     boundscheck=False,
+    target="parallel",
 )
 def nastyProductVectorize(dStraindUPrime, stress, volScaling, result):
     """Compute a nasty product of high dimensional arrays to compute the weak residual
@@ -82,11 +87,11 @@ def nastyProductVectorize(dStraindUPrime, stress, volScaling, result):
             result[ii] += dStraindUPrime[ii, jj].T * stress[ii, jj] * volScaling[ii]
 
 
-numPoints = 1000000
-numNodes = 4
+numPoints = 10000000
+numNodes = 16
 numDim = 3
-numStates = 1
-numStrains = 3
+numStates = 4
+numStrains = 6
 
 np.random.seed(1)
 dStraindUPrime = np.random.rand(numPoints, numStrains, numStates, numDim)

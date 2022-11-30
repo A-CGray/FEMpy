@@ -218,7 +218,7 @@ def localMatricesToCOOArrays(localMats, localDOF):
 
 
 @njit(cache=True)
-def scatterLocalResiduals(localResiduals, elementDOF, globalResidual):
+def scatterLocalResiduals(localResiduals, connectivity, globalResidual):
     """_summary_
 
     _extended_summary_
@@ -227,11 +227,18 @@ def scatterLocalResiduals(localResiduals, elementDOF, globalResidual):
     ----------
     localResiduals : numElements x numNodes x numStates array
         Element local residuals
-    elementDOF : numElements x (numNodes * numStates) array
-        _description_
+    connectivity : numElements x numNodes array
+        Element connectivity matrix, each row contains the nodeIDs for an element
     globalResidual : numpy array
         The global residual vector
     """
+    numStates = localResiduals.shape[2]
+    numElements = localResiduals.shape[0]
+
+    for ii in range(numElements):
+        for nodeID in connectivity[ii]:
+            for jj in range(numStates):
+                globalResidual[nodeID * numStates + jj] += localResiduals[ii, nodeID, jj]
 
 
 if __name__ == "__main__":

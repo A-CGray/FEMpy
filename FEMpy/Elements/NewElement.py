@@ -209,7 +209,7 @@ class Element:
         numElements = nodeCoords.shape[0]
         return np.random.rand(numElements)
 
-    def computeResidual(self, nodeStates, nodeCoords, designVars, constitutiveModel, intOrder=None):
+    def computeResiduals(self, nodeStates, nodeCoords, designVars, constitutiveModel, intOrder=None):
         """Compute the local residual for a series of elements
 
         Parameters
@@ -225,8 +225,8 @@ class Element:
 
         Returns
         -------
-        numElement x (numNodes * numStates) array
-            The local residual for each element
+        numElement x numNodes x numStates array
+            The local residuals for each element
         """
         numElements = nodeCoords.shape[0]
         nodeCoords = np.ascontiguousarray(nodeCoords)
@@ -242,25 +242,56 @@ class Element:
         NPrimeParam = self.computeShapeFunctionGradients(intPointParamCoords)  # numIntPoints x numDim x numNodes
 
         # - Compute real coordinates at integration points (different for each element)
-        self._interpolationProduct(N[:, : self.numDim], nodeCoords)  # numElements x numIntPoints x numDim
+        intPointCoords = self._interpolationProduct(
+            N[:, : self.numDim], nodeCoords
+        )  # numElements x numIntPoints x numDim
 
         # - Compute states at integration points (different for each element)
-        self._interpolationProduct(N, nodeStates)  # numElements x numIntPoints x numStates
+        intPointStates = self._interpolationProduct(N, nodeStates)  # numElements x numIntPoints x numStates
 
         # - Compute Jacobians, their inverses, and their determinants at integration points (different for each element)
         Jacs = np.zeros(numElements, numIntPoints, self.numDim, self.numDim)
         _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jacs)
         JacInvs = self.jacInv(Jacs)
-        # JacDets = self.jacDet(Jacs)
+        JacDets = self.jacDet(Jacs)  # numElements x numIntPoints
 
         # - Compute du'/dq at integration points (different for each element)
         dUPrimedq = np.zeros(numElements, numIntPoints, self.numDim, self.numNodes)
         _computeDUPrimeDqProduct(JacInvs, NPrimeParam, dUPrimedq)
 
         # - Compute u' at integration points (different for each element)
+        intPointStateGradients = np.zeros(numElements, numIntPoints, self.numStates, self.numDim)
+        _computeUPrimeProduct(JacInvs, NPrimeParam, nodeStates, intPointStateGradients)
+
         # - Compute function f(x_real, dvs, u, u') at integration points (different for each constitutive model)
+        # First, currently everything is in numElements x numIntPoints x ... arrays, but the constitutive model doesn't care about the distinction between different elements, so we need to flatten the first two dimensions
+        numPointsTotal = numElements * numIntPoints
+        intPointCoords = np.ascontiguousarray(np.reshape(intPointCoords, (numPointsTotal, self.numDim)))
+        intPointStates = np.ascontiguousarray(np.reshape(intPointStates, (numPointsTotal, self.numStates)))
+        intPointStateGradients = np.ascontiguousarray(
+            np.reshape(intPointStateGradients, (numPointsTotal, self.numStates, self.numDim))
+        )
+
+        # For the DVs it's a bit different, we have one DV value per element, so we actually need to expand them so that we have one value per integration point
+        intPointDVs = {}
+        for dvName, dvValues in designVars.items():
+            intPointDVs[dvName] = np.repeat(dvValues, numIntPoints)
+
+        weakRes = constitutiveModel.computeWeakResiduals(
+            intPointStates, intPointStateGradients, intPointCoords, intPointDVs
+        )
+
+        # Reshape the weak residuals back to numElements x numIntPoints x ...
+        weakRes = np.ascontiguousarray(np.reshape(weakRes, (numElements, numIntPoints, self.numStates, self.numDim)))
+
         # - Compute r = du'/dq^T * f
-        # - Compute R, weighted sum of r * detJ over each set of integration points
+        r = np.zeros(numElements, numIntPoints, self.numNodes, self.numStates)
+        _transformResidual(dUPrimedq, weakRes, r)
+
+        # - Compute R, weighted sum of w * r * detJ over each set of integration points
+        R = np.einsum("epns,ep,p->ens", r, JacDets, intPointWeights)
+        return R
+        # R = np.tensordot(r * JacDets, intPointWeights, axes=([1], [0]))
 
     # def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
     #     """Integrate a function over a set of elements
@@ -807,6 +838,40 @@ def _computeDUPrimeDqProduct(JacInv, NPrimeParam, result):
     for ii in range(numElements):
         for jj in range(numPoints):
             result[ii, jj] = JacInv[ii, jj] @ NPrimeParam[jj]
+
+
+@guvectorize(
+    [(float64[:, :, :, ::1], float64[:, :, :, ::1], float64[:, :, :, ::1])],
+    "(e,p,d,n),(e,p,d,s)->(e,p,n,s)",
+    nopython=True,
+    cache=True,
+    fastmath=True,
+    boundscheck=False,
+)
+def _transformResidual(dUPrimedq, weakRes, result):
+    """Compute a nasty product of high dimensional arrays to compute integration point residuals
+
+    The weak residual computed by the constitutive model is essentially the derivative of the energy at each point with
+    respect to the state gradients, this function transforms this to the derivative of the energy with respect to the
+    nodal DOF, which is what we need to compute the element residual:
+
+    r = dE/dq^T = dU'/dq^T @ dE/dU'^T
+
+    Parameters
+    ----------
+    dUPrimedq : numElements x numPoints x numDim x numNodes array
+        Sensitivity of the state gradients to nodal DOFs
+    weakRes : numElements x numPoints x numStates x numDim array
+        Weak residual values
+    result : numElements x numPoints x numNodes x numStates array
+        Integration point residual contributions
+    """
+    numElements = dUPrimedq.shape[0]
+    numPoints = dUPrimedq.shape[1]
+
+    for ii in range(numElements):
+        for jj in range(numPoints):
+            result[ii, jj] = dUPrimedq[ii, jj].T @ weakRes[ii, jj]
 
 
 @njit(cache=True, fastmath=True, boundscheck=False)
