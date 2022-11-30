@@ -28,10 +28,8 @@ from baseclasses.solvers import BaseSolver
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy import Elements
+from FEMpy import Elements, FEMpyProblem
 from FEMpy import __version__
-
-from Problem import FEMpyProblem
 
 
 class FEMpyModel(BaseSolver):
@@ -202,10 +200,6 @@ class FEMpyModel(BaseSolver):
             self.getCoordinates(force3D=True), self.mesh.cells_dict, point_data=nodeValues, cell_data=elementData
         )
         return outputMesh
-
-    # Element.computeFunction(paramCoordinates, nodeCoordinates, nodeStates, elementDVs, function, elementReductionType)
-    # problem.computeFunction(name="", elementReductionType, globalReductionType)
-    # constitutiveModel.computeFunction(name="", other inputs)
 
     def getCoordinates(self, force3D: Optional[bool] = False) -> np.ndarray:
         """Get the current node coordinates

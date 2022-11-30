@@ -22,7 +22,7 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy import FEMpyModel
+# from FEMpy import FEMpyModel
 from FEMpy.Utils import AssemblyUtils
 
 
@@ -52,6 +52,34 @@ class AssemUnitTest(unittest.TestCase):
         loads = AssemblyUtils.convertLoadsDictToVector(loadsDict, 12)
         loads_out = np.array([0.0, 0.0, 2.0, 0.0, 1.0, 1.0, 0.0, 0.0, -1.0, 0.0, 4.0, 0.0])
         np.testing.assert_equal(loads, loads_out)
+
+    def testLocalMatricesToCOOArrays(self):
+        """Test that the mesh file was read in correctly"""
+
+        localMats = np.array(
+            [
+                np.array(
+                    [
+                        [1, 0, 0, 0],
+                        [0, 1, 0, 0],
+                        [0, 1, 1, 0],
+                        [0, 0, 0, 1],
+                    ]
+                ),
+                np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 2, 2], [0, 0, 0, 2]]),
+                np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 2, 2], [0, 0, 0, 2]]),
+                np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 2, 2], [0, 0, 0, 2]]),
+            ]
+        )
+        COO_expected_rows = np.array([0, 0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 7])
+        COO_expected_cols = np.array([0, 6, 1, 7, 0, 1, 2, 1, 3, 4, 5, 5, 6, 7, 7])
+        COO_expected_vals = np.array([1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 2, 3, 2, 2, 2])
+        localDOF = np.array([[0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7], [6, 7, 0, 1]])
+
+        COO_comp_rows, COO_comp_cols, COO_comp_vals = AssemblyUtils.localMatricesToCOOArrays(localMats, localDOF)
+        np.testing.assert_equal(COO_comp_rows, COO_expected_rows)
+        np.testing.assert_equal(COO_comp_cols, COO_expected_cols)
+        np.testing.assert_equal(COO_comp_vals, COO_expected_vals)
 
 
 if __name__ == "__main__":

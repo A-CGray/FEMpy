@@ -96,6 +96,9 @@ for problem in model.problems:
 # ==============================================================================
 # Compute function
 # ==============================================================================
+for problem in model.problems:
+    value = problem.computeFunction("Pressure", elementReductionType=None, globalReductionType=None)
+    print(value)
 
 # TODO: Add something related to computing functions of interest
 # TODO: How should we set DV bounds?

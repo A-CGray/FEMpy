@@ -148,15 +148,9 @@ class FEMpyProblem:
         eval_func = self.model.constitutiveModel.getFunction(name)
         for elType in self.model.elements:
             elObject = self.model.elements[elType]["elementObject"]
-            numElements = self.model.elements[elType]["numElements"]
-
             nodeCoords = self.getElementCoordinates(elType)
-
-            nodeStates = np.zeros((numElements, elObject.numNodes, self.numStates))
-            for e in range(numElements):
-                for n in range(elObject.numNodes):
-                    nodeStates[e][n] = self.states[self.model.elements[elType]["connectivity"][e][n]]
-
+            nodeStates = self.getElementStates(elType)
+            elementDvs = self.model.getElementDVs(elType)
             # nodeCoords : numElements x numNodes x numDim array
             #     Node coordinates for each element
             # nodeStates : numElements x numNodes x numStates array

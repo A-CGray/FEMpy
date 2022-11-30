@@ -50,7 +50,7 @@ class ConstitutiveModel:
         - Other arbitrary output values (e.g failure criterion)
     """
 
-    def __init__(self, numDim, stateNames, strainNames, stressNames, designVars, functionNames) -> None:
+    def __init__(self, numDim, stateNames, strainNames, stressNames, designVars, functionNames, linear=True) -> None:
         """_summary_
 
         _extended_summary_
@@ -71,6 +71,8 @@ class ConstitutiveModel:
                 - "defaultValue" : The default value of that DV
         functionNames : list of str
             The names of functions that can be computed with this constitutive model
+        linear : bool, optional
+            Whether the constitutive model is linear or not, a.k.a whether the weak residual is a linear function of the states/state gradients, by default True
         """
         self.numDim = numDim
 
@@ -87,6 +89,8 @@ class ConstitutiveModel:
         self.numDesignVariables = len(designVars)
 
         self.functionNames = functionNames
+
+        self.isLinear = linear
 
     # ==============================================================================
     # Abstract methods: To be implemented by derived classes
@@ -216,7 +220,13 @@ class ConstitutiveModel:
         -------
         callable
             A function that can be called to compute the desired function at a bunch of points with the signature, f(states, stateGradients, coords, dvs)
+            where:
+            states is a numPoints x numStates array
+            stateGradients is a numPoints x numStates x numDim array
+            coords is a numPoints x numDim array
+            dvs is a dictionary of numPoints length arrays
         """
+
         raise NotImplementedError
 
     # ==============================================================================

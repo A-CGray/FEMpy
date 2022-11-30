@@ -168,7 +168,7 @@ def convertLoadsDictToVector(loadsDict, numDOF: int):
     return loadForce
 
 
-@njit(cache=True)
+# @njit(cache=True)
 def localMatricesToCOOArrays(localMats, localDOF):
     """Convert a set of local matrices for a set of elements to COO format data for a global matrix
 
