@@ -8,7 +8,6 @@ def nastyProduct(JacInv, NPrimeParam, nodeStates, result):
     numPoints = JacInv.shape[1]
     for ii in range(numElements):
         for jj in range(numPoints):
-            # result[ii, jj] = np.linalg.multi_dot([JacInv[ii, jj], NPrimeParam[jj], nodeStates[ii]]).T
             result[ii, jj] = np.einsum("df,fn,ns->sd", JacInv[ii, jj], NPrimeParam[jj], nodeStates[ii])
 
 
@@ -45,13 +44,13 @@ start = time.time()
 nastyProduct(Jac, NPrimeParam, nodeStates, result1)
 end = time.time()
 
-print(f"Time for python: {(end - start):e} s")
+print(f"\nTime for python: {(end - start):e} s")
 
 
-nastyProductJIT(Jac, NPrimeParam, nodeStates, result1)
+nastyProductJIT(Jac, NPrimeParam, nodeStates, result2)
 start = time.time()
 nastyProductJIT(Jac, NPrimeParam, nodeStates, result2)
 end = time.time()
 print(f"Time for Numba: {(end - start):e} s")
 
-print(f"maxDiff between results = {np.max(np.abs(result1 - result2))}")
+print(f"maxDiff between results = {np.max(np.abs(result2 - result1))}")

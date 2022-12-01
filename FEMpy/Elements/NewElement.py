@@ -209,6 +209,103 @@ class Element:
         numElements = nodeCoords.shape[0]
         return np.random.rand(numElements)
 
+    def _computeFunctionEvaluationQuantities(self, paramCoords, nodeStates, nodeCoords, designVars, quantities):
+        """Compute a series of values that are used for evaluating functions at multiple points over multiple elements
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        paramCoords : numPoint x numDim array
+            Array of parametric point coordinates to evaluate quantities at
+        nodeCoords : numElements x numNodes x numDim array
+            Node coordinates for each element
+        nodeStates : numElements x numNodes x numStates array
+            State values at the nodes of each element
+        designVars : dict of numElements arrays
+            Design variable values for each element
+        quantities : list of strings, optional
+            List of quantities to compute, by default None are computed, valid quatities are:
+            - "N" : Shape function values
+            - "NPrimeParam" : Shape function gradients
+            - "Coord" : True coordinates
+            - "State" : State values
+            - "StateGrad" : State gradients
+            - "DVs" : Design variable values
+            - "Jac" : Jacobian of the transformation from parametric to true coordinates
+            - "JacInv" : Inverse of the Jacobian of the transformation from parametric to true coordinates
+            - "JacDet" : Determinant of the Jacobian of the transformation from parametric to true coordinates
+            - "StateGradSens" : Sensitivity of the state gradients to the nodal states
+        """
+        lowerCaseQuantities = [q.lower() for q in quantities]
+        outputs = {}
+        numElements = nodeCoords.shape[0]
+        numPoints = paramCoords.shape[0]
+        numPointsTotal = numElements * numPoints
+        # - Get shape functions N (du/dq) and their gradients in parametric coordinates at points
+        # (same for all elements of same type)
+        if any([q in lowerCaseQuantities for q in ["n", "coords", "state"]]):
+            N = self.computeShapeFunctions(paramCoords)  # numPoints x numNodes
+            if "n" in lowerCaseQuantities:
+                outputs["N"] = N
+
+        if any(
+            [q in lowerCaseQuantities for q in ["nprimeparam", "stategrad", "jac", "jacinv", "jacdet", "stategradsens"]]
+        ):
+            NPrimeParam = self.computeShapeFunctionGradients(paramCoords)  # numPoints x numDim x numNodes
+            if "nprimeparam" in lowerCaseQuantities:
+                outputs["NPrimeParam"] = NPrimeParam
+
+        # - Compute real coordinates at points (different for each element)
+        if "coord" in lowerCaseQuantities:
+            pointCoords = _interpolationProduct(N[:, : self.numNodes], nodeCoords)  # numElements x numPoints x numDim
+            outputs["Coord"] = pointCoords
+
+        # - Compute states at points (different for each element)
+        if "state" in lowerCaseQuantities:
+            pointStates = _interpolationProduct(N, nodeStates)  # numElements x numPoints x numStates
+            outputs["State"] = pointStates
+
+        # - Compute Jacobians, their inverses, and their determinants at points (different for each element)
+        if any([q in lowerCaseQuantities for q in ["jac", "jacinv", "jacdet", "stategrad", "stategradsens"]]):
+            pointJacs = np.zeros((numElements, numPoints, self.numDim, self.numDim))
+            _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, pointJacs)
+            if "jac" in lowerCaseQuantities:
+                outputs["Jac"] = pointJacs
+            if any([q in lowerCaseQuantities for q in ["jacinv", "stategrad", "stategradsens"]]):
+                pointJacInvs = self.jacInv(pointJacs)
+                if "jacInv" in lowerCaseQuantities:
+                    outputs["JacInv"] = pointJacInvs
+            if "jacdet" in lowerCaseQuantities:
+                outputs["JacDet"] = self.jacDet(pointJacs)  # numElements x numPoints
+
+        # - Compute du'/dq at points (different for each element)
+        if "stategradsens" in lowerCaseQuantities:
+            pointDUPrimedq = np.zeros((numElements, numPoints, self.numDim, self.numNodes))
+            _computeDUPrimeDqProduct(pointJacInvs, NPrimeParam, pointDUPrimedq)
+            outputs["StateGradSens"] = pointDUPrimedq
+
+        # - Compute u' at points (different for each element)
+        if "stategrad" in lowerCaseQuantities:
+            pointStateGradients = np.zeros((numElements, numPoints, self.numStates, self.numDim))
+            _computeUPrimeProduct(pointJacInvs, NPrimeParam, nodeStates, pointStateGradients)
+            outputs["StateGrad"] = pointStateGradients
+
+        # Currently everything is in numElements x numPoints x ... arrays, but the constitutive model doesn't care about
+        # the distinction between different elements, so we need to flatten the first two dimensions of each array, so
+        # they're all (numElements x numPoints) x ...
+        for key in outputs:
+            outputs[key] = np.ascontiguousarray(outputs[key].reshape(numPointsTotal, *outputs[key].shape[2:]))
+
+        # For the DVs it's a bit different, we have one DV value per element, so we actually need to expand them so that
+        # we have one value per point
+        if "dvs" in lowerCaseQuantities:
+            outputs["DVs"] = {}
+            for dvName, dvValues in designVars.items():
+                outputs["DVs"][dvName] = np.ascontiguousarray(np.repeat(dvValues, numPoints))
+
+        return outputs
+
     def computeResiduals(self, nodeStates, nodeCoords, designVars, constitutiveModel, intOrder=None):
         """Compute the local residual for a series of elements
 
@@ -231,64 +328,87 @@ class Element:
         numElements = nodeCoords.shape[0]
         nodeCoords = np.ascontiguousarray(nodeCoords)
         nodeStates = np.ascontiguousarray(nodeStates)
+
         # - Get integration point parametric coordinates and weights (same for all elements of same type)
         intOrder = self.quadratureOrder if intOrder is None else intOrder
-        intPointWeights = self.getIntegrationPointWeights(intOrder)  # NumElements x numIntPoints
-        intPointParamCoords = self.getIntegrationPointCoords(intOrder)  # NumElements x numIntPoints x numDim
+        intPointWeights = self.getIntegrationPointWeights(intOrder)  # numIntPoints
+        intPointParamCoords = self.getIntegrationPointCoords(intOrder)  # numIntPoints x numDim
         numIntPoints = len(intPointWeights)
 
-        # - Get shape functions N (du/dq) and their gradients in parametric coordinates at integration points
-        # (same for all elements of same type)
-        N = self.computeShapeFunctions(intPointParamCoords)  # numIntPoints x numNodes
-        NPrimeParam = self.computeShapeFunctionGradients(intPointParamCoords)  # numIntPoints x numDim x numNodes
-
-        # - Compute real coordinates at integration points (different for each element)
-        intPointCoords = _interpolationProduct(N[:, : self.numNodes], nodeCoords)  # numElements x numIntPoints x numDim
-
-        # - Compute states at integration points (different for each element)
-        intPointStates = _interpolationProduct(N, nodeStates)  # numElements x numIntPoints x numStates
-
-        # - Compute Jacobians, their inverses, and their determinants at integration points (different for each element)
-        Jacs = np.zeros((numElements, numIntPoints, self.numDim, self.numDim))
-        _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jacs)
-        JacInvs = self.jacInv(Jacs)
-        JacDets = self.jacDet(Jacs)  # numElements x numIntPoints
-
-        # - Compute du'/dq at integration points (different for each element)
-        dUPrimedq = np.zeros((numElements, numIntPoints, self.numDim, self.numNodes))
-        _computeDUPrimeDqProduct(JacInvs, NPrimeParam, dUPrimedq)
-
-        # - Compute u' at integration points (different for each element)
-        intPointStateGradients = np.zeros((numElements, numIntPoints, self.numStates, self.numDim))
-        _computeUPrimeProduct(JacInvs, NPrimeParam, nodeStates, intPointStateGradients)
-
-        # - Compute function f(x_real, dvs, u, u') at integration points (different for each constitutive model)
-        # First, currently everything is in numElements x numIntPoints x ... arrays, but the constitutive model doesn't care about the distinction between different elements, so we need to flatten the first two dimensions
-        numPointsTotal = numElements * numIntPoints
-        intPointCoords = np.ascontiguousarray(np.reshape(intPointCoords, (numPointsTotal, self.numDim)))
-        intPointStates = np.ascontiguousarray(np.reshape(intPointStates, (numPointsTotal, self.numStates)))
-        intPointStateGradients = np.ascontiguousarray(
-            np.reshape(intPointStateGradients, (numPointsTotal, self.numStates, self.numDim))
+        # (
+        #     intPointCoords,
+        #     intPointStates,
+        #     intPointStateGradients,
+        #     intPointDVs,
+        #     intPointJacDets,
+        #     dUPrimedq,
+        # )
+        pointQuantities = self._computeFunctionEvaluationQuantities(
+            intPointParamCoords,
+            nodeStates,
+            nodeCoords,
+            designVars,
+            quantities=["Coord", "State", "StateGrad", "JacDet", "StateGradSens", "DVs"],
         )
 
-        # For the DVs it's a bit different, we have one DV value per element, so we actually need to expand them so that we have one value per integration point
-        intPointDVs = {}
-        for dvName, dvValues in designVars.items():
-            intPointDVs[dvName] = np.repeat(dvValues, numIntPoints)
+        # # - Get shape functions N (du/dq) and their gradients in parametric coordinates at integration points
+        # # (same for all elements of same type)
+        # N = self.computeShapeFunctions(intPointParamCoords)  # numIntPoints x numNodes
+        # NPrimeParam = self.computeShapeFunctionGradients(intPointParamCoords)  # numIntPoints x numDim x numNodes
+
+        # # - Compute real coordinates at integration points (different for each element)
+        # intPointCoords = _interpolationProduct(N[:, : self.numNodes], nodeCoords)  # numElements x numIntPoints x numDim
+
+        # # - Compute states at integration points (different for each element)
+        # intPointStates = _interpolationProduct(N, nodeStates)  # numElements x numIntPoints x numStates
+
+        # # - Compute Jacobians, their inverses, and their determinants at integration points (different for each element)
+        # Jacs = np.zeros((numElements, numIntPoints, self.numDim, self.numDim))
+        # _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jacs)
+        # JacInvs = self.jacInv(Jacs)
+        # JacDets = self.jacDet(Jacs)  # numElements x numIntPoints
+
+        # # - Compute du'/dq at integration points (different for each element)
+        # dUPrimedq = np.zeros((numElements, numIntPoints, self.numDim, self.numNodes))
+        # _computeDUPrimeDqProduct(JacInvs, NPrimeParam, dUPrimedq)
+
+        # # - Compute u' at integration points (different for each element)
+        # intPointStateGradients = np.zeros((numElements, numIntPoints, self.numStates, self.numDim))
+        # _computeUPrimeProduct(JacInvs, NPrimeParam, nodeStates, intPointStateGradients)
+
+        # # - Compute function f(x_real, dvs, u, u') at integration points (different for each constitutive model)
+        # # First, currently everything is in numElements x numIntPoints x ... arrays, but the constitutive model doesn't care about the distinction between different elements, so we need to flatten the first two dimensions
+        # numPointsTotal = numElements * numIntPoints
+        # intPointCoords = np.ascontiguousarray(np.reshape(intPointCoords, (numPointsTotal, self.numDim)))
+        # intPointStates = np.ascontiguousarray(np.reshape(intPointStates, (numPointsTotal, self.numStates)))
+        # intPointStateGradients = np.ascontiguousarray(
+        #     np.reshape(intPointStateGradients, (numPointsTotal, self.numStates, self.numDim))
+        # )
+
+        # # For the DVs it's a bit different, we have one DV value per element, so we actually need to expand them so that we have one value per integration point
+        # intPointDVs = {}
+        # for dvName, dvValues in designVars.items():
+        #     intPointDVs[dvName] = np.repeat(dvValues, numIntPoints)
+
+        # weakRes = constitutiveModel.computeWeakResiduals(
+        #     intPointStates, intPointStateGradients, intPointCoords, intPointDVs
+        # )
 
         weakRes = constitutiveModel.computeWeakResiduals(
-            intPointStates, intPointStateGradients, intPointCoords, intPointDVs
+            pointQuantities["State"], pointQuantities["StateGrad"], pointQuantities["Coord"], pointQuantities["DVs"]
         )
 
         # Reshape the weak residuals back to numElements x numIntPoints x ...
-        weakRes = np.ascontiguousarray(np.reshape(weakRes, (numElements, numIntPoints, self.numStates, self.numDim)))
+        # weakRes = np.ascontiguousarray(np.reshape(weakRes, (numElements, numIntPoints, self.numStates, self.numDim)))
 
         # - Compute r = du'/dq^T * f
-        r = np.zeros((numElements, numIntPoints, self.numNodes, self.numStates))
-        _transformResidual(dUPrimedq, weakRes, r)
+        r = np.zeros((numElements * numIntPoints, self.numNodes, self.numStates))
+        _transformResidual(pointQuantities["StateGradSens"], weakRes, r)
+        r = r.reshape((numElements, numIntPoints, self.numNodes, self.numStates))
+        pointQuantities["JacDet"] = pointQuantities["JacDet"].reshape((numElements, numIntPoints))
 
         # - Compute R, weighted sum of w * r * detJ over each set of integration points
-        R = np.einsum("epns,ep,p->ens", r, JacDets, intPointWeights)
+        R = np.einsum("epns,ep,p->ens", r, pointQuantities["JacDet"], intPointWeights)
         return R
 
     # def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
@@ -783,7 +903,8 @@ def _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
     boundscheck=False,
 )
 def _computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
-    """Compute the nasty product of 3 and 4d arrays required when computing state gradients at multiple points within multiple elements
+    """Compute the nasty product of 3 and 4d arrays required when computing state gradients at multiple points within
+    multiple elements
 
     Given the shape function derivatives in the parametric coordinates at each point, NPrimeParam (a numPoints x numDim
     x numNodes array), the inverses of the element mapping Jacobians at each point in each element, JacInv
@@ -842,8 +963,8 @@ def _computeDUPrimeDqProduct(JacInv, NPrimeParam, result):
 
 
 @guvectorize(
-    [(float64[:, :, :, ::1], float64[:, :, :, ::1], float64[:, :, :, ::1])],
-    "(e,p,d,n),(e,p,d,s)->(e,p,n,s)",
+    [(float64[:, :, ::1], float64[:, :, ::1], float64[:, :, ::1])],
+    "(p,d,n),(p,d,s)->(p,n,s)",
     nopython=True,
     cache=True,
     fastmath=True,
@@ -860,19 +981,17 @@ def _transformResidual(dUPrimedq, weakRes, result):
 
     Parameters
     ----------
-    dUPrimedq : numElements x numPoints x numDim x numNodes array
+    dUPrimedq : (numElements * numPoints) x numDim x numNodes array
         Sensitivity of the state gradients to nodal DOFs
-    weakRes : numElements x numPoints x numStates x numDim array
+    weakRes : (numElements * numPoints) x numStates x numDim array
         Weak residual values
-    result : numElements x numPoints x numNodes x numStates array
+    result : (numElements * numPoints) x numNodes x numStates array
         Integration point residual contributions
     """
-    numElements = dUPrimedq.shape[0]
-    numPoints = dUPrimedq.shape[1]
+    numPoints = dUPrimedq.shape[0]
 
-    for ii in range(numElements):
-        for jj in range(numPoints):
-            result[ii, jj] = dUPrimedq[ii, jj].T @ weakRes[ii, jj]
+    for ii in range(numPoints):
+        result[ii] = dUPrimedq[ii].T @ weakRes[ii]
 
 
 @njit(cache=True, fastmath=True, boundscheck=False)
