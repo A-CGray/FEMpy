@@ -78,6 +78,8 @@ class FEMpyModel(BaseSolver):
 
         self._printWelcomeMessage()
 
+        self.constitutiveModel = constitutiveModel
+
         # --- Save the mesh file name and extension ---
         self.meshFileName = meshFileName
         self.meshType = os.path.splitext(meshFileName)[1][1:].lower()
@@ -98,15 +100,15 @@ class FEMpyModel(BaseSolver):
             else:
                 self.inactiveDimensions.append(ii)
 
-        if self.numDimensions != len(self.activeDimensions):
+        if self.numDim != len(self.activeDimensions):
             raise ValueError(
-                f"You have chosen a {self.numDimensions}D constitutive model model but the mesh is {len(self.activeDimensions)}D"
+                f"You have chosen a {self.numDim}D constitutive model model but the mesh is {len(self.activeDimensions)}D"
             )
 
         self.nodeCoords = self.nodeCoords[:, self.activeDimensions]
 
         # --- Set the consitutive model ---
-        self.constitutiveModel = constitutiveModel
+        
         self.numDOFs = self.numNodes * self.numStates
 
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
@@ -147,9 +149,9 @@ class FEMpyModel(BaseSolver):
         self.BCs = {}
 
     @property
-    def numDimensions(self):
+    def numDim(self):
         """Number of active dimensions in the model"""
-        return self.constitutiveModel.numDimensions
+        return self.constitutiveModel.numDim
 
     @property
     def numStates(self):
@@ -211,11 +213,11 @@ class FEMpyModel(BaseSolver):
 
         Returns
         -------
-        numNodes x numDimensions array
+        numNodes x numDim array
             Node coordinates
         """
         currentCoords = np.copy(self.nodeCoords)
-        if not force3D or self.numDimensions == 3:
+        if not force3D or self.numDim == 3:
             return currentCoords
         else:
             coords = np.zeros((self.numNodes, 3))
@@ -227,17 +229,17 @@ class FEMpyModel(BaseSolver):
 
         Parameters
         ----------
-        nodeCoords : numNodes x numDimensions array
+        nodeCoords : numNodes x numDim array
             Node coordinates
         """
         size = nodeCoords.shape[1]
-        if size == self.numDimensions:
+        if size == self.numDim:
             return np.copy(nodeCoords)
-        if self.numDimensions != 3 and size == 3:
+        if self.numDim != 3 and size == 3:
             self.nodeCoords = nodeCoords[:, self.activeDimensions]
         else:
             raise ValueError(
-                f"Invalid number of coordinate dimensions, problem is {self.numDimensions}D but {size}D coordinates were supplied"
+                f"Invalid number of coordinate dimensions, problem is {self.numDim}D but {size}D coordinates were supplied"
             )
 
     def setDesignVariables(self, dvs: Dict[str, np.ndarray]) -> None:

@@ -63,7 +63,7 @@ class IsoPlaneStress(ConstitutiveModel):
 
         numDim = 2
 
-        self.super.__init__(numDim, stateNames, strainNames, stressNames, designVars, functionNames, linear)
+        super().__init__(numDim, stateNames, strainNames, stressNames, designVars, functionNames, linear)
 
     def computeStrains(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the strains at each one
