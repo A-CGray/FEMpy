@@ -146,7 +146,9 @@ class FEMpyProblem:
 
         elementDvs = self.model.dvs  # need to confirm size
         eval_func = self.model.constitutiveModel.getFunction(name)
+        print(self.model.elements)
         for elType in self.model.elements:
+            print(elType)
             elObject = self.model.elements[elType]["elementObject"]
             nodeCoords = self.getElementCoordinates(elType)
             nodeStates = self.getElementStates(elType)
@@ -402,7 +404,7 @@ class FEMpyProblem:
         nodeCoords = np.zeros((numElements, element.numNodes, self.numDim))
         for ii in range(numElements):
             nodeInds = self.elements[elementType]["connectivity"][ii]
-            nodeCoords[ii] = self.nodeCoords[nodeInds]
+            nodeCoords[ii] = self.model.nodeCoords[nodeInds]
         return nodeCoords
 
     def getElementStates(self, elementType: str) -> np.ndarray:
