@@ -24,7 +24,7 @@ import numpy as np
 # ==============================================================================
 # 2D plane stress
 # ==============================================================================
-def isoPlaneStress(strains, E, nu):
+def isoPlaneStressStress(strains, E, nu):
     """_summary_
 
     _extended_summary_
@@ -59,7 +59,7 @@ def isoPlaneStress(strains, E, nu):
     return stress_plane
 
 
-def isoPlaneStressStrainSens(strains, E, nu):
+def isoPlaneStressStressStrainSens(strains, E, nu):
     """Compute the sensitivity of the stress with respect to the strain
 
     _extended_summary_
@@ -100,7 +100,7 @@ def isoPlaneStressStrainSens(strains, E, nu):
 # ==============================================================================
 
 
-def isoPlaneStrain(strains, E, nu):
+def isoPlaneStrainStress(strains, E, nu):
     """_summary_
 
     _extended_summary_
@@ -136,7 +136,7 @@ def isoPlaneStrain(strains, E, nu):
     return stress_plane
 
 
-def isoPlaneStrainStrainSens(strains, E, nu):
+def isoPlaneStrainStressStrainSens(strains, E, nu):
     """Compute the sensitivity of the stress with respect to the strain
 
     _extended_summary_
@@ -213,7 +213,7 @@ def iso3DStress(strains, E, nu):
     return stress_3D
 
 
-def isoPlaneStrainStrainSens(strains, E, nu):
+def iso3DStressStrainSens(strains, E, nu):
     """Compute the sensitivity of the stress with respect to the strain
 
     _extended_summary_
