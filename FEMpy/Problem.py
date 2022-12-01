@@ -64,7 +64,7 @@ class FEMpyProblem:
         return self.model.constitutiveModel
 
     @property
-    def numDimensions(self) -> int:
+    def numDim(self) -> int:
         """Get the number of dimensions of the problem
 
         Returns
@@ -72,7 +72,7 @@ class FEMpyProblem:
         int
             Number of dimensions of the problem
         """
-        return self.model.numDimensions
+        return self.model.numDim
 
     @property
     def numNodes(self) -> int:
@@ -293,8 +293,8 @@ class FEMpyProblem:
         ----------
         name : str
             Name for the load
-        loadingFunction : function or array of length numDimensions
-            Pass an array to define a uniform field, otherwise, pass a function with the signature `F = loadingFunction(coord)` where coord is an n x numDimensions array of coordinates and F is an n x numDimensions array of loads at each point.
+        loadingFunction : function or array of length numDim
+            Pass an array to define a uniform field, otherwise, pass a function with the signature `F = loadingFunction(coord)` where coord is an n x numDim array of coordinates and F is an n x numDim array of loads at each point.
         """
         return None
 
@@ -394,12 +394,12 @@ class FEMpyProblem:
 
         Returns
         -------
-        numElements x numNodes x numDimensions array
+        numElements x numNodes x numDim array
             Node coordinates
         """
         numElements = self.elements[elementType]["numElements"]
         element = self.elements[elementType]["elementObject"]
-        nodeCoords = np.zeros((numElements, element.numNodes, self.numDimensions))
+        nodeCoords = np.zeros((numElements, element.numNodes, self.numDim))
         for ii in range(numElements):
             nodeInds = self.elements[elementType]["connectivity"][ii]
             nodeCoords[ii] = self.nodeCoords[nodeInds]

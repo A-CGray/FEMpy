@@ -58,7 +58,7 @@ class FEMpyModel(BaseSolver):
         meshFileName : str
             Filename of the mesh file to load
         constitutiveModel : FEMpy constitutive model object
-            Filename of the mesh file to load
+
         elementMap : function, optional
             A dictionary that maps from meshio element types to the FEMpy element types, the user can use this to
             specify what type of elements FEMpy should use, if the map returns None then this element type is ignored
@@ -305,7 +305,7 @@ class FEMpyModel(BaseSolver):
         if isinstance(dof, int):
             dof = [dof]
 
-        if isinstance(value, float):
+        if isinstance(value, float) or isinstance(value, int):
             value = [value] * len(dof)
         elif len(value) != len(dof):
             raise Exception("value should be a single entry or a list of values the same length as the DOF list.")

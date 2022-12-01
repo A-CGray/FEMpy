@@ -90,6 +90,8 @@ class ConstitutiveModel:
 
         self.functionNames = functionNames
 
+        self.lowerCaseFuncNames = [func.lower() for func in self.functionNames]
+
         self.isLinear = linear
 
     # ==============================================================================

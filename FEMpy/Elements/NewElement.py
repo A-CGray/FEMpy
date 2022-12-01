@@ -42,7 +42,7 @@ class Element:
     - Given state and design variable values, and a constitutive model, compute a residual Jacobian
     """
 
-    def __init__(self, numNodes, numDimensions, numStates=None, quadratureOrder=2):
+    def __init__(self, numNodes, numDim, numStates=None, quadratureOrder=2):
         """Instantiate an element object
 
         _extended_summary_
@@ -51,16 +51,16 @@ class Element:
         ----------
         numNodes : int
             Number of nodes in the element
-        numDimensions : int
+        numDim : int
             Number of spatial dimensions the element lives in
         numStates : int, optional
-            Number of states in the underlying PDE, a.k.a the number of DOF per node, by default uses numDimensions
+            Number of states in the underlying PDE, a.k.a the number of DOF per node, by default uses numDim
         quadratureOrder : int, optional
             Integration quadrature order, by default 2
         """
         self.numNodes = numNodes
-        self.numDim = numDimensions
-        self.numStates = numStates if numStates is not None else numDimensions
+        self.numDim = numDim
+        self.numStates = numStates if numStates is not None else numDim
         self.numDOF = self.numNodes * self.numStates
         self.quadratureOrder = quadratureOrder
         self.name = f"{self.numNodes}Node-{self.numStates}Disp-{self.numDim}D-Element"

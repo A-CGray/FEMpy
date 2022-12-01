@@ -47,7 +47,7 @@ class QuadElement(Element):
         """
         self.order = order
         nodes = (order + 1) ** 2
-        super().__init__(numNodes=nodes, numDimensions=2, numStates=numStates)
+        super().__init__(numNodes=nodes, numDim=2, numStates=numStates)
 
         # bottom, right, top, left order,
         # 0 means psi varies along edge, 1 means eta varies along edge

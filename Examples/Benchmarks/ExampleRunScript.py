@@ -4,7 +4,7 @@ FEMpy example runscript
 ==============================================================================
 @File    :   ExampleRunScript.py
 @Date    :   2022/11/21
-@Author  :   Alasdair Christison Gray
+@Author  :   Alasdair Christison Gray and Jasmin Lim
 @Description : This is an example of how I imagine a FEMpy runscript might look
 The model used is an L shaped bracket that is fixed at the top and has loads
 applied at the right hand edge
