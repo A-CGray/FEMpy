@@ -28,11 +28,12 @@ import numpy as np
 # --- Create constitutive model, 7000 series Aluminium ---
 E = 71.7e9
 nu = 0.33
+rho = 2
 
 # This thickness value is a design variable, by default all elements will use this value, but we can change it later if
 # we want
 t = 5e-3
-constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, t)
+constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
 
 # ==============================================================================
 # Create the FEMpy model by loading in a mesh
