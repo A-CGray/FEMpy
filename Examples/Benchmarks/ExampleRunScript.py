@@ -39,7 +39,7 @@ constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
 # Create the FEMpy model by loading in a mesh
 # ==============================================================================
 options = {"outputDir": "ExampleOutput"}
-model = fp.FEMpyModel("../Meshes/LBracket.msh", constitutiveModel, options=options)
+model = fp.FEMpyModel("../Meshes/LBeamQuad.msh", constitutiveModel, options=options)
 
 # --- Define a boundary condition that will be applied in all problems, fixing the top edge of the bracket in x and y ---
 # For now I will just manually find the nodes that are on the top edge of the mesh, maybe we can add better functionality for doing things like this in future
@@ -53,6 +53,10 @@ model.addGlobalFixedBC(name="Fixed", nodeInds=topEdgeNodeInds, dof=[0, 1], value
 # --- Create 2 different problems for 2 different loading scenarios ---
 verticalLoadCase = model.addProblem("Vertical-Load")
 horizontalLoadCase = model.addProblem("Horizontal-Load")
+
+for problem in model.problems:
+    value = model.problems[problem].computeFunction("Mass", elementReductionType=None, globalReductionType=None)
+    print(value)
 
 # --- Setup the vertical load loadcase ---
 # Again I will just manually find the nodes that are on the right edge of the mesh

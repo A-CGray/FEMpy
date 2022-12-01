@@ -192,7 +192,7 @@ class IsoPlaneStress(ConstitutiveModel):
             dvs is a dictionary of numPoints length arrays
         """
         lowerCaseFuncNames = [func.lower() for func in self.functionNames]
-        if name.lower() not in self.lowerCaseFuncNames:
+        if name.lower() not in lowerCaseFuncNames:
             raise ValueError(
                 f"{name} is not a valid function name for this constitutive model, valid choices are {self.functionNames}"
             )
