@@ -62,7 +62,7 @@ class Element:
         self.numDim = numDimensions
         self.numStates = numStates if numStates is not None else numDimensions
         self.numDOF = self.numNodes * self.numStates
-        self.quadOrder = quadratureOrder
+        self.quadratureOrder = quadratureOrder
         self.name = f"{self.numNodes}Node-{self.numStates}Disp-{self.numDim}D-Element"
 
         # --- Parametric coordinate bounds ---
@@ -230,10 +230,11 @@ class Element:
         """
         numElements = nodeCoords.shape[0]
         nodeCoords = np.ascontiguousarray(nodeCoords)
+        nodeStates = np.ascontiguousarray(nodeStates)
         # - Get integration point parametric coordinates and weights (same for all elements of same type)
-        intOrder = self.defaultIntOrder if intOrder is None else intOrder
-        intPointWeights = self.getIntPointWeights(intOrder)  # NumElements x numIntPoints
-        intPointParamCoords = self.getPointParamCoords(intOrder)  # NumElements x numIntPoints x numDim
+        intOrder = self.quadratureOrder if intOrder is None else intOrder
+        intPointWeights = self.getIntegrationPointWeights(intOrder)  # NumElements x numIntPoints
+        intPointParamCoords = self.getIntegrationPointCoords(intOrder)  # NumElements x numIntPoints x numDim
         numIntPoints = len(intPointWeights)
 
         # - Get shape functions N (du/dq) and their gradients in parametric coordinates at integration points
@@ -242,25 +243,23 @@ class Element:
         NPrimeParam = self.computeShapeFunctionGradients(intPointParamCoords)  # numIntPoints x numDim x numNodes
 
         # - Compute real coordinates at integration points (different for each element)
-        intPointCoords = self._interpolationProduct(
-            N[:, : self.numDim], nodeCoords
-        )  # numElements x numIntPoints x numDim
+        intPointCoords = _interpolationProduct(N[:, : self.numNodes], nodeCoords)  # numElements x numIntPoints x numDim
 
         # - Compute states at integration points (different for each element)
-        intPointStates = self._interpolationProduct(N, nodeStates)  # numElements x numIntPoints x numStates
+        intPointStates = _interpolationProduct(N, nodeStates)  # numElements x numIntPoints x numStates
 
         # - Compute Jacobians, their inverses, and their determinants at integration points (different for each element)
-        Jacs = np.zeros(numElements, numIntPoints, self.numDim, self.numDim)
+        Jacs = np.zeros((numElements, numIntPoints, self.numDim, self.numDim))
         _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jacs)
         JacInvs = self.jacInv(Jacs)
         JacDets = self.jacDet(Jacs)  # numElements x numIntPoints
 
         # - Compute du'/dq at integration points (different for each element)
-        dUPrimedq = np.zeros(numElements, numIntPoints, self.numDim, self.numNodes)
+        dUPrimedq = np.zeros((numElements, numIntPoints, self.numDim, self.numNodes))
         _computeDUPrimeDqProduct(JacInvs, NPrimeParam, dUPrimedq)
 
         # - Compute u' at integration points (different for each element)
-        intPointStateGradients = np.zeros(numElements, numIntPoints, self.numStates, self.numDim)
+        intPointStateGradients = np.zeros((numElements, numIntPoints, self.numStates, self.numDim))
         _computeUPrimeProduct(JacInvs, NPrimeParam, nodeStates, intPointStateGradients)
 
         # - Compute function f(x_real, dvs, u, u') at integration points (different for each constitutive model)
@@ -285,13 +284,12 @@ class Element:
         weakRes = np.ascontiguousarray(np.reshape(weakRes, (numElements, numIntPoints, self.numStates, self.numDim)))
 
         # - Compute r = du'/dq^T * f
-        r = np.zeros(numElements, numIntPoints, self.numNodes, self.numStates)
+        r = np.zeros((numElements, numIntPoints, self.numNodes, self.numStates))
         _transformResidual(dUPrimedq, weakRes, r)
 
         # - Compute R, weighted sum of w * r * detJ over each set of integration points
         R = np.einsum("epns,ep,p->ens", r, JacDets, intPointWeights)
         return R
-        # R = np.tensordot(r * JacDets, intPointWeights, axes=([1], [0]))
 
     # def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
     #     """Integrate a function over a set of elements
@@ -354,7 +352,7 @@ class Element:
         # product = np.zeros((numElements, numPoints, numStates))
         # for ii in range(numElements):
         #     product[ii] = N @ nodeStates[ii]
-        return self._interpolationProduct(N, nodeStates)
+        return _interpolationProduct(N, nodeStates)
 
     def computeCoordinates(self, paramCoords, nodeCoords):
         """Given nodal coordinates, compute the real coordinates at given parametric coordinates within the element
@@ -373,7 +371,7 @@ class Element:
         # product = np.zeros((numElements, numPoints, numStates))
         # for ii in range(numElements):
         #     product[ii] = N[:, : self.numNodes] @ nodeStates[ii]
-        return self._interpolationProduct(N[:, : self.numNodes], nodeCoords)
+        return _interpolationProduct(N[:, : self.numNodes], nodeCoords)
 
     def computeJacobians(self, paramCoords, nodeCoords):
         """Compute the Jacobian at a set of parametric coordinates within a set of elements
@@ -583,8 +581,7 @@ class Element:
 
         # Rotate the element around each axis by a random angle
         if self.numDim == 2:
-            angle = rng.random() * 2 * np.pi
-            print(f"{angle=}")
+            angle = rng.random() * 4 * np.pi - 2 * np.pi
             c, s = np.cos(angle), np.sin(angle)
             R = np.array(((c, s), (-s, c)))
             coords = coords @ R.T
@@ -593,28 +590,6 @@ class Element:
             coords = coords @ R.as_matrix().T
 
         return coords
-
-    @staticmethod
-    def _interpolationProduct(N, nodeValues):
-        """Compute the product of the interpolation matrix and a set of node values
-
-        Parameters
-        ----------
-        N : numPoints x numNodes array
-            Shape function values at each point
-        nodeValues : numElements x numNodes x numValues array
-            Nodal values for each element
-
-        Returns
-        -------
-        numElements x numPoints x numStates array
-            Interpolated values for each element
-        """
-        # the einsum below is equivalent to:
-        # product = np.zeros((numElements, numPoints, numStates))
-        # for ii in range(numElements):
-        #     product[ii] = N @ nodeStates[ii]
-        return np.einsum("pn,ens->eps", N, nodeValues)
 
     # ==============================================================================
     # Testing methods
@@ -733,6 +708,32 @@ class Element:
             coords, _ = self.getClosestPoints(nodeCoords, realCoords[0, i], tol=tol)
             error[0, i] = coords - paramCoords[i]
         return error
+
+
+@njit(cache=True)
+def _interpolationProduct(N, nodeValues):
+    """Compute the product of the interpolation matrix and a set of node values
+
+    Parameters
+    ----------
+    N : numPoints x numNodes array
+        Shape function values at each point
+    nodeValues : numElements x numNodes x numValues array
+        Nodal values for each element
+
+    Returns
+    -------
+    numElements x numPoints x numStates array
+        Interpolated values for each element
+    """
+    # the einsum below is equivalent to:
+    numElements, _, numStates = nodeValues.shape
+    numPoints = N.shape[0]
+    product = np.zeros((numElements, numPoints, numStates))
+    for ii in range(numElements):
+        product[ii] = N @ nodeValues[ii]
+    return product
+    # return np.einsum("pn,ens->eps", N, nodeValues)
 
 
 @guvectorize(

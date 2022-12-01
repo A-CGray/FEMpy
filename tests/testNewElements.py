@@ -23,6 +23,7 @@ import numpy as np
 # Extension modules
 # ==============================================================================
 from FEMpy.Elements import QuadElement2D
+from FEMpy.Constitutive import IsoPlaneStress
 
 # --- Elements to test: ---
 # QuadElement2D: 1st to 3rd order
@@ -31,7 +32,7 @@ test_params = []
 
 for el in [QuadElement2D]:
     if el in [QuadElement2D]:
-        for order in range(3, 4):
+        for order in range(1, 4):
             element = el(order=order)
             test_params.append({"element": element, "name": element.name})
     else:
@@ -65,6 +66,16 @@ class ElementUnitTest(unittest.TestCase):
     def testGetClosestPoints(self):
         error = self.element.testGetClosestPoints(self.numTestPoints, tol=self.tol * 1e-3)
         np.testing.assert_allclose(error, 0, atol=self.tol * 1e5, rtol=self.tol * 1e5)
+
+    def testZeroResidual(self):
+        cm = IsoPlaneStress(1.0, 0.0, 1.0, 1.0)
+        nodeCoordinates = self.element.getRandomElementCoordinates()
+        nodeCoordinates = np.array([nodeCoordinates])
+        nodeStates = np.zeros_like(nodeCoordinates)
+        dvs = {"Thickness": np.array([1.0])}
+        res = self.element.computeResiduals(nodeStates, nodeCoordinates, dvs, cm)
+        self.assertEqual(res.shape, (1, self.element.numNodes, self.element.numStates))
+        np.testing.assert_allclose(res, 0, atol=self.tol, rtol=self.tol)
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ import numpy as np
 # Extension modules
 # ==============================================================================
 from FEMpy.Constitutive.StrainModels import Planar2DStrain, Planar2DStrainSens
-from FEMpy.Constitutive.StressModels import isoPlaneStress
+from FEMpy.Constitutive.StressModels import isoPlaneStress, isoPlaneStressStrainSens, vonMises2DPlaneStress
 from FEMpy.Constitutive import ConstitutiveModel
 
 
@@ -59,7 +59,11 @@ class IsoPlaneStress(ConstitutiveModel):
         stressNames = ["sigma_xx", "sigma_yy", "tau_xy"]
 
         # --- Functions ---
-        functionNames = ["Mass", "Von Mises Stress", "Tresca Stress"]
+        functionNames = ["Mass", "Von Mises Stress"]
+
+        # --- Material properties ---
+        self.E = E
+        self.nu = nu
 
         numDim = 2
 
@@ -86,7 +90,7 @@ class IsoPlaneStress(ConstitutiveModel):
         numPoints x numStrains array
             Strain components at each point
         """
-        return Planar2DStrain(UPrime=stateGradients, nonlinear=not self.linear)
+        return Planar2DStrain(UPrime=stateGradients, nonlinear=not self.isLinear)
 
     def computeStrainStateGradSens(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
@@ -110,3 +114,99 @@ class IsoPlaneStress(ConstitutiveModel):
         numPoints x numStrains x numStates x numDim array
             Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
         """
+        return Planar2DStrainSens(UPrime=stateGradients, nonlinear=not self.isLinear)
+
+    def computeStresses(self, strains, dvs):
+        """Given the strains and design variables at a bunch of points, compute the stresses at each one
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        strains : numPoints x numStrains array
+            Strain components at each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        numPoints x numStresses array
+            Stress components at each point
+        """
+        return isoPlaneStress(strains, E=self.E, nu=self.nu)
+
+    def computeStressStrainSens(self, strains, dvs):
+        """Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        strains : numPoints x numStrains array
+            Strain components at each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        sens : numPoints x numStrains x numStates x numDim array
+            Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
+        """
+        return isoPlaneStressStrainSens(strains, E=self.E, nu=self.nu)
+
+    def computeVolumeScaling(self, coords, dvs):
+        """Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one
+
+        For this 2D model, the volume scaling is just the thickness
+
+        Parameters
+        ----------
+        coords : numPoints x numDim array
+            Coordinates of each point
+        dvs : _type_
+            _description_
+
+        Returns
+        -------
+        numPoints length array
+            Volume scaling parameter at each point
+        """
+        return dvs["Thickness"]
+
+    def getFunction(self, name):
+        """Return a function that can be computed for this constitutive model
+
+        Parameters
+        ----------
+        name : str
+            Name of the function to compute
+
+        Returns
+        -------
+        callable
+            A function that can be called to compute the desired function at a bunch of points with the signature, f(states, stateGradients, coords, dvs)
+            where:
+            states is a numPoints x numStates array
+            stateGradients is a numPoints x numStates x numDim array
+            coords is a numPoints x numDim array
+            dvs is a dictionary of numPoints length arrays
+        """
+        lowerCaseFuncNames = [func.lower() for func in self.functionNames]
+        if name.lower() not in self.lowerCaseFuncNames:
+            raise ValueError(
+                f"{name} is not a valid function name for this constitutive model, valid choices are {self.functionNames}"
+            )
+
+        if name.lower() == "mass":
+
+            def massFunc(states, stateGradients, coords, dvs):
+                return np.ones(states.shape[0]) * self.rho
+
+            return massFunc
+
+        if name.lower() == "von mises stress":
+
+            def VMFunc(states, stateGradients, coords, dvs):
+                strains = self.computeStrains(states, stateGradients, coords, dvs)
+                stresses = self.computeStresses(strains, dvs)
+                return vonMises2DPlaneStress(stresses)

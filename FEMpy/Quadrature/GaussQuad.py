@@ -35,7 +35,7 @@ def getGaussQuadWeights(numDimensions, order):
     ValueError
         If requested number of dimensions is not supported
     """
-    W, _ = _getGaussQuad1dData(order)
+    _, W = _getGaussQuad1dData(order)
     if numDimensions == 1:
         return W
     elif numDimensions >= 2:
@@ -75,7 +75,7 @@ def getGaussQuadPoints(numDimensions, order):
     ValueError
         If requested number of dimensions is not supported
     """
-    _, points = _getGaussQuad1dData(order)
+    points, _ = _getGaussQuad1dData(order)
     if numDimensions == 1:
         return points
     elif numDimensions >= 2:

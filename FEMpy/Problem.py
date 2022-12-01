@@ -378,6 +378,12 @@ class FEMpyProblem:
         # Add external loads to the residual
         globalResidual += AssemblyUtils.convertLoadsDictToVector(self.loads, self.numDOF)
 
+        # Apply boundary conditions
+        if applyBCs:
+            AssemblyUtils.applyBCsToVector()
+
+        return globalResidual
+
     def getElementCoordinates(self, elementType: str) -> np.ndarray:
         """Get the coordinates of the nodes for all elements of the specified type
 

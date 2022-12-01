@@ -29,15 +29,27 @@ from FEMpy.Constitutive.StressModels import IsoStress
 class AssemUnitTest(unittest.TestCase):
     """Unit tests for the FEMpy model class"""
 
-    # def testPlaneStrain(self):
-    #     """Test that the mesh file was read in correctly"""
+    def testPlanestress(self):
+        """Test that the mesh file was read in correctly"""
 
-    #     self.assertEqual(bcValues, bcValues_out)
+        strain = np.array([[1, 1, 1], [3, 3, 3]])
+        E = 1000
+        nu = 0.0
+        strain_exptected = np.array([[1000, 1000, 500], [3000, 3000, 1500]])
+        strain_computed = IsoStress.isoPlaneStress(strain, E, nu)
 
-    # def testPlaneStress(self):
-    #     """Test that the mesh file was read in correctly"""
+        np.testing.assert_equal(strain_computed, strain_exptected)
 
-    #     np.testing.assert_equal(loads, loads_out)
+    def testPlanestrain(self):
+        """Test that the mesh file was read in correctly"""
+
+        strain = np.array([[1, 1, 1], [3, 3, 3]])
+        E = 1000
+        nu = 0.0
+        strain_exptected = np.array([[1000, 1000, 500], [3000, 3000, 1500]])
+        strain_computed = IsoStress.isoPlaneStrain(strain, E, nu)
+
+        np.testing.assert_equal(strain_computed, strain_exptected)
 
     def test3Dstress(self):
         """Test that the mesh file was read in correctly"""
@@ -45,20 +57,7 @@ class AssemUnitTest(unittest.TestCase):
         strain = np.array([[1, 1, 1, 0, 0, 0], [1, 1, 1, 3, 3, 3]])
         E = 1000
         nu = 0.0
-        const_3D = (
-            E
-            / (1 + nu)
-            / (1 - 2 * nu)
-            * np.array(
-                [1 - nu, nu, nu, 0, 0, 0],
-                [nu, 1 - nu, nu, 0, 0, 0],
-                [nu, nu, 1 - nu, 0, 0, 0],
-                [0, 0, 0, (1 - 2 * nu) / 2, 0, 0],
-                [0, 0, 0, 0, (1 - 2 * nu) / 2, 0],
-                [0, 0, 0, 0, 0, (1 - 2 * nu) / 2],
-            )
-        )
-        strain_exptected = np.array([1000, 1000, 1000, 0, 0, 0], [1000, 1000, 1000, 1500, 1500, 1500])
+        strain_exptected = np.array([[1000, 1000, 1000, 0, 0, 0], [1000, 1000, 1000, 1500, 1500, 1500]])
         strain_computed = IsoStress.iso3DStress(strain, E, nu)
 
         np.testing.assert_equal(strain_computed, strain_exptected)
