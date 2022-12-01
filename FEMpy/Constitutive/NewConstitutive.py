@@ -109,8 +109,8 @@ class ConstitutiveModel:
             State gradients at each point
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dictionary of len(numpoints) array
+            design variable values at each point
 
         Returns
         -------
@@ -134,8 +134,8 @@ class ConstitutiveModel:
             State gradients at each point
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dictionary of len(numpoints) array
+            design variable values at each point
 
         Returns
         -------
@@ -154,8 +154,8 @@ class ConstitutiveModel:
         ----------
         strains : numPoints x numStrains array
             Strain components at each point
-        dvs : _type_
-            _description_
+        dvs : dictionary of len(numpoints) array
+            design variable values at each point
 
         Returns
         -------
@@ -174,8 +174,8 @@ class ConstitutiveModel:
         ----------
         strains : numPoints x numStrains array
             Strain components at each point
-        dvs : _type_
-            _description_
+        dvs : dictionary of len(numpoints) array
+            design variable values at each point
 
         Returns
         -------
@@ -197,8 +197,8 @@ class ConstitutiveModel:
         ----------
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dictionary of len(numpoints) array
+            design variable values at each point
 
         Returns
         -------
@@ -255,8 +255,8 @@ class ConstitutiveModel:
             State gradients at each point
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dictionary of len(numpoints) array
+            design variable values at each point
 
         Returns
         -------
@@ -269,18 +269,44 @@ class ConstitutiveModel:
 
         strainSens = self.computeStrainStateGradSens(states, stateGradients, coords, dvs)
 
-        # r = np.zeros((numPoints, self.numDim, self.numStates))
-
-        # _computeWeakResidualProduct(strainSens, stress, scale, r)
-
-        # return r
-
-        # The einsum below is equivalent to:
-        # r = np.zeros((numPoints, self.numDim, self.numStates))
-        # numPoints = strainSens.shape[0]
-        # for ii in range(numPoints):
-        #     r[ii] += strainSens[ii].T @ stress[ii] * volScaling[ii]
         return np.einsum("pesd,pe,p->pds", strainSens, stress, scale, optimize=["einsum_path", (0, 1), (0, 1)])
+
+    def computeWeakResidualJacobian(self, states, stateGradients, coords, dvs):
+        """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the weak residual jacobian
+
+        Jac = de/du'^T * dsigma/de * de/du'
+
+        Where:
+        - de/du' is the sensitivity of the strain to the state gradient
+        -  dsigma/de is the sensitivity of the stress to the strain gradient
+
+        This function computes `de/du'^T * sigma * scale` at each point
+
+        Parameters
+        ----------
+        states : numPoints x numStates array
+            State values at each point
+        stateGradients : numPoints x numStates x numDim array
+            State gradients at each point
+        coords : numPoints x numDim array
+            Coordinates of each point
+        dvs : dictionary of len(numpoints) array
+            design variable values at each point
+
+        Returns
+        -------
+        numPoints x self.numDim x self.numStates array
+
+        """
+        strainSens = self.computeStrainStateGradSens(states, stateGradients, coords, dvs)
+        strain = self.computeStrains(states, stateGradients, coords, dvs)
+        stressSens = self.computeStressStrainSens(strain, dvs)
+        scale = self.computeVolumeScaling(coords, dvs)
+        numPoints = states.shape[0]
+        strainSens = strainSens.reshape(numPoints, self.numStrains, self.numStates * self.numDim)
+        Jacobian = _computeWeakJacobianProduct(strainSens, stressSens, scale)
+
+        return Jacobian
 
     # ==============================================================================
     # Private methods
@@ -288,16 +314,16 @@ class ConstitutiveModel:
 
 
 @njit(cache=True, fastmath=True, boundscheck=False)
-def _computeWeakResidualProduct(dStraindUPrime, stress, volScaling, result):
+def _computeWeakJacobianProduct(strainSens, stressSens, scale):
     """Compute a nasty product of high dimensional arrays to compute the weak residual
 
     Computing the weak residual requires computing the following product at each point:
 
-    `de/du'^T * sigma * scale`
+    `de/du'^T * dsigma/de * de/du'`
 
     Where:
         - de/du' is the sensitivity of the strain to the state gradient
-        - sigma are the stresses
+        - dsigma/de is the sensitivity of the stress to the strain gradient
         - scale is the volume scaling parameter
 
     Parameters
@@ -311,9 +337,9 @@ def _computeWeakResidualProduct(dStraindUPrime, stress, volScaling, result):
     result : numPoints x numDim x numStates array
         _description_
     """
-    numPoints = dStraindUPrime.shape[0]
-    numStrains = dStraindUPrime.shape[1]
-
+    numPoints = strainSens.shape[0]
+    result = np.zeros((numPoints, strainSens.shape[-1], strainSens.shape[-1]))
     for ii in range(numPoints):
-        for jj in range(numStrains):
-            result[ii] += dStraindUPrime[ii, jj].T * stress[ii, jj] * volScaling[ii]
+        result[ii] = strainSens[ii].T @ stressSens[ii] @ strainSens[ii] * scale[ii]
+
+    return result
