@@ -2,6 +2,17 @@ from numba import njit
 import numpy as np
 
 
+@njit(cache=True)
+def convertTo3D(A):
+    origShape = A.shape
+    n = 1
+    for ii in range(len(origShape) - 2):
+        n *= origShape[ii]
+    Anew = A.reshape(n, *origShape[-2:])
+
+    return Anew, n
+
+
 def det1(A):
     """Compute the determinants of a series of 1x1 matrices.
 
@@ -15,7 +26,7 @@ def det1(A):
     dets : array of length n
         Matrix determinants
     """
-    return A.flatten()
+    return np.ascontiguousarray(A.reshape(A.shape[:-2]))
 
 
 @njit(cache=True, fastmath=True)
@@ -24,19 +35,21 @@ def det2(A):
 
     Parameters
     ----------
-    A : nx2x2 array_like
-        Arrays to compute determinants of
+    A : nxmx...x2x2 array_like
+        Multidimensional array of 2x2 arrays to compute determinants of
 
     Returns
     -------
-    dets : array of length n
+    dets : nxmx... array
         Matrix determinants
     """
-    n = np.shape(A)[0]
+    origShape = A.shape
+    A, n = convertTo3D(A)
+
     dets = np.zeros(n)
     for i in range(n):
         dets[i] = A[i, 0, 0] * A[i, 1, 1] - A[i, 0, 1] * A[i, 1, 0]
-    return dets
+    return np.ascontiguousarray(dets.reshape(origShape[:-2]))
 
 
 @njit(cache=True, fastmath=True)
@@ -53,7 +66,8 @@ def det3(A):
     dets : array of length n
         Matrix determinants
     """
-    n = np.shape(A)[0]
+    origShape = A.shape
+    A, n = convertTo3D(A)
     dets = np.zeros(n)
     for i in range(n):
         dets[i] = (
@@ -61,7 +75,7 @@ def det3(A):
             - A[i, 0, 1] * (A[i, 1, 0] * A[i, 2, 2] - A[i, 1, 2] * A[i, 2, 0])
             + A[i, 0, 2] * (A[i, 1, 0] * A[i, 2, 1] - A[i, 1, 1] * A[i, 2, 0])
         )
-    return dets
+    return np.ascontiguousarray(dets.reshape(origShape[:-2]))
 
 
 def inv1(A):
@@ -94,6 +108,8 @@ def inv2(A):
     dets : nx2x2 array
         Matrix inverses
     """
+    origShape = A.shape
+    A, n = convertTo3D(A)
     invdets = 1.0 / det2(A)
     n = len(invdets)
     invs = np.zeros((n, 2, 2))
@@ -102,7 +118,7 @@ def inv2(A):
         invs[i, 1, 1] = invdets[i] * A[i, 0, 0]
         invs[i, 0, 1] = -invdets[i] * A[i, 0, 1]
         invs[i, 1, 0] = -invdets[i] * A[i, 1, 0]
-    return invs
+    return np.ascontiguousarray(invs.reshape(origShape))
 
 
 @njit(cache=True, fastmath=True)
@@ -119,6 +135,8 @@ def inv3(A):
     dets : nx3x3 array
         Matrix inverses
     """
+    origShape = A.shape
+    A, n = convertTo3D(A)
     invdets = 1.0 / det3(A)
     n = len(invdets)
     invs = np.zeros((n, 3, 3))
@@ -132,7 +150,7 @@ def inv3(A):
         invs[i, 2, 0] = invdets[i] * (A[i, 1, 0] * A[i, 2, 1] - A[i, 1, 1] * A[i, 2, 0])
         invs[i, 2, 1] = -invdets[i] * (A[i, 0, 0] * A[i, 2, 1] - A[i, 0, 1] * A[i, 2, 0])
         invs[i, 2, 2] = invdets[i] * (A[i, 0, 0] * A[i, 1, 1] - A[i, 0, 1] * A[i, 1, 0])
-    return invs
+    return np.ascontiguousarray(invs.reshape(origShape))
 
 
 if __name__ == "__main__":
