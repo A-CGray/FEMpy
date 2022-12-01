@@ -69,12 +69,14 @@ class ElementUnitTest(unittest.TestCase):
 
     def testZeroResidual(self):
         cm = IsoPlaneStress(1.0, 0.0, 1.0, 1.0)
-        nodeCoordinates = self.element.getRandomElementCoordinates()
-        nodeCoordinates = np.array([nodeCoordinates])
+        numElements = 10
+        nodeCoordinates = np.zeros((numElements, self.element.numNodes, self.element.numDim))
+        for ii in range(numElements):
+            nodeCoordinates[ii] = self.element.getRandomElementCoordinates()
         nodeStates = np.zeros_like(nodeCoordinates)
-        dvs = {"Thickness": np.array([1.0])}
+        dvs = {"Thickness": np.ones(numElements)}
         res = self.element.computeResiduals(nodeStates, nodeCoordinates, dvs, cm)
-        self.assertEqual(res.shape, (1, self.element.numNodes, self.element.numStates))
+        self.assertEqual(res.shape, (numElements, self.element.numNodes, self.element.numStates))
         np.testing.assert_allclose(res, 0, atol=self.tol, rtol=self.tol)
 
 
