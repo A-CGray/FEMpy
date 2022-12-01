@@ -108,7 +108,6 @@ class FEMpyModel(BaseSolver):
         self.nodeCoords = self.nodeCoords[:, self.activeDimensions]
 
         # --- Set the consitutive model ---
-        
         self.numDOFs = self.numNodes * self.numStates
 
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
@@ -306,8 +305,8 @@ class FEMpyModel(BaseSolver):
         if isinstance(dof, int):
             dof = [dof]
 
-        if len(value) == 1:
-            value = (np.ones(len(dof)) * value).tolist()
+        if isinstance(value, float):
+            value = [value] * len(dof)
         elif len(value) != len(dof):
             raise Exception("value should be a single entry or a list of values the same length as the DOF list.")
             # value = np.ones(len(nodeInds)) * value
@@ -427,7 +426,7 @@ class FEMpyModel(BaseSolver):
 @njit(cache=True)
 def _convertNodeIndsToDOF(nodeIndices, numStates):
     # Figure out the output shape
-    shape = nodeIndices.shape()
+    shape = list(nodeIndices.shape)
     shape[-1] *= numStates
 
     # Flatten the input array and convert to a flattened array of DOF indices
