@@ -40,7 +40,7 @@ class QuadElement2D(Element):
         self.order = order
         numNodes = (order + 1) ** 2
         if quadratureOrder is None:
-            shapeFuncOrder = order**2
+            shapeFuncOrder = 2 * order
             quadratureOrder = int(np.ceil((shapeFuncOrder + 1) / 2))
         super().__init__(numNodes, numDimensions=2, numStates=numStates, quadratureOrder=quadratureOrder)
 
@@ -102,7 +102,7 @@ class QuadElement2D(Element):
         """
         if order is None:
             order = self.quadratureOrder
-        return getGaussQuadWeights(order)
+        return getGaussQuadWeights(self.numDim, order)
 
     def getIntegrationPointCoords(self, order=None):
         """Compute the integration point parameteric coordinates for a given quadrature order on this element
@@ -119,7 +119,7 @@ class QuadElement2D(Element):
         """
         if order is None:
             order = self.quadratureOrder
-        return getGaussQuadWeights(order)
+        return getGaussQuadPoints(self.numDim, order)
 
     def getReferenceElementCoordinates(self):
         """Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined
