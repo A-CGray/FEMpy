@@ -250,7 +250,7 @@ class FEMpyModel(BaseSolver):
             {"VariableName1": array(one value per element), "VariableName2": array()}
         """
         for dvName in dvs:
-            self.dvs[dvName] = dvs[dvName]
+            self.dvs[dvName] = np.copy(dvs[dvName])
 
     def getElementDVs(self, elementType: str):
         """Get the design variable values for a given element set
@@ -313,7 +313,7 @@ class FEMpyModel(BaseSolver):
 
         for i in range(len(nodeInds)):
             for j in range(len(dof)):
-                dofNodes.append([i] * self.numStates + dof[j])
+                dofNodes.append(nodeInds[i] * self.numStates + dof[j])
                 valDOF.append(value[j])
         self.BCs[name]["DOF"] = dofNodes
         self.BCs[name]["Value"] = valDOF
@@ -344,7 +344,20 @@ class FEMpyModel(BaseSolver):
             array of DOF indices, has same dimensions as input array, except that the last dimension is larger by a
             factor of the number of DOF per node
         """
-        return _convertNodeIndsToDOF(nodeIndices, self.numStates)
+        # Figure out the output shape
+        shape = list(nodeIndices.shape)
+        shape[-1] *= self.numStates
+
+        # Flatten the input array and convert to a flattened array of DOF indices
+        nodeIndices = nodeIndices.flatten()
+        # dofIndices = []
+        dofIndices = np.zeros(len(nodeIndices) * self.numStates, dtype=np.int64)
+        for i in range(len(nodeIndices)):
+            # ind = range(nodeIndices[i] * self.numStates, (nodeIndices[i] + 1) * (self.numStates))
+            ind = np.arange(nodeIndices[i] * self.numStates, (nodeIndices[i] + 1) * (self.numStates))
+            dofIndices[i * self.numStates : (i + 1) * self.numStates] = ind
+
+        return np.reshape(dofIndices, shape)
 
     # ==============================================================================
     # Private methods
@@ -423,19 +436,3 @@ class FEMpyModel(BaseSolver):
         )
         self.pp("Version: " + __version__)
         self.pp("")
-
-
-@njit(cache=True)
-def _convertNodeIndsToDOF(nodeIndices, numStates):
-    # Figure out the output shape
-    shape = list(nodeIndices.shape)
-    shape[-1] *= numStates
-
-    # Flatten the input array and convert to a flattened array of DOF indices
-    nodeIndices = nodeIndices.flatten()
-    dofIndices = []
-    for i in range(len(nodeIndices)):
-        ind = range(nodeIndices[i] * numStates, (nodeIndices[i] + 1) * (numStates))
-        dofIndices += list(ind)
-
-    return np.reshape(np.array(dofIndices), shape)
