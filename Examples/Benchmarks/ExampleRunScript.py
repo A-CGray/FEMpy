@@ -45,7 +45,7 @@ model = fp.FEMpyModel("../Meshes/LBracket.msh", constitutiveModel, options=optio
 # For now I will just manually find the nodes that are on the top edge of the mesh, maybe we can add better functionality for doing things like this in future
 nodeCoords = model.getCoordinates()
 topEdgeNodeInds = np.argwhere(nodeCoords[:, 1] == np.max(nodeCoords[:, 1])).flatten()
-model.addGlobalFixedBC(name="Fixed", nodeInds=topEdgeNodeInds, dof=[0, 1], values=0.0)
+model.addGlobalFixedBC(name="Fixed", nodeInds=topEdgeNodeInds, dof=[0, 1], value=0.0)
 
 # ==============================================================================
 # Setup FEMpy problems

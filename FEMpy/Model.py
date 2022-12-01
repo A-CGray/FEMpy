@@ -313,7 +313,7 @@ class FEMpyModel(BaseSolver):
 
         for i in range(len(nodeInds)):
             for j in range(len(dof)):
-                dofNodes.append(nodeInds[i] * self.numStates + dof[j])
+                dofNodes.append([i] * self.numStates + dof[j])
                 valDOF.append(value[j])
         self.BCs[name]["DOF"] = dofNodes
         self.BCs[name]["Value"] = valDOF
@@ -327,6 +327,8 @@ class FEMpyModel(BaseSolver):
             Name of the problem to add
         """
         self.problems[name] = FEMpyProblem(name, self)
+
+        return self.problems[name]
 
     def getDOFfromNodeInds(self, nodeIndices):
         """Convert an array of node indices to an array of DOF indices
