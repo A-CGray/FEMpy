@@ -26,41 +26,71 @@ import numpy as np
 from FEMpy.Constitutive.StressModels import IsoStress
 
 
-class AssemUnitTest(unittest.TestCase):
-    """Unit tests for the FEMpy model class"""
+class StressCalculationTest(unittest.TestCase):
+    """Unit tests for the FEMpy stress computation"""
+
+    def setUp(self):
+        self.n = 10
+        np.random.seed(1)
+        self.tol = 1e-12
+
+        self.E = 1000
+        self.nu = 0.3
 
     def testPlanestress(self):
         """Test that the mesh file was read in correctly"""
 
-        strain = np.array([[1, 1, 1], [3, 3, 3]])
-        E = 1000
-        nu = 0.0
-        strain_exptected = np.array([[1000, 1000, 500], [3000, 3000, 1500]])
+        strain = np.random.rand(self.n, 3)
+        E = self.E
+        nu = self.nu
+        mat = E / (1 - nu**2) * np.array([[1, nu, 0], [nu, 1, 0], [0, 0, (1 - nu) / 2]])
+        strain_exptected = np.zeros_like(strain)
+        for i in range(self.n):
+            strain_exptected[i] = mat @ strain[i]
         strain_computed = IsoStress.isoPlaneStressStress(strain, E, nu)
 
-        np.testing.assert_equal(strain_computed, strain_exptected)
+        np.testing.assert_allclose(strain_computed, strain_exptected, atol=self.tol, rtol=self.tol)
 
     def testPlanestrain(self):
         """Test that the mesh file was read in correctly"""
 
-        strain = np.array([[1, 1, 1], [3, 3, 3]])
-        E = 1000
-        nu = 0.0
-        strain_exptected = np.array([[1000, 1000, 500], [3000, 3000, 1500]])
+        strain = np.random.rand(self.n, 3)
+        E = self.E
+        nu = self.nu
+        mat = E / ((1 + nu) * (1 - nu * 2)) * np.array([[1 - nu, nu, 0], [nu, 1 - nu, 0], [0, 0, (1 - 2 * nu) / 2]])
+        strain_exptected = np.zeros_like(strain)
+        for i in range(self.n):
+            strain_exptected[i] = mat @ strain[i]
         strain_computed = IsoStress.isoPlaneStrainStress(strain, E, nu)
 
-        np.testing.assert_equal(strain_computed, strain_exptected)
+        np.testing.assert_allclose(strain_computed, strain_exptected, atol=self.tol, rtol=self.tol)
 
     def test3Dstress(self):
         """Test that the mesh file was read in correctly"""
 
-        strain = np.array([[1, 1, 1, 0, 0, 0], [1, 1, 1, 3, 3, 3]])
-        E = 1000
-        nu = 0.0
-        strain_exptected = np.array([[1000, 1000, 1000, 0, 0, 0], [1000, 1000, 1000, 1500, 1500, 1500]])
+        strain = np.random.rand(self.n, 6)
+        E = self.E
+        nu = self.nu
+        mat = (
+            E
+            / ((1 + nu) * (1 - nu * 2))
+            * np.array(
+                [
+                    [1 - nu, nu, nu, 0, 0, 0],
+                    [nu, 1 - nu, nu, 0, 0, 0],
+                    [nu, nu, 1 - nu, 0, 0, 0],
+                    [0, 0, 0, (1 - 2 * nu) / 2, 0, 0],
+                    [0, 0, 0, 0, (1 - 2 * nu) / 2, 0],
+                    [0, 0, 0, 0, 0, (1 - 2 * nu) / 2],
+                ]
+            )
+        )
+        strain_exptected = np.zeros_like(strain)
+        for i in range(self.n):
+            strain_exptected[i] = mat @ strain[i]
         strain_computed = IsoStress.iso3DStress(strain, E, nu)
 
-        np.testing.assert_equal(strain_computed, strain_exptected)
+        np.testing.assert_allclose(strain_computed, strain_exptected, atol=self.tol, rtol=self.tol)
 
 
 if __name__ == "__main__":

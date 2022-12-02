@@ -55,7 +55,7 @@ def isoPlaneStressStress(strains, E, nu):
             ]
         )
     )
-    stress_plane = np.einsum("ss,ps->ps", const_planeStress, strains)
+    stress_plane = np.einsum("as,pa->ps", const_planeStress, strains)
     return stress_plane
 
 
@@ -132,7 +132,7 @@ def isoPlaneStrainStress(strains, E, nu):
             ]
         )
     )
-    stress_plane = np.einsum("ss,ps->ps", const_planeStrain, strains)
+    stress_plane = np.einsum("as,pa->ps", const_planeStrain, strains)
     return stress_plane
 
 
@@ -209,7 +209,7 @@ def iso3DStress(strains, E, nu):
         )
     )
 
-    stress_3D = np.einsum("ss,ps->ps", const_3D, strains)
+    stress_3D = np.einsum("as,pa->ps", const_3D, strains)
     return stress_3D
 
 
