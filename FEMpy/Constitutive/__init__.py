@@ -1,9 +1,5 @@
-# from .AxialBar import AxialBar
-# from .Constitutive import Constitutive
-# from .isoPlaneStrain import isoPlaneStrain
-# from .isoPlaneStress import isoPlaneStress
-from .NewConstitutive import ConstitutiveModel
-from .NewIsoPlaneStress import IsoPlaneStress
-from .NewIsoPlaneStrain import IsoPlaneStrain
+from .ConstitutiveModel import ConstitutiveModel
+from .IsoPlaneStress import IsoPlaneStress
+from .IsoPlaneStrain import IsoPlaneStrain
 from . import StrainModels
 from . import StressModels

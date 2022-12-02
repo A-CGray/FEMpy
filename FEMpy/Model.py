@@ -389,33 +389,34 @@ class FEMpyModel(BaseSolver):
         # --- 2D Quad elements ---
         if elName[:4] == "quad":
             if elName == "quad":
-                elObject = Elements.QuadElement(order=1, numStates=self.numStates)
+                elObject = Elements.QuadElement2D(order=1, numStates=self.numStates)
             else:
                 numNodes = int(elName[4:])
                 if numNodes == 8:
-                    elObject = Elements.serendipityQuadElement(numStates=self.numStates)
+                    pass
+                    # elObject = Elements.serendipityQuadElement(numStates=self.numStates)
                 else:
                     # If the sqrt of the number of nodes is a whole number then this is a valid quad element
                     order = np.sqrt(numNodes) - 1
                     if int(order) == order:
-                        elObject = Elements.QuadElement(order=int(order), numStates=self.numStates)
+                        elObject = Elements.QuadElement2D(order=int(order), numStates=self.numStates)
 
         # --- 2D Triangle elements ---
-        if elName == "triangle":
-            elObject = Elements.TriElement(order=1, numStates=self.numStates)
-        if elName == "triangle6":
-            elObject = Elements.TriElement(order=2, numStates=self.numStates)
-        if elName == "triangle10":
-            elObject = Elements.TriElement(order=3, numStates=self.numStates)
+        # if elName == "triangle":
+        #     elObject = Elements.TriElement(order=1, numStates=self.numStates)
+        # if elName == "triangle6":
+        #     elObject = Elements.TriElement(order=2, numStates=self.numStates)
+        # if elName == "triangle10":
+        #     elObject = Elements.TriElement(order=3, numStates=self.numStates)
 
-        # --- 1D Line Elements ---
-        if elName[:4] == "line":
-            if elName == "line":
-                elObject = Elements.QuadElement(order=1, numStates=self.numStates)
-            else:
-                numNodes = int(elName[4:])
-                order = numNodes - 1
-                elObject = Elements.QuadElement(order=order, numStates=self.numStates)
+        # # --- 1D Line Elements ---
+        # if elName[:4] == "line":
+        #     if elName == "line":
+        #         elObject = Elements.QuadElement(order=1, numStates=self.numStates)
+        #     else:
+        #         numNodes = int(elName[4:])
+        #         order = numNodes - 1
+        #         elObject = Elements.QuadElement(order=order, numStates=self.numStates)
 
         return elObject
 

@@ -1,11 +1,11 @@
 """
 ==============================================================================
-Q4 Element
+FEMpy: 2d Quad Element
 ==============================================================================
-@File    :   QuadElement.py
-@Date    :   2021/03/11
+@File    :   newQuadElement.py
+@Date    :   2022/11/27
 @Author  :   Alasdair Christison Gray
-@Description : This file contains a class that implements a 2D, 4-Node quadrilateral finite element
+@Description :
 """
 
 # ==============================================================================
@@ -22,175 +22,142 @@ import numpy as np
 # ==============================================================================
 from .Element import Element
 from FEMpy.Basis import LagrangePoly as LP
-from FEMpy.Quadrature import gaussQuad1d
+from FEMpy.Quadrature import getGaussQuadWeights, getGaussQuadPoints
 
 
-class QuadElement(Element):
-    def __init__(self, order=1, numStates=2):
-        """Instantiate an arbitrary order 2d quadrilateral finite element
+class QuadElement2D(Element):
+    """An "arbitrary order" 2d quadrilateral finite element
 
-        Note that this element does not use the typical CCW node ordering, to make it simpler to work with arbitrary
-        element orders, the nodes are ordered left to right followed by bottom to top, so for a 1st order element the
-        ordering is:
+    Arbitrary order is in quotes at the moment because although the shape functions can in theory be computed for an arbitrary with the current LagrangePoly implementation, I have not figured out how to element the node reordering required to reorder the shape functions into the node ordering used by MeshIO yet for anything more than 3rd order elements.
 
-        1) Bottom left
-        2) Bottom Right
-        3) Top left
-        4) Top right
+    Inherits from
+    -------------
+    Element : FEMpy.Element
+        The FEMpy element base class
+    """
 
-        Parameters
-        ----------
-        order : int, optional
-            Element order, by default 1
-        numStates : int, optional
-            Number of variables at each node, by default 2
-        """
+    def __init__(self, order=1, numStates=None, quadratureOrder=None):
         self.order = order
-        nodes = (order + 1) ** 2
-        super().__init__(numNodes=nodes, numDim=2, numStates=numStates)
-
-        # bottom, right, top, left order,
-        # 0 means psi varies along edge, 1 means eta varies along edge
-        self.edgeFreeCoord = [0, 1, 0, 1]
-        # value of the fixed coordinate on each edge
-        self.edgeFixedCoord = [-1.0, 1.0, 1.0, -1.0]
+        numNodes = (order + 1) ** 2
+        if quadratureOrder is None:
+            shapeFuncOrder = 2 * order
+            quadratureOrder = int(np.ceil((shapeFuncOrder + 1) / 2))
+        super().__init__(numNodes, numDim=2, numStates=numStates, quadratureOrder=quadratureOrder)
 
         self.name = f"Order{self.order}-LagrangeQuad"
 
-    def getShapeFunctions(self, paramCoords):
-        """Compute shape function values at a set of parametric coordinates
+        self.shapeFuncToNodeOrder = self._getNodeReordering(self.order)
 
+    # ==============================================================================
+    # Public methods
+    # ==============================================================================
+
+    def computeShapeFunctions(self, paramcoords):
+        """Compute the shape function values at a given set of parametric coordinates
 
         Parameters
         ----------
-        paramCoords : n x nDim array
-            isoparametric coordinates, one row for each point in isoparametric space to compute the Jacobian at
+        paramCoords : numPoint x numDim array
+            Array of parametric point coordinates to evaluate shape functions at
 
         Returns
         -------
-        N : n x numNode array
-            Shape function values, N[i][j] is the value of the jth shape function at the ith point
+        N: numPoint x numNodes array
+            Array of shape function values at the given parametric coordinates, N[i][j] is the value of the jth shape function at the ith parametric point
         """
-        return LP.LagrangePoly2d(paramCoords[:, 0], paramCoords[:, 1], self.order + 1)
+        N = LP.LagrangePoly2d(paramcoords[:, 0], paramcoords[:, 1], self.order + 1)
+        return np.ascontiguousarray(N[:, self.shapeFuncToNodeOrder])
 
-    def getShapeFunctionDerivs(self, paramCoords):
-        """Compute shape function derivatives at a set of parametric coordinates
+    def computeShapeFunctionGradients(self, paramCoords):
+        """Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates
 
-        These are the derivatives of the shape functions with respect to the parametric coordinates (si, eta, gamma)
+        _extended_summary_
 
         Parameters
         ----------
-        paramCoords : n x nD array
-            isoparametric coordinates, one row for each point in isoparametric space to compute the Jacobian at
+        paramCoords : numPoint x numDim array
+            Array of parametric point coordinates to evaluate shape function gradients at
 
         Returns
         -------
-        NPrime : n x numDim x numNode array
-            Shape function values, N[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
+        NGrad: numPoint x numDim x numNodes array
+            Shape function gradient values, NGrad[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
             parametric coordinate
         """
-        return LP.LagrangePoly2dDeriv(paramCoords[:, 0], paramCoords[:, 1], self.order + 1)
+        NPrimeParam = LP.LagrangePoly2dDeriv(paramCoords[:, 0], paramCoords[:, 1], self.order + 1)
+        return np.ascontiguousarray(NPrimeParam[:, :, self.shapeFuncToNodeOrder])
 
-    def getStiffnessMat(self, nodeCoords, constitutive, n=None):
-        # TODO: this function should not presume the constitutive object has a thickness, what if you want to use this
-        # quad element for something else, like 2D heat transfer where there's no thickness
-        return super().getStiffnessMat(nodeCoords, constitutive, n=n) * constitutive.t
-
-    def integrateBodyForce(self, f, nodeCoords, constitutive, n=1):
-        # TODO: this function should not presume the constitutive object has a thickness, what if you want to use this
-        # quad element for something else, like 2D heat transfer where there's no thickness
-        return super().integrateBodyForce(f, nodeCoords, n=n) * constitutive.t
-
-    def integrateTraction(self, f, nodeCoords, constitutive, edges=None, n=1):
-        """Compute equivalent nodal forces due to body forces through numerical integration
-
+    def getIntegrationPointWeights(self, order=None):
+        """Compute the integration point weights for a given quadrature order on this element
 
         Parameters
         ----------
-        f : Body force function
-            Should accept an nP x numDim array as input and output a nP x numDisp array, ie f(x)[i] returns the body force components at the ith point queried
-        nodeCoords : numNode x numDim array
-            Element node real coordinates
-        n : int, optional
-            Number of integration points, can be a single value or a list with a value for each direction, by default 1
-        constitutive : [type]
-            [description]
-        edges : list, optional
-            [description], by default [1,2,3,4]
+        order : int
+            Integration order
 
         Returns
         -------
-        Fb : numNode x numDisp array
-            Equivalent nodal loads due to traction forces force
+        array of length numIntpoint
+            Integration point weights
         """
-        if edges is None:
-            edges = [0, 1, 2, 3]
-        if isinstance(edges, (int, np.integer)):
-            edges = [edges]
-        Ft = np.zeros((self.numNodes, self.numStates))
-        for e in edges:
-            if self.edgeFreeCoord[e] == 0:
-                func = lambda x1: self.tractionIntegrand(  # noqa: E731
-                    f,
-                    np.array([x1, self.edgeFixedCoord[e] * np.ones_like(x1)]).T,
-                    nodeCoords,
-                    e,
-                )
-            else:
-                func = lambda x2: self.tractionIntegrand(  # noqa: E731
-                    f,
-                    np.array([self.edgeFixedCoord[e] * np.ones_like(x2), x2]).T,
-                    nodeCoords,
-                    e,
-                )
-            Ft += gaussQuad1d(func, n)
-        return Ft * constitutive.t
+        if order is None:
+            order = self.quadratureOrder
+        return getGaussQuadWeights(self.numDim, order)
 
-    def tractionIntegrand(self, f, paramCoord, nodeCoords, edgeNum):
-        # Compute shape functions and Jacobian determinant at parametric coordinates
-        N = self.getShapeFunctions(paramCoord)
-        J = self.getJacobian(paramCoord, nodeCoords)
-        detJStar = np.linalg.norm(J[:, self.edgeFreeCoord[edgeNum], :], axis=-1)
+    def getIntegrationPointCoords(self, order=None):
+        """Compute the integration point parameteric coordinates for a given quadrature order on this element
 
-        # Transform parametric to real coordinates in order to compute body force components
-        realCoord = self.getRealCoord(paramCoord, nodeCoords)
-        F = f(realCoord)
-
-        # Compute N^T fb at each point
-        Fb = self._computeNTFProduct(F, N)
-        return (Fb.T * detJStar).T
-
-    def getRandomNodeCoords(self):
-        """Generate a random, but valid, set of node coordinates for an element
-
-        For the Quad element, we simply create a grid of evenly spaced points then add some random noise to each point
-        before applying a random scaling and rotation
+        Parameters
+        ----------
+        order : int
+            Integration order
 
         Returns
         -------
-        nodeCoords : numNode x numDim array
-            Node coordinates
+        numIntpoint x numDim array
+            Integration point coordinates
         """
-        xy = np.linspace(0, 1, self.order + 1)
-        nodeCoords = np.random.rand((self.order + 1) ** 2, self.numDim) * 0.1
-        nodeCoords[:, 0] += np.tile(xy, self.order + 1)
-        nodeCoords[:, 1] += np.repeat(xy, self.order + 1)
-        nodeCoords *= np.random.rand(1)
-        theta = np.random.rand(1) * np.pi
-        R = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])[:, :, 0]
-        return (R @ nodeCoords.T).T
+        if order is None:
+            order = self.quadratureOrder
+        return getGaussQuadPoints(self.numDim, order)
 
+    def getReferenceElementCoordinates(self):
+        """Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined
 
-if __name__ == "__main__":
+        For the quad element, the nodes of the reference element are simply in a order+1 x order+1 grid over the range [-1, 1] in both x and y, reordered as described by _getNodeReordering
 
-    QuadElem = QuadElement()
+        Returns
+        -------
+        numNodes x numDim array
+            Element node coordinates
+        """
+        x = np.tile(np.linspace(-1, 1, self.order + 1), self.order + 1)
+        y = np.repeat(np.linspace(-1, 1, self.order + 1), self.order + 1)
+        return np.vstack((x[self.shapeFuncToNodeOrder], y[self.shapeFuncToNodeOrder])).T
 
-    # Test that we get the expected output when the original element matches the isoparametric element
-    nodecoords = np.array([[-1.0, -1.0], [1.0, -1.0], [-1.0, 1.0], [1.0, 1.0]])
-    uNodes = np.array([[-1.0, -1.0], [1.0, -1.0], [-1.0, 1.0], [1.0, 1.0]])
-    paramCoords = np.array([[-1.0, -1.0], [0.0, 0.0], [1.0, 1.0]])
-    print(QuadElem.getShapeFunctions(paramCoords), "\n")
-    print(QuadElem.getRealCoord(paramCoords, nodecoords), "\n")
-    print(QuadElem.getU(paramCoords, uNodes), "\n")
-    print(QuadElem.getUPrime(paramCoords, nodecoords, uNodes), "\n")
-    print(QuadElem.getJacobian(paramCoords, nodecoords), "\n\n\n")
+    # ==============================================================================
+    # Private methods
+    # ==============================================================================
+
+    @staticmethod
+    def _getNodeReordering(order):
+        """Compute the reordering required between shape functions and nodes
+
+        The 2d lagrange polynomial shape functions are ordered left to right, bottom to top, but the node ordering is defined differently, (e.g for a four node element it is bottom left, bottom right, top left, top right). This method computes the reordering required to map the shape functions to the correct node ordering. As of now I have simply manually implemented this for the first few orders, but it should be possible to compute this for any order with some sort of recursion.
+
+        Parameters
+        ----------
+        order : int
+            Quad element order
+
+        Returns
+        -------
+        np.array
+            Reordering array, array[i] = j indicates that the ith shape function should be reordered to the jth node
+        """
+        if order == 1:
+            return np.array([0, 1, 3, 2])
+        if order == 2:
+            return np.array([0, 4, 1, 7, 8, 5, 3, 6, 2])
+        if order == 3:
+            return np.array([0, 4, 5, 1, 11, 12, 13, 6, 10, 15, 14, 7, 3, 9, 8, 2])

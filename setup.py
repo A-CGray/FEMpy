@@ -11,22 +11,6 @@ __version__ = re.findall(
 )[0]
 
 
-def computeGaussQuadValues(n, outdir=None):
-    from numpy.polynomial.legendre import leggauss
-    import pickle
-
-    if outdir is None:
-        outdir = ""
-    gaussWeights = {}
-    gaussCoords = {}
-    for i in range(1, n + 1):
-        gaussCoords[i - 1], gaussWeights[i - 1] = leggauss(i)
-    with open(os.path.join(outdir, "FEMpy/Quadrature/GaussQuadWeights.pkl"), "wb") as f:
-        pickle.dump(gaussWeights, f, protocol=-1)
-    with open(os.path.join(outdir, "FEMpy/Quadrature/GaussQuadCoords.pkl"), "wb") as f:
-        pickle.dump(gaussCoords, f, protocol=-1)
-
-
 class installWrapper(install):
     """wrapper around setuptools' install method that will run a post install script"""
 
@@ -34,7 +18,6 @@ class installWrapper(install):
         from distutils.sysconfig import get_python_lib
 
         install.run(self)
-        computeGaussQuadValues(64, outdir=get_python_lib())
 
 
 class developWrapper(develop):
@@ -42,7 +25,6 @@ class developWrapper(develop):
 
     def run(self):
         develop.run(self)
-        computeGaussQuadValues(64)
         subprocess.run("pre-commit install", shell=True)
 
 
@@ -62,7 +44,6 @@ setup(
         "numpy",
         "numba",
         "scipy>=1.8.0",
-        "pyComposite @ git+https://github.com/A-Gray-94/pyComposite.git",
     ],
     extras_require={
         "docs": [
