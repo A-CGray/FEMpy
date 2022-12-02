@@ -13,6 +13,7 @@ Element unit tests
 # ==============================================================================
 import unittest
 from parameterized import parameterized_class
+import time
 
 # ==============================================================================
 # External Python modules
@@ -23,7 +24,7 @@ import numpy as np
 # Extension modules
 # ==============================================================================
 from FEMpy.Elements import QuadElement2D
-from FEMpy.Constitutive import IsoPlaneStress
+from FEMpy.Constitutive import IsoPlaneStress, IsoPlaneStrain
 
 # --- Elements to test: ---
 # QuadElement2D: 1st to 3rd order
@@ -68,7 +69,7 @@ class ElementUnitTest(unittest.TestCase):
         np.testing.assert_allclose(error, 0, atol=self.tol * 1e5, rtol=self.tol * 1e5)
 
     def testZeroResidual(self):
-        cm = IsoPlaneStress(1.0, 0.0, 1.0, 1.0)
+        cm = IsoPlaneStrain(E=70e9, nu=0.3, rho=2700, t=1.0)
         numElements = 10
         nodeCoordinates = np.zeros((numElements, self.element.numNodes, self.element.numDim))
         for ii in range(numElements):
@@ -78,6 +79,18 @@ class ElementUnitTest(unittest.TestCase):
         res = self.element.computeResiduals(nodeStates, nodeCoordinates, dvs, cm)
         self.assertEqual(res.shape, (numElements, self.element.numNodes, self.element.numStates))
         np.testing.assert_allclose(res, 0, atol=self.tol, rtol=self.tol)
+
+    def testResidualJacobian(self):
+        cm = IsoPlaneStrain(E=70e9, nu=0.3, rho=2700, t=1.0)
+        numElements = 10
+        nodeCoordinates = np.zeros((numElements, self.element.numNodes, self.element.numDim))
+        for ii in range(numElements):
+            nodeCoordinates[ii] = self.element.getRandomElementCoordinates()
+        if self.element.numNodes == 4:
+            nodeCoordinates[0] = np.array([[0.0, 0.0], [2.0, 0.0], [2.0, 1.0], [0.0, 2.0]])
+        nodeStates = np.zeros_like(nodeCoordinates)
+        dvs = {"Thickness": np.ones(numElements)}
+        res = self.element.computeResidualJacobians(nodeStates, nodeCoordinates, dvs, cm)
 
 
 if __name__ == "__main__":

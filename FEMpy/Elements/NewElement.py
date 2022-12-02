@@ -17,7 +17,7 @@ import abc
 # External Python modules
 # ==============================================================================
 import numpy as np
-from numba import guvectorize, float64, njit
+from numba import guvectorize, float64, njit, prange
 from scipy.optimize import minimize, Bounds, LinearConstraint
 from scipy.spatial.transform import Rotation
 
@@ -355,7 +355,9 @@ class Element:
         pointQuantities["JacDet"] = pointQuantities["JacDet"].reshape((numElements, numIntPoints))
 
         # - Compute R, weighted sum of w * r * detJ over each set of integration points
-        R = np.einsum("epns,ep,p->ens", r, pointQuantities["JacDet"], intPointWeights)
+        R = np.einsum(
+            "epns,ep,p->ens", r, pointQuantities["JacDet"], intPointWeights, optimize=["einsum_path", (1, 2), (0, 1)]
+        )
         return R
 
     def computeResidualJacobians(self, nodeStates, nodeCoords, designVars, constitutiveModel, intOrder=None):
@@ -396,13 +398,27 @@ class Element:
             quantities=["Coord", "State", "StateGrad", "JacDet", "StateGradSens", "DVs"],
         )
 
-        # Compute the weak residual Jacobians
+        # Compute the weak residual Jacobians, dr/du'
         weakJacs = constitutiveModel.computeWeakResidualJacobian(
             pointQuantities["State"], pointQuantities["StateGrad"], pointQuantities["Coord"], pointQuantities["DVs"]
         )
 
-        drdq = np.zeros((numElements * numIntPoints, self.numDOF, self.numDOF))
-        _transformResidualJacobian(pointQuantities["StateGradSens"], drdq)
+        # Compute dr/dq = du'/dq^T * dr/du' * du'/dq
+        Jacs = np.einsum(
+            "pdn,pdsSD,pDN->pnsNS",
+            pointQuantities["StateGradSens"],
+            weakJacs,
+            pointQuantities["StateGradSens"],
+            optimize=["einsum_path", (0, 2), (0, 1)],
+        )
+        Jacs = Jacs.reshape((numElements, numIntPoints, self.numDOF, self.numDOF))
+        pointQuantities["JacDet"] = pointQuantities["JacDet"].reshape((numElements, numIntPoints))
+
+        # - Compute R, weighted sum of w * r * detJ over each set of integration points
+        dRdq = np.einsum(
+            "epdc,ep,p->edc", Jacs, pointQuantities["JacDet"], intPointWeights, optimize=["einsum_path", (1, 2), (0, 1)]
+        )
+        return dRdq
 
     # def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
     #     """Integrate a function over a set of elements
@@ -817,14 +833,12 @@ def _interpolationProduct(N, nodeValues):
     numElements x numPoints x numStates array
         Interpolated values for each element
     """
-    # the einsum below is equivalent to:
     numElements, _, numStates = nodeValues.shape
     numPoints = N.shape[0]
     product = np.zeros((numElements, numPoints, numStates))
     for ii in range(numElements):
         product[ii] = N @ nodeValues[ii]
     return product
-    # return np.einsum("pn,ens->eps", N, nodeValues)
 
 
 @guvectorize(
@@ -940,6 +954,7 @@ def _computeDUPrimeDqProduct(JacInv, NPrimeParam, result):
     cache=True,
     fastmath=True,
     boundscheck=False,
+    target="parallel",
 )
 def _transformResidual(dUPrimedq, weakRes, result):
     """Compute a nasty product of high dimensional arrays to compute integration point residuals
@@ -961,11 +976,8 @@ def _transformResidual(dUPrimedq, weakRes, result):
     """
     numPoints = dUPrimedq.shape[0]
 
-    for ii in range(numPoints):
+    for ii in prange(numPoints):
         result[ii] = dUPrimedq[ii].T @ weakRes[ii]
-
-
-# def _transformResidualJacobian(dUPrimedq, weakResJac, result):
 
 
 @njit(cache=True, fastmath=True, boundscheck=False)

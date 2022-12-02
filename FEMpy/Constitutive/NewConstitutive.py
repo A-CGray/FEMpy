@@ -297,7 +297,7 @@ class ConstitutiveModel:
 
         Returns
         -------
-        numPoints x self.numDim x self.numStates array
+        numPoints x numDim x numStates x numStates x numDim array
 
         """
         strainSens = self.computeStrainStateGradSens(states, stateGradients, coords, dvs)
@@ -305,10 +305,23 @@ class ConstitutiveModel:
         stressSens = self.computeStressStrainSens(strain, dvs)
         scale = self.computeVolumeScaling(coords, dvs)
         numPoints = states.shape[0]
-        strainSens = strainSens.reshape(numPoints, self.numStrains, self.numStates * self.numDim)
-        Jacobian = _computeWeakJacobianProduct(strainSens, stressSens, scale)
+        # strainSens = strainSens.reshape(numPoints, self.numStrains, self.numStates * self.numDim)
+        # Jacobian = _computeWeakJacobianProduct(strainSens, stressSens, scale)
+        # points = p
+        # strains = e
+        # stress = o
+        # states = s
+        # dim = d
+        Jacobians = np.einsum(
+            "posd,poe,peSD,p->pdsSD",
+            strainSens,
+            stressSens,
+            strainSens,
+            scale,
+            optimize=["einsum_path", (1, 3), (0, 2), (0, 1)],
+        )
 
-        return Jacobian
+        return Jacobians
 
     # ==============================================================================
     # Private methods
