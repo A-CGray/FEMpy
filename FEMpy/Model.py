@@ -386,6 +386,8 @@ class FEMpyModel(BaseSolver):
         elName = meshioName.lower()
         elObject = None
 
+        # TODO: Add more element types once they're implemented
+
         # --- 2D Quad elements ---
         if elName[:4] == "quad":
             if elName == "quad":
