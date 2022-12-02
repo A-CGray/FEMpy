@@ -309,7 +309,6 @@ class FEMpyModel(BaseSolver):
             value = [value] * len(dof)
         elif len(value) != len(dof):
             raise Exception("value should be a single entry or a list of values the same length as the DOF list.")
-            # value = np.ones(len(nodeInds)) * value
 
         for i in range(len(nodeInds)):
             for j in range(len(dof)):

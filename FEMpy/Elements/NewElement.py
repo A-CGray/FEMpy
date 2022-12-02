@@ -335,14 +335,7 @@ class Element:
         intPointParamCoords = self.getIntegrationPointCoords(intOrder)  # numIntPoints x numDim
         numIntPoints = len(intPointWeights)
 
-        # (
-        #     intPointCoords,
-        #     intPointStates,
-        #     intPointStateGradients,
-        #     intPointDVs,
-        #     intPointJacDets,
-        #     dUPrimedq,
-        # )
+        # Get the quantities we need for the weak residual evaluation at the integration points for each element
         pointQuantities = self._computeFunctionEvaluationQuantities(
             intPointParamCoords,
             nodeStates,
@@ -351,55 +344,9 @@ class Element:
             quantities=["Coord", "State", "StateGrad", "JacDet", "StateGradSens", "DVs"],
         )
 
-        # # - Get shape functions N (du/dq) and their gradients in parametric coordinates at integration points
-        # # (same for all elements of same type)
-        # N = self.computeShapeFunctions(intPointParamCoords)  # numIntPoints x numNodes
-        # NPrimeParam = self.computeShapeFunctionGradients(intPointParamCoords)  # numIntPoints x numDim x numNodes
-
-        # # - Compute real coordinates at integration points (different for each element)
-        # intPointCoords = _interpolationProduct(N[:, : self.numNodes], nodeCoords)  # numElements x numIntPoints x numDim
-
-        # # - Compute states at integration points (different for each element)
-        # intPointStates = _interpolationProduct(N, nodeStates)  # numElements x numIntPoints x numStates
-
-        # # - Compute Jacobians, their inverses, and their determinants at integration points (different for each element)
-        # Jacs = np.zeros((numElements, numIntPoints, self.numDim, self.numDim))
-        # _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jacs)
-        # JacInvs = self.jacInv(Jacs)
-        # JacDets = self.jacDet(Jacs)  # numElements x numIntPoints
-
-        # # - Compute du'/dq at integration points (different for each element)
-        # dUPrimedq = np.zeros((numElements, numIntPoints, self.numDim, self.numNodes))
-        # _computeDUPrimeDqProduct(JacInvs, NPrimeParam, dUPrimedq)
-
-        # # - Compute u' at integration points (different for each element)
-        # intPointStateGradients = np.zeros((numElements, numIntPoints, self.numStates, self.numDim))
-        # _computeUPrimeProduct(JacInvs, NPrimeParam, nodeStates, intPointStateGradients)
-
-        # # - Compute function f(x_real, dvs, u, u') at integration points (different for each constitutive model)
-        # # First, currently everything is in numElements x numIntPoints x ... arrays, but the constitutive model doesn't care about the distinction between different elements, so we need to flatten the first two dimensions
-        # numPointsTotal = numElements * numIntPoints
-        # intPointCoords = np.ascontiguousarray(np.reshape(intPointCoords, (numPointsTotal, self.numDim)))
-        # intPointStates = np.ascontiguousarray(np.reshape(intPointStates, (numPointsTotal, self.numStates)))
-        # intPointStateGradients = np.ascontiguousarray(
-        #     np.reshape(intPointStateGradients, (numPointsTotal, self.numStates, self.numDim))
-        # )
-
-        # # For the DVs it's a bit different, we have one DV value per element, so we actually need to expand them so that we have one value per integration point
-        # intPointDVs = {}
-        # for dvName, dvValues in designVars.items():
-        #     intPointDVs[dvName] = np.repeat(dvValues, numIntPoints)
-
-        # weakRes = constitutiveModel.computeWeakResiduals(
-        #     intPointStates, intPointStateGradients, intPointCoords, intPointDVs
-        # )
-
         weakRes = constitutiveModel.computeWeakResiduals(
             pointQuantities["State"], pointQuantities["StateGrad"], pointQuantities["Coord"], pointQuantities["DVs"]
         )
-
-        # Reshape the weak residuals back to numElements x numIntPoints x ...
-        # weakRes = np.ascontiguousarray(np.reshape(weakRes, (numElements, numIntPoints, self.numStates, self.numDim)))
 
         # - Compute r = du'/dq^T * f
         r = np.zeros((numElements * numIntPoints, self.numNodes, self.numStates))
@@ -410,6 +357,52 @@ class Element:
         # - Compute R, weighted sum of w * r * detJ over each set of integration points
         R = np.einsum("epns,ep,p->ens", r, pointQuantities["JacDet"], intPointWeights)
         return R
+
+    def computeResidualJacobians(self, nodeStates, nodeCoords, designVars, constitutiveModel, intOrder=None):
+        """Given node coordinates and states, design variable values, and a constitutive model, compute the residual Jacobian for a bunch of elements
+
+        Parameters
+        ----------
+        nodeCoords : numElements x numNodes x numDim array
+            Node coordinates for each element
+        nodeStates : numElements x numNodes x numStates array
+            State values at the nodes of each element
+        designVars : dict of numElements arrays
+            Design variable values for each element
+        constitutiveModel : FEMpy constitutive model object
+            The constitutive model of the element
+
+        Returns
+        -------
+        numElement x (numNodes * numStates) x (numNodes * numStates) array
+            The local residual Jacobian matrix for each element
+        """
+        numElements = nodeCoords.shape[0]
+        nodeCoords = np.ascontiguousarray(nodeCoords)
+        nodeStates = np.ascontiguousarray(nodeStates)
+
+        # - Get integration point parametric coordinates and weights (same for all elements of same type)
+        intOrder = self.quadratureOrder if intOrder is None else intOrder
+        intPointWeights = self.getIntegrationPointWeights(intOrder)  # numIntPoints
+        intPointParamCoords = self.getIntegrationPointCoords(intOrder)  # numIntPoints x numDim
+        numIntPoints = len(intPointWeights)
+
+        # Get the quantities we need for the weak residual evaluation at the integration points for each element
+        pointQuantities = self._computeFunctionEvaluationQuantities(
+            intPointParamCoords,
+            nodeStates,
+            nodeCoords,
+            designVars,
+            quantities=["Coord", "State", "StateGrad", "JacDet", "StateGradSens", "DVs"],
+        )
+
+        # Compute the weak residual Jacobians
+        weakJacs = constitutiveModel.computeWeakResidualJacobian(
+            pointQuantities["State"], pointQuantities["StateGrad"], pointQuantities["Coord"], pointQuantities["DVs"]
+        )
+
+        drdq = np.zeros((numElements * numIntPoints, self.numDOF, self.numDOF))
+        _transformResidualJacobian(pointQuantities["StateGradSens"], drdq)
 
     # def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
     #     """Integrate a function over a set of elements
@@ -564,28 +557,6 @@ class Element:
         return UPrime
 
     # Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element
-
-    # - Given node coordinates and states, design variable values, and a constitutive model, compute a residual Jacobian
-    def computeJacobian(self, nodeCoords, nodeStates, dvs, constitutiveModel):
-        """Compute the local residual Jacobian (dR/dq) for a series of elements
-
-        Parameters
-        ----------
-        nodeCoords : numElements x numNodes x numDim array
-            Node coordinates for each element
-        nodeStates : numElements x numNodes x numStates array
-            State values at the nodes of each element
-        dvs : numElements x numDVs array
-            Design variable values for each element
-        constitutiveModel : FEMpy constitutive model object
-            The constitutive model of the element
-
-        Returns
-        -------
-        numElement x (numNodes * numStates) x (numNodes * numStates) array
-            The local jacobian for each element
-        """
-        return None
 
     def getClosestPoints(self, nodeCoords, point, **kwargs):
         """Given real coordinates of a point, find the parametric coordinates of the closest point on a series of
@@ -992,6 +963,9 @@ def _transformResidual(dUPrimedq, weakRes, result):
 
     for ii in range(numPoints):
         result[ii] = dUPrimedq[ii].T @ weakRes[ii]
+
+
+# def _transformResidualJacobian(dUPrimedq, weakResJac, result):
 
 
 @njit(cache=True, fastmath=True, boundscheck=False)
