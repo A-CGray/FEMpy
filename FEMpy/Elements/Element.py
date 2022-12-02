@@ -64,21 +64,21 @@ def _computeNTFProduct(F, N):
 
 
 class Element:
-    def __init__(self, numNodes, numDimensions, numStates=None):
+    def __init__(self, numNodes, numDim, numStates=None):
         """Instantiate an Element object
 
         Parameters
         ----------
         numNodes : int
             Number of nodes in each element
-        numDimensions : int
+        numDim : int
             Number of spatial dimensions the element models
         numStates : int, optional
             Number of displacements at each node, by default this is set equal to the number of spatial dimensions
         """
         self.numNodes = numNodes
-        self.numDim = numDimensions
-        self.numStates = numDimensions if numStates is None else numStates
+        self.numDim = numDim
+        self.numStates = numDim if numStates is None else numStates
         self.numDOF = numNodes * self.numStates
         self.name = f"{self.numNodes}Node-{self.numStates}Disp-{self.numDim}D-Element"
         self.defaultIntOrder = 2

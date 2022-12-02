@@ -42,7 +42,7 @@ class QuadElement2D(Element):
         if quadratureOrder is None:
             shapeFuncOrder = 2 * order
             quadratureOrder = int(np.ceil((shapeFuncOrder + 1) / 2))
-        super().__init__(numNodes, numDimensions=2, numStates=numStates, quadratureOrder=quadratureOrder)
+        super().__init__(numNodes, numDim=2, numStates=numStates, quadratureOrder=quadratureOrder)
 
         self.name = f"Order{self.order}-LagrangeQuad"
 

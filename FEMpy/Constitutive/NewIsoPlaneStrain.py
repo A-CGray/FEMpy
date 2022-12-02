@@ -1,10 +1,10 @@
 """
 ==============================================================================
-2D Isotropic plane stress constitutive model
+2D Isotropic plane strain constitutive model
 ==============================================================================
-@File    :   NewIsoPlaneStress.py
+@File    :   NewIsoPlaneStrain.py
 @Date    :   2022/11/30
-@Author  :   Alasdair Christison Gray
+@Author  :   Alasdair Christison Gray and M.A. Saja A.Kaiyoom
 @Description :
 """
 
@@ -21,11 +21,11 @@ import numpy as np
 # Extension modules
 # ==============================================================================
 from FEMpy.Constitutive.StrainModels import Planar2DStrain, Planar2DStrainSens
-from FEMpy.Constitutive.StressModels import isoPlaneStressStress, isoPlaneStressStressStrainSens, vonMises2DPlaneStress
+from FEMpy.Constitutive.StressModels import isoPlaneStrainStress, isoPlaneStrainStressStrainSens, vonMises2DPlaneStrain
 from FEMpy.Constitutive import ConstitutiveModel
 
 
-class IsoPlaneStress(ConstitutiveModel):
+class IsoPlaneStrain(ConstitutiveModel):
     def __init__(self, E, nu, rho, t, linear=True):
         """Create an isotropic plane stress constitutive model
 
@@ -133,7 +133,7 @@ class IsoPlaneStress(ConstitutiveModel):
         numPoints x numStresses array
             Stress components at each point
         """
-        return isoPlaneStressStress(strains, E=self.E, nu=self.nu)
+        return isoPlaneStrainStress(strains, E=self.E, nu=self.nu)
 
     def computeStressStrainSens(self, strains, dvs):
         """Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one
@@ -152,7 +152,7 @@ class IsoPlaneStress(ConstitutiveModel):
         sens : numPoints x numStrains x numStates x numDim array
             Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
         """
-        return isoPlaneStressStressStrainSens(strains, E=self.E, nu=self.nu)
+        return isoPlaneStrainStressStrainSens(strains, E=self.E, nu=self.nu)
 
     def computeVolumeScaling(self, coords, dvs):
         """Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one
@@ -191,7 +191,7 @@ class IsoPlaneStress(ConstitutiveModel):
             coords is a numPoints x numDim array
             dvs is a dictionary of numPoints length arrays
         """
-
+        lowerCaseFuncNames = [func.lower() for func in self.functionNames]
         if name.lower() not in self.lowerCaseFuncNames:
             raise ValueError(
                 f"{name} is not a valid function name for this constitutive model, valid choices are {self.functionNames}"
@@ -209,4 +209,4 @@ class IsoPlaneStress(ConstitutiveModel):
             def VMFunc(states, stateGradients, coords, dvs):
                 strains = self.computeStrains(states, stateGradients, coords, dvs)
                 stresses = self.computeStresses(strains, dvs)
-                return vonMises2DPlaneStress(stresses)
+                return vonMises2DPlaneStrain(stresses)

@@ -4,7 +4,7 @@ FEMpy Model class unit tests
 ==============================================================================
 @File    :   testModel.py
 @Date    :   2022/11/14
-@Author  :   Alasdair Christison Gray
+@Author  :   M.A. Saja A.Kaiyoom and Alasdair Christison Gray
 @Description :
 """
 
@@ -36,7 +36,7 @@ class AssemUnitTest(unittest.TestCase):
         E = 1000
         nu = 0.0
         strain_exptected = np.array([[1000, 1000, 500], [3000, 3000, 1500]])
-        strain_computed = IsoStress.isoPlaneStress(strain, E, nu)
+        strain_computed = IsoStress.isoPlaneStressStress(strain, E, nu)
 
         np.testing.assert_equal(strain_computed, strain_exptected)
 
@@ -47,7 +47,7 @@ class AssemUnitTest(unittest.TestCase):
         E = 1000
         nu = 0.0
         strain_exptected = np.array([[1000, 1000, 500], [3000, 3000, 1500]])
-        strain_computed = IsoStress.isoPlaneStrain(strain, E, nu)
+        strain_computed = IsoStress.isoPlaneStrainStress(strain, E, nu)
 
         np.testing.assert_equal(strain_computed, strain_exptected)
 

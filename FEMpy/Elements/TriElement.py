@@ -57,7 +57,7 @@ class TriElement(Element):
 
         self.order = order
         nodes = (order + 1) * (order + 2) // 2
-        super().__init__(numNodes=nodes, numDimensions=2, numStates=numStates)
+        super().__init__(numNodes=nodes, numDim=2, numStates=numStates)
 
         self.name = f"Order{self.order}-LagrangeTri"
 

@@ -4,7 +4,7 @@ FEMpy Model class unit tests
 ==============================================================================
 @File    :   testModel.py
 @Date    :   2022/11/14
-@Author  :   Alasdair Christison Gray
+@Author  :   M.A. Saja A.Kaiyoom and Alasdair Christison Gray
 @Description :
 """
 

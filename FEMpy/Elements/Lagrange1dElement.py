@@ -36,7 +36,7 @@ class Lagrange1dElement(Element):
             Shape function polynomial order
         """
         self.order = order
-        super().__init__(numNodes=order + 1, numDimensions=1)
+        super().__init__(numNodes=order + 1, numDim=1)
         self.name = f"Order{self.order}-Lagrange1D"
 
     def getShapeFunctions(self, paramCoords):
