@@ -68,9 +68,9 @@ class ModelUnitTest(unittest.TestCase):
         self.assertEqual(self.model.numNodes, self.numPoints)
         self.assertEqual(self.model.numDim, self.numDim)
 
-    def testAddGlobalFixedBC(self):
+    def testaddFixedBCToNodes(self):
         """Test that the BC are added correctly"""
-        self.model.addGlobalFixedBC("myBC", [2, 3, 4], 0, 1)
+        self.model.addFixedBCToNodes("myBC", [2, 3, 4], 0, 1)
         DOF_computed = [4, 6, 8]
         VAL_computed = [1.0, 1.0, 1.0]
 

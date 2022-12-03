@@ -82,7 +82,7 @@ class ElementUnitTest(unittest.TestCase):
 
     def testResidualJacobian(self):
         cm = IsoPlaneStrain(E=70e9, nu=0.3, rho=2700, t=1.0)
-        numElements = 10
+        numElements = 1
         nodeCoordinates = np.zeros((numElements, self.element.numNodes, self.element.numDim))
         for ii in range(numElements):
             nodeCoordinates[ii] = self.element.getRandomElementCoordinates()
@@ -91,6 +91,7 @@ class ElementUnitTest(unittest.TestCase):
         nodeStates = np.zeros_like(nodeCoordinates)
         dvs = {"Thickness": np.ones(numElements)}
         res = self.element.computeResidualJacobians(nodeStates, nodeCoordinates, dvs, cm)
+        print("debug")
 
 
 if __name__ == "__main__":

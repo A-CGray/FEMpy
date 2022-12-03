@@ -39,12 +39,12 @@ constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
 # Create the FEMpy model by loading in a mesh
 # ==============================================================================
 options = {"outputDir": "ExampleOutput"}
-model = fp.FEMpyModel("Meshes/LBracket.msh", constitutiveModel, options=options)
+model = fp.FEMpyModel(constitutiveModel, meshFileName="Meshes/LBracket.msh", options=options)
 # --- Define a boundary condition that will be applied in all problems, fixing the top edge of the bracket in x and y ---
 # For now I will just manually find the nodes that are on the top edge of the mesh, maybe we can add better functionality for doing things like this in future
 nodeCoords = model.getCoordinates()
 topEdgeNodeInds = np.argwhere(nodeCoords[:, 1] == np.max(nodeCoords[:, 1])).flatten()
-model.addGlobalFixedBC(name="Fixed", nodeInds=topEdgeNodeInds, dof=[0, 1], value=0.0)
+model.addFixedBCToNodes(name="Fixed", nodeInds=topEdgeNodeInds, dof=[0, 1], value=0.0)
 
 # ==============================================================================
 # Setup FEMpy problems
@@ -62,7 +62,7 @@ rightEdgeNodeInds = np.argwhere(nodeCoords[:, 0] == np.max(nodeCoords[:, 0])).fl
 verticalLoadCase.addLoadToNodes(name="RightEdgeLoad", nodeInds=rightEdgeNodeInds, dof=1, value=-1e3, totalLoad=True)
 
 # And we will fix the right edge in the x-direction, so it can only move up and down
-verticalLoadCase.addFixedBC(name="RightEdgeRoller", nodeInds=rightEdgeNodeInds, dof=0, value=0.0)
+verticalLoadCase.addFixedBCToNodes(name="RightEdgeRoller", nodeInds=rightEdgeNodeInds, dof=0, value=0.0)
 
 # Now add gravity as a body force
 # verticalLoadCase.addBodyLoad(name="Gravity", loadingFunction=[0.0, -9.81 ])

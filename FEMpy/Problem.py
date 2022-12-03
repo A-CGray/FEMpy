@@ -212,13 +212,13 @@ class FEMpyProblem(BaseSolver):
         """Reset the problem to its initial state"""
         self.updateState(np.zeros((self.numNodes, self.numStates)))
 
-    def updateResidual(self, applyBCs: bool = False):
+    def updateResidual(self, applyBCs: bool = True):
         if not self.resUpToDate:
             print("Updating Residual")
             self.Res = self._assembleResidual(self.states, applyBCs=applyBCs)
             self.markResUpToDate()
 
-    def updateJacobian(self, applyBCs: bool = False):
+    def updateJacobian(self, applyBCs: bool = True):
         if not self.jacUpToDate:
             print("Updating Jacobian")
             self.Jacobian = self._assembleMatrix(self.states, applyBCs=applyBCs)
@@ -312,7 +312,7 @@ class FEMpyProblem(BaseSolver):
 
         return functionValues
 
-    def addFixedBC(
+    def addFixedBCToNodes(
         self,
         name: str,
         nodeInds: Union[int, Iterable[int]],
@@ -321,7 +321,7 @@ class FEMpyProblem(BaseSolver):
     ) -> None:
         """Add a fixed boundary condition to a set of nodes
 
-        For example ``addFixedBC("BCName", [0, 1, 2], [0,1], 0.0)`` would fix DOF 0 and 1 of nodes 0, 1 and 2 to 0.0
+        For example ``addFixedBCToNodes("BCName", [0, 1, 2], [0,1], 0.0)`` would fix DOF 0 and 1 of nodes 0, 1 and 2 to 0.0
 
         Parameters
         ----------

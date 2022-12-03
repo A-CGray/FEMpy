@@ -50,20 +50,27 @@ class FEMpyModel(BaseSolver):
     # Public methods
     # ==============================================================================
 
-    def __init__(self, meshFileName: str, constitutiveModel, options: Optional[dict] = None) -> None:
-        """Create a FEMpy model
+    def __init__(
+        self,
+        constitutiveModel,
+        meshFileName: Optional[str] = None,
+        nodeCoords: Optional[np.ndarray] = None,
+        connectivity: Optional[Dict[str, np.ndarray]] = None,
+        options: Optional[dict] = None,
+    ) -> None:
+        """Create a FEMpy model, either from a mesh file or from node coordinate and connectivity arrays
 
         Parameters
         ----------
-        meshFileName : str
-            Filename of the mesh file to load
         constitutiveModel : FEMpy constitutive model object
-
-        elementMap : function, optional
-            A dictionary that maps from meshio element types to the FEMpy element types, the user can use this to
-            specify what type of elements FEMpy should use, if the map returns None then this element type is ignored
-            and not included in the model. If not supplied then the default FEMpy element type for each meshio element
-            type will be used.
+            The constitutive model to use for the finite element model
+        meshFileName : str, optional
+            Filename of the mesh file to load
+        nodeCoords : numNodes x numDim array, optional
+            Array of node coordinates
+        connectivity : dictionary, optional
+            Dictionary of element-node connectivity arrays, e.g {"elementType1": array(numElements x numNodesPerElement),
+            "elementType2": array()}, where `elementType1` and `elementType2` are meshio element type names
         options : dict, optional
             Dictionary of options to pass to the model, by default None, for a list of options see the documentation
         """
@@ -80,19 +87,23 @@ class FEMpyModel(BaseSolver):
 
         self.constitutiveModel = constitutiveModel
 
-        # --- Save the mesh file name and extension ---
-        self.meshFileName = meshFileName
-        self.meshType = os.path.splitext(meshFileName)[1][1:].lower()
-
-        # --- Read in the mesh using meshio ---
-        self.mesh = meshio.read(self.meshFileName)
-        self.numNodes = self.mesh.points.shape[0]
+        if meshFileName is not None:
+            # --- Read in the mesh using meshio ---
+            mesh = meshio.read(self.meshFileName)
+            self.nodeCoords = copy.deepcopy(mesh.points)
+            self.connectivity = copy.deepcopy(mesh.cells_dict)
+        else:
+            if nodeCoords is None or connectivity is None:
+                raise Exception("Must supply either meshFileName or nodeCoords and connectivity")
+            self.nodeCoords = np.zeros((nodeCoords.shape[0], 3))
+            self.nodeCoords[:, : nodeCoords.shape[1]] = nodeCoords
+            self.connectivity = copy.deepcopy(connectivity)
 
         # Extract mesh coordinates, detect whether the mesh is 1D, 2D or 3D and only keep the active dimensions
-        self.nodeCoords = copy.deepcopy(self.mesh.points)
+        self.numNodes = self.nodeCoords.shape[0]
         self.activeDimensions = []
 
-        # Keep track of the inactive coordinates so we can add them back in when writing output files
+        # Keep track of the inactive coordinates so we can always convert back to full 3D coordinates if needed
         self.inactiveDimensions = []
         for ii in range(3):
             if self.nodeCoords[:, ii].max() != self.nodeCoords[:, ii].min():
@@ -113,13 +124,13 @@ class FEMpyModel(BaseSolver):
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
         self.elements = {}
         self.numElements = 0
-        for elType in self.mesh.cells_dict:
+        for elType in self.connectivity:
             elObject = self._getElementObject(elType)
             if elObject is None:
                 warnings.warn(f"Element type {elType} is not supported by FEMpy and will be ignored")
             else:
                 self.elements[elType] = {}
-                self.elements[elType]["connectivity"] = copy.deepcopy(self.mesh.cells_dict[elType])
+                self.elements[elType]["connectivity"] = self.connectivity[elType]
                 self.elements[elType]["DOF"] = self.getDOFfromNodeInds(self.elements[elType]["connectivity"])
                 self.elements[elType]["elementObject"] = elObject
                 self.elements[elType]["numElements"] = self.elements[elType]["connectivity"].shape[0]
@@ -203,7 +214,7 @@ class FEMpyModel(BaseSolver):
                         elementData[varName] = [elementValues[elType][varName]]
 
         outputMesh = meshio.Mesh(
-            self.getCoordinates(force3D=True), self.mesh.cells_dict, point_data=nodeValues, cell_data=elementData
+            self.getCoordinates(force3D=True), self.self.connectivity, point_data=nodeValues, cell_data=elementData
         )
         return outputMesh
 
@@ -309,7 +320,7 @@ class FEMpyModel(BaseSolver):
 
         return elementDVs
 
-    def addGlobalFixedBC(
+    def addFixedBCToNodes(
         self,
         name,
         nodeInds: Union[int, Iterable[int]],

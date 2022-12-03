@@ -94,7 +94,7 @@ def applyBCsToVector(vector, state, bcDOF, bcValues):
     bcValues : array of float
         Values to fix degrees of freedom at
     """
-    vector[bcDOF] = bcValues - state[bcDOF]
+    vector[bcDOF] = state[bcDOF] - bcValues
     return vector
 
 
