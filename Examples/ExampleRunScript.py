@@ -80,7 +80,6 @@ horizontalLoadCase.addLoadToNodes(name="RightEdgeLoad", nodeInds=rightEdgeNodeIn
 
 for problem in model.problems:
     problem.solve()
-    exit()
     problem.writeSolution(format="plt")
 
 # ==============================================================================
