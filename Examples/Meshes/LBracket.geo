@@ -37,3 +37,7 @@ Physical Curve("FixedBC", 8) = {6};
 Physical Curve("LoadedEdge", 9) = {3};
 //+
 Physical Surface("surf", 10) = {1};
+//+
+Physical Curve(" FixedBC", 8) -= {6};
+//+
+Physical Curve(" LoadedEdge", 9) -= {3};

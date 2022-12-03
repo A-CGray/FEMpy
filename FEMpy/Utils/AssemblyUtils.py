@@ -47,15 +47,16 @@ def applyBCsToMatrix(rows, cols, values, bcDOF):
         Values of the matrix entries
     bcDOF : array of int
         Degrees of freedom to apply boundary conditions to
-    """
-    appendIndx = np.array([], dtype=np.int64)
-    for i in bcDOF:
-        indices = np.where(rows == i)[0]
-        appendIndx = np.append(appendIndx, indices)
 
-    rows = np.delete(rows, appendIndx)
-    cols = np.delete(cols, appendIndx)
-    values = np.delete(values, appendIndx)
+    Returns
+    -------
+    rowInds :
+    """
+    indsToDelete = np.nonzero(np.in1d(rows, bcDOF))[0]
+
+    rows = np.delete(rows, indsToDelete)
+    cols = np.delete(cols, indsToDelete)
+    values = np.delete(values, indsToDelete)
 
     rows = np.append(rows, bcDOF)
     cols = np.append(cols, bcDOF)
@@ -181,11 +182,11 @@ def localMatricesToCOOArrays(localMats, localDOF):
 
     Returns
     -------
-    rows : array of int
+    rows : list of int
         Row indicies of the global matrix entries
-    cols : array of int
+    cols : list of int
         Column indicies of the global matrix entries
-    values : array of float
+    values : list of float
         Values of the global matrix entries
 
     """
@@ -214,7 +215,7 @@ def localMatricesToCOOArrays(localMats, localDOF):
     cols = cols[nonzeroEntries]
     values = values[nonzeroEntries]
 
-    return rows, cols, values
+    return rows.tolist(), cols.tolist(), values.tolist()
 
 
 @njit(cache=True)
@@ -234,11 +235,13 @@ def scatterLocalResiduals(localResiduals, connectivity, globalResidual):
     """
     numStates = localResiduals.shape[2]
     numElements = localResiduals.shape[0]
+    numNodes = localResiduals.shape[1]
 
-    for ii in range(numElements):
-        for nodeID in connectivity[ii]:
-            for jj in range(numStates):
-                globalResidual[nodeID * numStates + jj] += localResiduals[ii, nodeID, jj]
+    for elNum in range(numElements):
+        for localNodeID in range(numNodes):
+            nodeID = connectivity[elNum, localNodeID]
+            for stateNum in range(numStates):
+                globalResidual[nodeID * numStates + stateNum] += localResiduals[elNum, localNodeID, stateNum]
 
 
 if __name__ == "__main__":

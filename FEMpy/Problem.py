@@ -11,14 +11,21 @@ FEMpy Problem Class
 # ==============================================================================
 # Standard Python modules
 # ==============================================================================
-from typing import Iterable, Union, Callable, Optional
+from typing import Iterable, Union, Callable, Optional, Dict
+import copy
+import time
 
 # ==============================================================================
 # External Python modules
 # ==============================================================================
 import numpy as np
-from scipy.sparse import csc_array  # ,coo_array
+from scipy.sparse import csc_array, coo_array
+from baseclasses import BaseSolver
 
+try:
+    from pypardiso import spsolve
+except ModuleNotFoundError:
+    from scipy.sparse.linalg import factorized
 
 # ==============================================================================
 # Extension modules
@@ -26,7 +33,7 @@ from scipy.sparse import csc_array  # ,coo_array
 from FEMpy.Utils import AssemblyUtils
 
 
-class FEMpyProblem:
+class FEMpyProblem(BaseSolver):
     """The FEMpy problem class represents a single finite element problem, many such problems may be associated with a
     single FEMpy model to represent different loading and boundary conditions.
 
@@ -41,59 +48,52 @@ class FEMpyProblem:
     - Writing the solution to a file
     """
 
-    def __init__(self, name, model) -> None:
-        self.name = name
+    def __init__(self, name, model, options=None) -> None:
         self.model = model
         self.states = np.zeros((self.numNodes, self.numStates))
         self.Jacobian = None
-        self.RHS = np.zeros(self.numNodes * self.numStates)
+        self.jacUpToDate = False
+        self.factorizedJac = None
+        self.Res = np.zeros(self.numNodes * self.numStates)
+        self.resUpToDate = False
+
+        self.solveCounter = 0
 
         # --- Dictionary of boundary conditions ---
         self.BCs = {}
         self.loads = {}
 
+        # --- Set problem options by getting the defaults and updating them with any that the user supplied ---
+        defaultOptions = self._getDefaultOptions()
+        if options is None:
+            options = {}
+
+        # instantiate the solver
+        super().__init__(name, "Finite Element Problem", defaultOptions=defaultOptions, options=options)
+
     @property
     def constitutiveModel(self):
-        """Get the constitutive model object associated with this problem
-
-        Returns
-        -------
-        FEMpy constitutive model object
-            The constitutive model object associated with this problem
-        """
+        """The constitutive model object associated with this problem"""
         return self.model.constitutiveModel
 
     @property
-    def numDim(self) -> int:
-        """Get the number of dimensions of the problem
+    def isLinear(self) -> bool:
+        """Whether the problem is linear"""
+        return self.constitutiveModel.isLinear
 
-        Returns
-        -------
-        int
-            Number of dimensions of the problem
-        """
+    @property
+    def numDim(self) -> int:
+        """The number of dimensions of the problem"""
         return self.model.numDim
 
     @property
     def numNodes(self) -> int:
-        """Get the number of nodes in the model
-
-        Returns
-        -------
-        int
-            Number of nodes in the model
-        """
+        """The number of nodes in the model"""
         return self.model.numNodes
 
     @property
-    def numDOFs(self) -> int:
-        """Get the number of degrees of freedom in the problem
-
-        Returns
-        -------
-        int
-            Number of degrees of freedom in the problem
-        """
+    def numDOF(self) -> int:
+        """The number of degrees of freedom in the problem"""
         return self.model.numDOF
 
     @property
@@ -103,11 +103,6 @@ class FEMpyProblem:
         This is not the total number of states in the problem, but the number of states associated with the problem's
         constitutive model, e.g for a heat transfer problem there is a single state (Temperature), and for a 2D
         elasticity problem there are 2 states (u and v displacements)
-
-        Returns
-        -------
-        int
-            Number of states
         """
         return self.constitutiveModel.numStates
 
@@ -115,6 +110,136 @@ class FEMpyProblem:
     def elements(self):
         """The element data structure"""
         return self.model.elements
+
+    def solve(self):
+        """Solve the finite element problem
+
+        The solution is stored in the ``states`` attribute of the problem object
+        """
+
+        printTiming = self.getOption("printTiming")
+        if printTiming:
+            times = {}
+            times["Start"] = time.time()
+        # --- Assemble the residual ---
+        self.updateResidual(applyBCs=True)
+        if printTiming:
+            times["ResAssembled"] = time.time()
+
+        # --- Assemble the stiffness matrix ---
+        self.updateJacobian(applyBCs=True)
+        if printTiming:
+            times["JacAssembled"] = time.time()
+
+        # --- Solve for an update in the state ---
+        update = self.solveJacLinear(-self.Res)
+        if printTiming:
+            times["Solved"] = time.time()
+
+        # --- Apply the state update ---
+        self.incrementState(update)
+
+        if printTiming:
+            self._printTiming(times)
+
+        self.solveCounter += 1
+
+    def solveJacLinear(self, RHS: np.ndarray) -> np.ndarray:
+        """Solve the linearised residual equations with a right hand side
+
+        This function solves the linearised residual equations with a right hand side, i.e. it solves the equation
+
+        ``Jacobian @ update = RHS``
+
+        Some checks are first made as to whether the Jacobian needs to be recomputed before the solve, and the
+        factorized Jacobian matrix is stored for future solves.
+
+        Parameters
+        ----------
+        RHS : np.ndarray
+            The right hand side of the linear system
+
+        Returns
+        -------
+        np.ndarray
+            The solution to the linear system
+        """
+        if not self.jacUpToDate:
+            self.updateJacobian()
+        if self.factorizedJac is None or not self.jacIsFactorized:
+            print("Factorising Jacobian")
+            self.factorizedJac = factorized(self.Jacobian)
+            self.jacIsFactorized = True
+        print("Solving linear system")
+        return self.factorizedJac(RHS)
+
+    def incrementState(self, update: np.ndarray) -> None:
+        """Add an increment to the state vector, effectively equivalent to ``self.states += update``
+
+        This method should be used instead of ``self.states += update``  so that the problem can keep track of whether
+        the residual and Jacobian are up to date.
+
+        Parameters
+        ----------
+        update : _type_
+            _description_
+        """
+        if update.shape == self.states.shape:
+            self.states += update
+        else:
+            self.states += update.reshape(self.states.shape)
+        self.markResOutOfDate()
+        if not self.isLinear:
+            self.markJacOutOfDate()
+
+    def updateState(self, update: np.ndarray) -> None:
+        """Update the state vector
+
+        Parameters
+        ----------
+        update : np.ndarray
+            The update to the state vector
+        """
+        if update.shape == self.states.shape:
+            self.states[:] = update
+        else:
+            self.states[:] = update.reshape(self.states.shape)
+        self.markResOutOfDate()
+        if not self.isLinear:
+            self.markJacOutOfDate()
+
+    def reset(self):
+        """Reset the problem to its initial state"""
+        self.updateState(np.zeros((self.numNodes, self.numStates)))
+
+    def updateResidual(self, applyBCs: bool = False):
+        if not self.resUpToDate:
+            print("Updating Residual")
+            self.Res = self._assembleResidual(self.states, applyBCs=applyBCs)
+            self.markResUpToDate()
+
+    def updateJacobian(self, applyBCs: bool = False):
+        if not self.jacUpToDate:
+            print("Updating Jacobian")
+            self.Jacobian = self._assembleMatrix(self.states, applyBCs=applyBCs)
+            self.markJacUpToDate()
+            self.jacIsFactorized = False
+
+    def markResOutOfDate(self):
+        """Mark the status of the residual as out of date"""
+        self.resUpToDate = False
+
+    def markJacOutOfDate(self):
+        """Mark the status of the jacobian as out of date"""
+        self.jacUpToDate = False
+
+    def markResUpToDate(self):
+        """Mark the status of the residual as up to date"""
+        self.resUpToDate = True
+
+    def markJacUpToDate(self):
+        """Mark the status of the jacobian as up to date"""
+        self.jacUpToDate = True
 
     def computeFunction(self, name, elementReductionType=None, globalReductionType=None):
         """Compute a function over the whole model
@@ -150,7 +275,7 @@ class FEMpyProblem:
         for elType in self.model.elements:
             print(elType)
             elObject = self.model.elements[elType]["elementObject"]
-            nodeCoords = self.getElementCoordinates(elType)
+            nodeCoords = self.model.getElementCoordinates(elType)
             nodeStates = self.getElementStates(elType)
             elementDvs = self.model.getElementDVs(elType)
             # nodeCoords : numElements x numNodes x numDim array
@@ -221,8 +346,8 @@ class FEMpyProblem:
         if isinstance(dof, int):
             dof = [dof]
 
-        if len(value) == 1:
-            value = (np.ones(len(dof)) * value).tolist()
+        if isinstance(value, float) or isinstance(value, int):
+            value = [value] * len(dof)
         elif len(value) != len(dof):
             raise Exception("value should be a single entry or a list of values the same length as the DOF list.")
             # value = np.ones(len(nodeInds)) * value
@@ -259,9 +384,9 @@ class FEMpyProblem:
         """
 
         # store the BC
-        totalNodes = 1
+        scale = 1.0
         if totalLoad:
-            totalNodes = len(nodeInds)
+            scale = float(len(nodeInds))
 
         self.loads[name] = {}
         dofNodes = []
@@ -273,16 +398,15 @@ class FEMpyProblem:
         if isinstance(dof, int):
             dof = [dof]
 
-        if len(value) == 1:
-            value = (np.ones(len(dof)) * value).tolist()
+        if isinstance(value, float) or isinstance(value, int):
+            value = [value] * len(dof)
         elif len(value) != len(dof):
             raise Exception("value should be a single entry or a list of values the same length as the DOF list.")
-            # value = np.ones(len(nodeInds)) * value
 
         for i in range(len(nodeInds)):
             for j in range(len(dof)):
                 dofNodes.append(nodeInds[i] * self.numStates + dof[j])
-                valDOF.append((value[j] / totalNodes))
+                valDOF.append((value[j] / scale))
         self.loads[name]["DOF"] = dofNodes
         self.loads[name]["Value"] = valDOF
 
@@ -300,7 +424,46 @@ class FEMpyProblem:
         """
         return None
 
-    def assembleMatrix(self, states: np.ndarray, applyBCs: Optional[bool] = True) -> csc_array:
+    def getBCs(self) -> Dict[str, Dict[str, Union[Iterable[int], Iterable[float]]]]:
+        """Get the full set of boundary conditions for this problem
+
+        This combines the BCs defined specifically for this problem with those defined at the model level
+
+        Returns
+        -------
+        Dict[str, Dict[str, Union[Iterable[int], Iterable[float]]]]
+            Dictionary of boundary conditions, each entry is a dictionary with keys "DOF" and "Value"
+        """
+        BCs = copy.deepcopy(self.model.BCs)
+        BCs.update(self.BCs)
+        return BCs
+
+    def getElementStates(self, elementType: str) -> np.ndarray:
+        """Get the states of the nodes for all elements of the specified type
+
+        Parameters
+        ----------
+        elementType : str
+            Name of the element type to get the coordinates for
+
+        Returns
+        -------
+        numElements x numNodes x numStates array
+            Node coordinates
+        """
+        numElements = self.elements[elementType]["numElements"]
+        element = self.elements[elementType]["elementObject"]
+        nodeStates = np.zeros((numElements, element.numNodes, self.numStates))
+        for ii in range(numElements):
+            nodeInds = self.elements[elementType]["connectivity"][ii]
+            nodeStates[ii] = self.states[nodeInds]
+        return nodeStates
+
+    # ==============================================================================
+    # Private methods
+    # ==============================================================================
+
+    def _assembleMatrix(self, states: np.ndarray, applyBCs: Optional[bool] = True) -> csc_array:
         """Assemble the global residual Jacobian matrix for the problem (a.k.a the stiffness matrix)
 
         _extended_summary_
@@ -325,24 +488,35 @@ class FEMpyProblem:
         # - Apply boundary conditions
         # - Create sparse matrix from lists
 
-        # MatRows = []
-        # MatColumns = []
-        # MatEntries = []
+        matRows = []
+        matColumns = []
+        matEntries = []
 
-        # for elementType, elementData in self.elements.items():
-        # element = elementData["elementObject"]
-        # numElements = elementData["numElements"]
-        # nodeCoords = self.getElementCoordinates(elementType)
-        # nodeStates = self.getElementStates(elementType)
-        # elementDVs = self.model.getElementDVs(elementType)
+        for elementType, elementData in self.elements.items():
+            element = elementData["elementObject"]
+            nodeCoords = self.model.getElementCoordinates(elementType)
+            nodeStates = self.getElementStates(elementType)
+            elementDVs = self.model.getElementDVs(elementType)
 
-        # localMats = element.computeJacobian(self, nodeCoords, nodeStates, dvs, self.constitutiveModel)
+            localMats = element.computeResidualJacobians(nodeStates, nodeCoords, elementDVs, self.constitutiveModel)
+            row_inds, col_inds, values = AssemblyUtils.localMatricesToCOOArrays(localMats, elementData["DOF"])
+            matRows += row_inds
+            matColumns += col_inds
+            matEntries += values
 
-        # assemble local matrices into global matrix
+        # Apply boundary conditions to COO data
+        if applyBCs:
+            BCs = self.getBCs()
+            BCDOF, _ = AssemblyUtils.convertBCDictToLists(BCs)
+            matRows, matColumns, matEntries = AssemblyUtils.applyBCsToMatrix(matRows, matColumns, matEntries, BCDOF)
 
-        return None
+        # create and return sparse matrix, we need to create a coo array first as this correctly handle duplicate
+        # entries, then we convert to a csc array as that's what the scipy sparse linear solver likes to work with
+        mat = coo_array((matEntries, (matRows, matColumns)), shape=(self.numDOF, self.numDOF))
 
-    def assembleResidual(self, states: np.ndarray, applyBCs: Optional[bool] = True):
+        return csc_array(mat)
+
+    def _assembleResidual(self, states: np.ndarray, applyBCs: Optional[bool] = True):
         """Assemble the global residual for the problem
 
         _extended_summary_
@@ -370,11 +544,11 @@ class FEMpyProblem:
 
         for elementType, elementData in self.elements.items():
             element = elementData["elementObject"]
-            nodeCoords = self.getElementCoordinates(elementType)
+            nodeCoords = self.model.getElementCoordinates(elementType)
             nodeStates = self.getElementStates(elementType)
             elementDVs = self.model.getElementDVs(elementType)
 
-            elementResiduals = element.computeResidual(self, nodeCoords, nodeStates, elementDVs, self.constitutiveModel)
+            elementResiduals = element.computeResiduals(nodeStates, nodeCoords, elementDVs, self.constitutiveModel)
             AssemblyUtils.scatterLocalResiduals(elementResiduals, elementData["connectivity"], globalResidual)
 
         # Add external loads to the residual
@@ -382,48 +556,29 @@ class FEMpyProblem:
 
         # Apply boundary conditions
         if applyBCs:
-            AssemblyUtils.applyBCsToVector()
+            BCs = self.getBCs()
+            BCDOF, BCValues = AssemblyUtils.convertBCDictToLists(BCs)
+            AssemblyUtils.applyBCsToVector(globalResidual, states.flatten(), BCDOF, BCValues)
 
         return globalResidual
 
-    def getElementCoordinates(self, elementType: str) -> np.ndarray:
-        """Get the coordinates of the nodes for all elements of the specified type
+    @staticmethod
+    def _getDefaultOptions():
+        """Return the default FEMpy model options"""
+        defaultOptions = {
+            "printTiming": [bool, False],
+        }
+        return defaultOptions
 
-        Parameters
-        ----------
-        elementType : str
-            Name of the element type to get the coordinates for
-
-        Returns
-        -------
-        numElements x numNodes x numDim array
-            Node coordinates
-        """
-        numElements = self.elements[elementType]["numElements"]
-        element = self.elements[elementType]["elementObject"]
-        nodeCoords = np.zeros((numElements, element.numNodes, self.numDim))
-        for ii in range(numElements):
-            nodeInds = self.elements[elementType]["connectivity"][ii]
-            nodeCoords[ii] = self.model.nodeCoords[nodeInds]
-        return nodeCoords
-
-    def getElementStates(self, elementType: str) -> np.ndarray:
-        """Get the states of the nodes for all elements of the specified type
-
-        Parameters
-        ----------
-        elementType : str
-            Name of the element type to get the coordinates for
-
-        Returns
-        -------
-        numElements x numNodes x numStates array
-            Node coordinates
-        """
-        numElements = self.elements[elementType]["numElements"]
-        element = self.elements[elementType]["elementObject"]
-        nodeStates = np.zeros((numElements, element.numNodes, self.numStates))
-        for ii in range(numElements):
-            nodeInds = self.elements[elementType]["connectivity"][ii]
-            nodeStates[ii] = self.states[nodeInds]
-        return nodeStates
+    def _printTiming(self, times):
+        resAssemblyTime = times["ResAssembled"] - times["Start"]
+        matAssemblyTime = times["JacAssembled"] - times["ResAssembled"]
+        solveTime = times["Solved"] - times["JacAssembled"]
+        print("\n")
+        print("+-----------------------------------------------------------------+")
+        print(f" Timing information for FEMpy problem: {self.name}")
+        print("+-----------------------------------------------------------------+")
+        print("+ Residual Assembly: {:11.5e} s".format(resAssemblyTime))
+        print("+ Jacobian Assembly: {:11.5e} s".format(matAssemblyTime))
+        print("+ Linear Solution:   {:11.5e} s".format(solveTime))
+        print("+-----------------------------------------------------------------+\n")

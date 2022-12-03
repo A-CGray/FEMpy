@@ -13,7 +13,7 @@ that the user interfaces with to read in a mesh and setup a finite element model
 # Standard Python modules
 # ==============================================================================
 import os
-from typing import Iterable, Union, Optional, Dict
+from typing import Iterable, Union, Optional, Dict, Any
 import copy
 import warnings
 
@@ -108,7 +108,7 @@ class FEMpyModel(BaseSolver):
         self.nodeCoords = self.nodeCoords[:, self.activeDimensions]
 
         # --- Set the consitutive model ---
-        self.numDOFs = self.numNodes * self.numStates
+        self.numDOF = self.numNodes * self.numStates
 
         # --- For each element type in the mesh, we need to assign a FEMpy element object ---
         self.elements = {}
@@ -142,10 +142,15 @@ class FEMpyModel(BaseSolver):
             self.dvs[dvName] = defaultVal * np.ones(self.numElements)
 
         # --- List for keeping track of all problems associated with this model ---
-        self.problems = {}
+        self.problems = []
 
         # --- Dictionary of global boundary conditions ---
         self.BCs = {}
+
+    @property
+    def problemNames(self) -> Iterable[str]:
+        """Get a list of the names of all problems associated with this model"""
+        return [problem.name for problem in self.problems]
 
     @property
     def numDim(self):
@@ -250,7 +255,37 @@ class FEMpyModel(BaseSolver):
             {"VariableName1": array(one value per element), "VariableName2": array()}
         """
         for dvName in dvs:
-            self.dvs[dvName] = np.copy(dvs[dvName])
+            if dvs[dvName].shape == self.dvs[dvName].shape:
+                self.dvs[dvName] = np.copy(dvs[dvName])
+            else:
+                raise ValueError(
+                    f"Invalid shape for design variable '{dvName}', expected {self.dvs[dvName].shape} but got {dvs[dvName].shape}"
+                )
+
+        for prob in self.problems:
+            prob.markResOutOfDate()
+            prob.markJacOutOfDate()
+
+    def getElementCoordinates(self, elementType: str) -> np.ndarray:
+        """Get the coordinates of the nodes for all elements of the specified type
+
+        Parameters
+        ----------
+        elementType : str
+            Name of the element type to get the coordinates for
+
+        Returns
+        -------
+        numElements x numNodes x numDim array
+            Node coordinates
+        """
+        numElements = self.elements[elementType]["numElements"]
+        element = self.elements[elementType]["elementObject"]
+        nodeCoords = np.zeros((numElements, element.numNodes, self.numDim))
+        for ii in range(numElements):
+            nodeInds = self.elements[elementType]["connectivity"][ii]
+            nodeCoords[ii] = self.nodeCoords[nodeInds]
+        return nodeCoords
 
     def getElementDVs(self, elementType: str):
         """Get the design variable values for a given element set
@@ -317,17 +352,18 @@ class FEMpyModel(BaseSolver):
         self.BCs[name]["DOF"] = dofNodes
         self.BCs[name]["Value"] = valDOF
 
-    def addProblem(self, name):
-        """Add a problem to the model
+    def addProblem(self, name, options: Optional[Dict[str, Any]] = None):
+        """Create a new FEMpy problem that uses this model
 
         Parameters
         ----------
         name : str
-            Name of the problem to add
+            Name of the problem to create
         """
-        self.problems[name] = FEMpyProblem(name, self)
+        problem = FEMpyProblem(name, self, options)
+        self.problems.append(problem)
 
-        return self.problems[name]
+        return problem
 
     def getDOFfromNodeInds(self, nodeIndices):
         """Convert an array of node indices to an array of DOF indices
@@ -426,7 +462,7 @@ class FEMpyModel(BaseSolver):
         """Print a welcome message to the console"""
         self.pp("\nWelcome to")
         self.pp(
-            """  ______ ______ __  __
+            """ ______ ______ __  __
 |  ____|  ____|  \/  |
 | |__  | |__  | \  / |_ __  _   _
 |  __| |  __| | |\/| | '_ \| | | |
