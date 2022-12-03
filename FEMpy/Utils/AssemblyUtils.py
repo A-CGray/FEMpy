@@ -52,16 +52,16 @@ def applyBCsToMatrix(rows, cols, values, bcDOF):
     -------
     rowInds :
     """
-    indsToDelete = np.nonzero(np.in1d(rows, bcDOF))[0]
+    indsToKeep = np.nonzero(np.logical_not(np.in1d(rows, bcDOF)))[0]
 
-    rows = np.delete(rows, indsToDelete)
-    cols = np.delete(cols, indsToDelete)
-    values = np.delete(values, indsToDelete)
+    rows = rows[indsToKeep]
+    cols = cols[indsToKeep]
+    values = values[indsToKeep]
 
-    rows = np.append(rows, bcDOF)
-    cols = np.append(cols, bcDOF)
-    oneVec = np.ones(len(bcDOF))
-    values = np.append(values, oneVec)
+    rows = np.concatenate((rows, bcDOF))
+    cols = np.concatenate((cols, bcDOF))
+    oneVec = np.ones(len(bcDOF)).tolist()
+    values = np.concatenate((values, oneVec))
 
     return rows, cols, values
 
@@ -138,7 +138,7 @@ def convertBCDictToLists(bcDict):
     for key in bcDict:
         bcDOF += bcDict[key]["DOF"]
         bcValues += bcDict[key]["Value"]
-    return bcDOF, bcValues
+    return np.array(bcDOF), np.array(bcValues)
 
 
 def convertLoadsDictToVector(loadsDict, numDOF: int):

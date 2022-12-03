@@ -508,7 +508,9 @@ class FEMpyProblem(BaseSolver):
         if applyBCs:
             BCs = self.getBCs()
             BCDOF, _ = AssemblyUtils.convertBCDictToLists(BCs)
-            matRows, matColumns, matEntries = AssemblyUtils.applyBCsToMatrix(matRows, matColumns, matEntries, BCDOF)
+            matRows, matColumns, matEntries = AssemblyUtils.applyBCsToMatrix(
+                np.array(matRows), np.array(matColumns), np.array(matEntries), BCDOF
+            )
 
         # create and return sparse matrix, we need to create a coo array first as this correctly handle duplicate
         # entries, then we convert to a csc array as that's what the scipy sparse linear solver likes to work with
