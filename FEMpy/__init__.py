@@ -10,7 +10,3 @@ from . import Mesh
 from . import Utils
 from .Problem import FEMpyProblem
 from .Model import FEMpyModel
-from .Assembly import *
-from .Dynamics import *
-from .TecplotIO import *
-from .Smoothing import getSmoother
