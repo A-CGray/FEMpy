@@ -39,7 +39,7 @@ jobs:
 
     - name: Generate and upload coverage to Code Climate
       if: ${{ matrix.python-version == 3.10}}
-      uses: paambaati/codeclimate-action@v2.7.0
+      uses: paambaati/codeclimate-action@v2.7.5
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_COVERAGE_ID }}
       with:
