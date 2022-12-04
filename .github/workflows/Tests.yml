@@ -30,14 +30,11 @@ jobs:
     - name: Run unit tests
       run: testflo -n 1 -v .
 
-    - name: Generate coverage report
-      if: ${{ matrix.python-version == 3.10}}
-      run: |
-        export NUMBA_DISABLE_JIT=1
-        testflo -n 1 -v --coverage --coverpkg FEMpy .
-
-    - name: Upload coverage to Code Climate
+    - name: Generate and upload coverage to Code Climate
       if: ${{ matrix.python-version == 3.10}}
       uses: paambaati/codeclimate-action@v3.2.0
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_COVERAGE_ID }}
+      with:
+        coverageCommand: export NUMBA_DISABLE_JIT=1&&testflo -n 1 -v --coverage --coverpkg FEMpy .
+        debug: true
