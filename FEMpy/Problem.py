@@ -466,8 +466,6 @@ class FEMpyProblem(BaseSolver):
     def _assembleMatrix(self, states: np.ndarray, applyBCs: Optional[bool] = True) -> csc_array:
         """Assemble the global residual Jacobian matrix for the problem (a.k.a the stiffness matrix)
 
-        _extended_summary_
-
         Parameters
         ----------
         stateVector : numNodes x numStates array
@@ -480,18 +478,16 @@ class FEMpyProblem(BaseSolver):
         scipy csc_array
             The residual Jacobian
         """
-        # - For each element type:
-        #     - Get the node coordinates, node states and design variable values for all elements of that type
-        #     - Compute the local matrix for all elements of that type
-        #     - Convert to COO row, col, value lists
-        # - Combine the lists from all element types
-        # - Apply boundary conditions
-        # - Create sparse matrix from lists
 
         matRows = []
         matColumns = []
         matEntries = []
 
+        # - For each element type:
+        #     - Get the node coordinates, node states and design variable values for all elements of that type
+        #     - Compute the local matrices for all elements of that type
+        #     - Convert to COO row, col, value lists
+        #       - Add to the global lists
         for elementType, elementData in self.elements.items():
             element = elementData["elementObject"]
             nodeCoords = self.model.getElementCoordinates(elementType)
