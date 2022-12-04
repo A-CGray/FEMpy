@@ -44,4 +44,4 @@ jobs:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_COVERAGE_ID }}
       with:
         debug: true
-        coverage_command: coverage xml
+        coverageCommand: coverage xml
