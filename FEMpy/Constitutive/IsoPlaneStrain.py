@@ -50,7 +50,7 @@ class IsoPlaneStrain(ConstitutiveModel):
         designVars["Thickness"] = {"defaultValue": t}
 
         # --- States ---
-        stateNames = ["X Displacement", "Y Displacement"]
+        stateNames = ["X-Displacement", "Y-Displacement"]
 
         # --- Strains ---
         strainNames = ["e_xx", "e_yy", "gamma_xy"]

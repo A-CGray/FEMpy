@@ -38,7 +38,7 @@ constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
 # ==============================================================================
 # Create the FEMpy model by loading in a mesh
 # ==============================================================================
-options = {"outputDir": "ExampleOutput"}
+options = {"outputDir": "ExampleOutput", "outputFormat": ".dat"}
 model = fp.FEMpyModel(constitutiveModel, meshFileName="Meshes/LBracket.msh", options=options)
 # --- Define a boundary condition that will be applied in all problems, fixing the top edge of the bracket in x and y ---
 # For now I will just manually find the nodes that are on the top edge of the mesh, maybe we can add better functionality for doing things like this in future
@@ -58,18 +58,18 @@ horizontalLoadCase = model.addProblem("Horizontal-Load", options=problemOptions)
 # Again I will just manually find the nodes that are on the right edge of the mesh
 rightEdgeNodeInds = np.argwhere(nodeCoords[:, 0] == np.max(nodeCoords[:, 0])).flatten()
 
-# In the first case, we will add a total vertical force of 1000N to the right edge of the bracket
-verticalLoadCase.addLoadToNodes(name="RightEdgeLoad", nodeInds=rightEdgeNodeInds, dof=1, value=-1e3, totalLoad=True)
+# In the first case, we will add a downward force of 10^5N distributed across the right edge of the bracket
+verticalLoadCase.addLoadToNodes(name="RightEdgeLoad", nodeInds=rightEdgeNodeInds, dof=1, value=-1e5, totalLoad=True)
 
 # And we will fix the right edge in the x-direction, so it can only move up and down
-verticalLoadCase.addFixedBCToNodes(name="RightEdgeRoller", nodeInds=rightEdgeNodeInds, dof=0, value=0.0)
+# verticalLoadCase.addFixedBCToNodes(name="RightEdgeRoller", nodeInds=rightEdgeNodeInds, dof=0, value=0.0)
 
 # Now add gravity as a body force
 # verticalLoadCase.addBodyLoad(name="Gravity", loadingFunction=[0.0, -9.81 ])
 
 # --- Add loads to the horizontal loadcase ---
-# Add a total horizontal force of 1000N to the right edge of the bracket
-horizontalLoadCase.addLoadToNodes(name="RightEdgeLoad", nodeInds=rightEdgeNodeInds, dof=0, value=-1e3, totalLoad=True)
+# Add a total horizontal force of 1e5N to the right edge of the bracket
+horizontalLoadCase.addLoadToNodes(name="RightEdgeLoad", nodeInds=rightEdgeNodeInds, dof=0, value=-1e5, totalLoad=True)
 
 # add gravity again
 # horizontalLoadCase.addBodyLoad(name="Gravity", loadingFunction=[0.0, -9.81])
@@ -80,7 +80,7 @@ horizontalLoadCase.addLoadToNodes(name="RightEdgeLoad", nodeInds=rightEdgeNodeIn
 
 for problem in model.problems:
     problem.solve()
-    problem.writeSolution(format="plt")
+    problem.writeSolution()
 
 # ==============================================================================
 # Compute some functions
@@ -92,19 +92,12 @@ for problem in model.problems:
 # ==============================================================================
 # Change the thickness design variables and solve again
 # ==============================================================================
-DVs = model.getDVs()
-DVs["thickness"] = np.random.rand(len(DVs["thickness"])) * 1e-2 + 1e-3
-model.setDVs(DVs)
+DVs = model.getDesignVariables()
+DVs["Thickness"] = np.random.rand(len(DVs["Thickness"])) * 1e-2 + 1e-3
+model.setDesignVariables(DVs)
 
 for problem in model.problems:
     problem.solve()
-    problem.writeSolution(format="plt")
-
-# ==============================================================================
-# Compute function
-# ==============================================================================
-for problem in model.problems:
-    value = problem.computeFunction("Pressure", elementReductionType=None, globalReductionType=None)
-    print(value)
+    problem.writeSolution()
 
 # TODO: How should we set DV bounds?

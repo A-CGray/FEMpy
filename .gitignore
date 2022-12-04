@@ -1,6 +1,5 @@
-# Gauss quadrature pkl files
-Gauss*.pkl
-
+# Ignore examples results files
+Examples/ExampleOutput
 
 # Profiling files
 *.prof

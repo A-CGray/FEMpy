@@ -89,7 +89,7 @@ class FEMpyModel(BaseSolver):
 
         if meshFileName is not None:
             # --- Read in the mesh using meshio ---
-            mesh = meshio.read(self.meshFileName)
+            mesh = meshio.read(meshFileName)
             self.nodeCoords = copy.deepcopy(mesh.points)
             self.connectivity = copy.deepcopy(mesh.cells_dict)
         else:
@@ -214,7 +214,7 @@ class FEMpyModel(BaseSolver):
                         elementData[varName] = [elementValues[elType][varName]]
 
         outputMesh = meshio.Mesh(
-            self.getCoordinates(force3D=True), self.self.connectivity, point_data=nodeValues, cell_data=elementData
+            self.getCoordinates(force3D=True), self.connectivity, point_data=nodeValues, cell_data=elementData
         )
         return outputMesh
 
@@ -276,6 +276,16 @@ class FEMpyModel(BaseSolver):
         for prob in self.problems:
             prob.markResOutOfDate()
             prob.markJacOutOfDate()
+
+    def getDesignVariables(self) -> Dict[str, np.ndarray]:
+        """Get the design variables for the model
+
+        Returns
+        -------
+        dictionary
+            Design variables dictionary, e.g ``{"VariableName1": array(one value per element), "VariableName2": array()}``
+        """
+        return copy.deepcopy(self.dvs)
 
     def getElementCoordinates(self, elementType: str) -> np.ndarray:
         """Get the coordinates of the nodes for all elements of the specified type
@@ -413,6 +423,7 @@ class FEMpyModel(BaseSolver):
         """Return the default FEMpy model options"""
         defaultOptions = {
             "outputDir": [str, "./"],
+            "outputFormat": [str, "vtk"],
         }
         return defaultOptions
 

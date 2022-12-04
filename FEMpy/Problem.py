@@ -14,6 +14,7 @@ FEMpy Problem Class
 from typing import Iterable, Union, Callable, Optional, Dict
 import copy
 import time
+import os
 
 # ==============================================================================
 # External Python modules
@@ -23,7 +24,7 @@ from scipy.sparse import csc_array, coo_array
 from baseclasses import BaseSolver
 
 try:
-    from pypardiso import spsolve
+    from pypardiso import factorized
 except ModuleNotFoundError:
     from scipy.sparse.linalg import factorized
 
@@ -70,6 +71,12 @@ class FEMpyProblem(BaseSolver):
 
         # instantiate the solver
         super().__init__(name, "Finite Element Problem", defaultOptions=defaultOptions, options=options)
+
+        # --- Take some options from the model if they are not defined for this problem ---
+        inheritableOptions = ["outputDir", "outputFormat"]
+        for option in inheritableOptions:
+            if self.getOption(option) is None:
+                self.setOption(option, self.model.getOption(option))
 
     @property
     def constitutiveModel(self):
@@ -459,6 +466,53 @@ class FEMpyProblem(BaseSolver):
             nodeStates[ii] = self.states[nodeInds]
         return nodeStates
 
+    def writeSolution(self, baseName: Optional[str] = None, fileFormat: Optional[str] = None):
+        """Write the current solution to a file
+
+        _extended_summary_
+
+        Parameters
+        ----------
+        baseName : str, optional
+            Filename, extension will be ignored if included, by default uses ``f"{self.name}_{self.solveCounter:04d}"``
+        fileFormat : str, optional
+            File format/extension, can be any format supported by meshio, by default uses the format defined by the
+            model or problem ``outputFormat`` option
+        """
+        # Get nodal state values
+        nodeValues = {}
+        for ii, state in enumerate(self.constitutiveModel.stateNames):
+            nodeValues[state] = self.states[:, ii]
+
+        # Get element DV values
+        elementValues = {}
+        for elementType in self.elements:
+            elementValues[elementType] = {}
+            elementDVs = self.model.getElementDVs(elementType)
+            for name, values in elementDVs.items():
+                elementValues[elementType][name] = values
+
+        outputMesh = self.model.createOutputData(nodeValues=nodeValues, elementValues=elementValues)
+
+        if baseName is None:
+            baseName = f"{self.name}_{self.solveCounter:04d}"
+        else:
+            # Get filename without extension
+            baseName - os.path.splitext(baseName)[0]
+
+        if fileFormat is None:
+            fileFormat = self.getOption("outputFormat")
+        if fileFormat[0] != ".":
+            fileFormat = "." + fileFormat
+
+        # --- Create the output directory if it doesn't already exist ---
+        outDir = self.getOption("outputDir")
+        if not os.path.exists(outDir):
+            os.makedirs(outDir)
+
+        outFileName = os.path.join(self.getOption("outputDir"), baseName + fileFormat)
+        outputMesh.write(outFileName)
+
     # ==============================================================================
     # Private methods
     # ==============================================================================
@@ -548,7 +602,7 @@ class FEMpyProblem(BaseSolver):
             AssemblyUtils.scatterLocalResiduals(elementResiduals, elementData["connectivity"], globalResidual)
 
         # Add external loads to the residual
-        globalResidual += AssemblyUtils.convertLoadsDictToVector(self.loads, self.numDOF)
+        globalResidual -= AssemblyUtils.convertLoadsDictToVector(self.loads, self.numDOF)
 
         # Apply boundary conditions
         if applyBCs:
@@ -563,6 +617,8 @@ class FEMpyProblem(BaseSolver):
         """Return the default FEMpy model options"""
         defaultOptions = {
             "printTiming": [bool, False],
+            "outputDir": [(str, type(None)), None],
+            "outputFormat": [(str, type(None)), None],
         }
         return defaultOptions
 
