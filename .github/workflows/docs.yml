@@ -4,15 +4,16 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           cache: 'pip'
@@ -20,10 +21,12 @@ jobs:
           python -m pip install --upgrade pip
           python3 -m pip install -r ./requirements.txt
           python3 -m pip install -e .
+      
+      - name: Build Docs
+        run: mkdocs build -f docs/mkdocs.yml
 
-      - run: mkdocs build -f docs/mkdocs.yml
-
-      - name: Deploy
+      - name: Deploy Docs
+        if: ${{ github.event_name == 'push' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
