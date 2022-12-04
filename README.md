@@ -4,8 +4,8 @@
 [![Unit Tests](https://github.com/A-CGray/FEMpy/actions/workflows/Tests.yml/badge.svg)](https://A-CGray.github.io/FEMpy/)
 [![Code Formatting](https://github.com/A-CGray/FEMpy/actions/workflows/Formatting.yml/badge.svg)](https://A-CGray.github.io/FEMpy/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Code Coverage](https://api.codeclimate.com/v1/badges/38d025776dc6fc3e77c5/test_coverage)](https://codeclimate.com/github/A-CGray/FEMpy/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/38d025776dc6fc3e77c5/maintainability)](https://codeclimate.com/github/A-CGray/FEMpy/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/ba60cf87e121a05dfe5d/test_coverage)](https://codeclimate.com/github/A-CGray/FEMpy/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ba60cf87e121a05dfe5d/maintainability)](https://codeclimate.com/github/A-CGray/FEMpy/maintainability)
 
 FEMpy is my attempt to implement a basic object-oriented finite element method in python.
 
