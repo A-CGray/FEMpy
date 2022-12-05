@@ -81,7 +81,7 @@ class testAssembly(unittest.TestCase):
 
         expectedRHS = np.zeros(self.numDOF)
         expectedRHS[3] = -1.0
-        expectedRHS[5] = -10.0
+        expectedRHS[5] = 10.0
         expectedRHS[11] = -1.0
         expectedRHS[10] = -0.1
 

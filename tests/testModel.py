@@ -33,6 +33,7 @@ test_params = []
 currentDir = os.path.dirname(os.path.realpath(__file__))
 meshDir = "../Examples/Meshes/"
 meshDir = os.path.join(currentDir, meshDir)
+# TODO: Fix the reference values for these tests
 # test_params.append(
 #     {"meshFileName": os.path.join(meshDir, "WingboxL3.bdf"), "numPoints": 23158, "numElements": 24128, "numDim": 3}
 # )
@@ -61,7 +62,7 @@ class ModelUnitTest(unittest.TestCase):
         # we want
         t = 5e-3
         constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
-        self.model = FEMpyModel(self.meshFileName, constitutiveModel)
+        self.model = FEMpyModel(constitutiveModel=constitutiveModel, meshFileName=self.meshFileName)
 
     def testMeshRead(self):
         """Test that the mesh file was read in correctly"""
