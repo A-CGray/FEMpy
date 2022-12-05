@@ -120,6 +120,8 @@ def LagrangePoly2dDeriv(x, y, n):
         x coordinates of points to compute polynomial values at, should be between -1 and 1
     y : array of length nP (0D, nPx1 or 1xnP)
         y coordinates of points to compute polynomial values at, should be between -1 and 1s
+    z: array of length nP (0D, nPx1 or 1xnP)
+        yzcoordinates of points to compute polynomial values at, should be between -1 and 1s
     n : int
         Number of Lagrange polynomials, in 2d, there are n nodes in each direction, giving n^2, n-1 order polynomials
 
@@ -140,6 +142,85 @@ def LagrangePoly2dDeriv(x, y, n):
             for k in range(n):
                 N[i, 0, j * n + k] = dNdx[i, k] * Ny[i, j]
                 N[i, 1, j * n + k] = Nx[i, k] * dNdy[i, j]
+    return N
+
+
+@njit(cache=True)
+def LagrangePoly3d(x, y, z, n):
+    """Compute the derivatives of the 3d Lagrange polynomials at a series of points in 3d space
+
+
+
+    Parameters
+    ----------
+    x : array of length nP (0D, nPx1 or 1xnP)
+        x coordinates of points to compute polynomial values at, should be between -1 and 1
+    y : array of length nP (0D, nPx1 or 1xnP)
+        y coordinates of points to compute polynomial values at, should be between -1 and 1
+    z : array of length nP (0D, nPx1 or 1xnP)
+        z coordinates of points to compute polynomial values at, should be between -1 and 1
+    n : int
+        Number of Lagrange polynomials, in 3d, there are n nodes in each direction, giving n^2, n-1 order polynomials
+
+    Returns
+    -------
+    N : nP x n array
+        Shape function values
+    """
+    xp = x.flatten()
+    yp = y.flatten()
+    zp = z.flatten()
+    Nx = LagrangePoly1d(xp, n)
+    Ny = LagrangePoly1d(yp, n)
+    Nz = LagrangePoly1d(zp, n)
+    N = np.zeros((len(xp), n**3), dtype=xp.dtype)
+    for pointInd in range(len(xp)):
+        for zInd in range(n):
+            for yInd in range(n):
+                for xInd in range(n):
+                    flatInd = zInd * n**2 + yInd * n + xInd
+                    N[flatInd] = Nx[pointInd, xInd] * Ny[pointInd, yInd] * Nz[pointInd, zInd]
+    return N
+
+
+@njit(cache=True)
+def LagrangePoly3dDeriv(x, y, z, n):
+    """Compute the derivatives of the 3d Lagrange polynomials at a series of points in 3d space
+
+
+
+    Parameters
+    ----------
+    x : array of length nP (0D, nPx1 or 1xnP)
+        x coordinates of points to compute polynomial values at, should be between -1 and 1
+    y : array of length nP (0D, nPx1 or 1xnP)
+        y coordinates of points to compute polynomial values at, should be between -1 and 1s
+    n : int
+        Number of Lagrange polynomials, in 3d, there are n nodes in each direction, giving n^2, n-1 order polynomials
+
+    Returns
+    -------
+    dNdx : nP x 2 x n array
+        Shape function derivative values
+    """
+    xp = x.flatten()
+    yp = y.flatten()
+    zp = z.flatten()
+    Nx = LagrangePoly1d(xp, n)
+    Ny = LagrangePoly1d(yp, n)
+    Nz = LagrangePoly1d(zp, n)
+    dNdx = LagrangePoly1dDeriv(xp, n)
+    dNdy = LagrangePoly1dDeriv(yp, n)
+    dNdz = LagrangePoly1dDeriv(zp, n)
+    N = np.zeros((len(xp), 2, n**3))
+    for pointInd in range(len(xp)):
+        for zInd in range(n):
+            for yInd in range(n):
+                for xInd in range(n):
+                    flatInd = zInd * n**2 + yInd * n + xInd
+                    N[pointInd, 0, flatInd] = dNdx[pointInd, xInd] * Ny[pointInd, yInd] * Nz[pointInd, zInd]
+                    N[pointInd, 1, flatInd] = Nx[pointInd, xInd] * dNdy[pointInd, yInd] * Nz[pointInd, zInd]
+                    N[pointInd, 2, flatInd] = Nx[pointInd, xInd] * Ny[pointInd, yInd] * dNdz[pointInd, zInd]
     return N
 
 
