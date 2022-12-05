@@ -139,7 +139,7 @@ class TriElement2D(Element):
         if self.order == 1:
             return np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0]])
         elif self.order == 2:
-            return np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [0.5, 0.0], [0.5, 0.5], [0.0, 0.5]])
+            return np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [0.5, 0.5], [0.0, 0.5], [0.5, 0.0]])
         elif self.order == 3:
             return np.array(
                 [

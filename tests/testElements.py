@@ -92,7 +92,7 @@ class ElementUnitTest(unittest.TestCase):
         np.testing.assert_allclose(stateGradDiff, 0, atol=self.tol, rtol=self.tol)
 
     def testGetClosestPoints(self):
-        self.skipTest("Not working yet")
+        self.skipTest("Not working robustly yet")
         error = self.element.testGetClosestPoints(self.numTestPoints, tol=self.tol * 1e-3)
         np.testing.assert_allclose(error, 0, atol=self.tol * 1e7, rtol=self.tol * 1e7)
 
