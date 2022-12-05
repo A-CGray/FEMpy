@@ -209,4 +209,4 @@ class IsoPlaneStrain(ConstitutiveModel):
             def VMFunc(states, stateGradients, coords, dvs):
                 strains = self.computeStrains(states, stateGradients, coords, dvs)
                 stresses = self.computeStresses(strains, dvs)
-                return vonMises2DPlaneStrain(stresses)
+                return vonMises2DPlaneStrain(stresses, self.nu)

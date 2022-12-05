@@ -31,6 +31,11 @@ def vonMises2DPlaneStress(stresses):
     ----------
     stresses : numPoints x 3 array
         Stresses in the form [sigma_xx, sigma_yy, tau_xy]
+
+    Returns
+    -------
+    array of length numPoints
+        Von Mises stress at each point
     """
     s11 = stresses[:, 0]
     s22 = stresses[:, 1]
@@ -40,7 +45,7 @@ def vonMises2DPlaneStress(stresses):
 
 @njit(cache=True)
 def vonMises2DPlaneStrain(stresses, nu):
-    """Compute the von Mises strain for a 2d plane strain state
+    """Compute the von Mises stress for a 2d plane strain state
 
     Parameters
     ----------
@@ -48,6 +53,11 @@ def vonMises2DPlaneStrain(stresses, nu):
         Stresses in the form [sigma_xx, sigma_yy, tau_xy]
     nu : float
         Poisson's ratio
+
+    Returns
+    -------
+    array of length numPoints
+        Von Mises stress at each point
     """
     s11 = stresses[:, 0]
     s22 = stresses[:, 1]
@@ -64,6 +74,11 @@ def vonMises3D(stresses):
     ----------
     stresses : numPoints x 6 array
         Stresses in the form [sigma_xx, sigma_yy, sigma_zz, tau_xy, tau_xz, tau_yz]
+
+    Returns
+    -------
+    array of length numPoints
+        Von Mises stress at each point
     """
     s11 = stresses[:, 0]
     s22 = stresses[:, 1]
