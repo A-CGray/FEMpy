@@ -27,21 +27,30 @@ from FEMpy.Quadrature import getTriQuadPoints, getTriQuadWeights
 
 class TriElement2D(Element):
     """
-    An up-to-3rd-order 2d triangular element with 3, 6 or 10 nodes respectively. The edges of the triangle share the
-    number of the node opposite them, so edge 1 is opposite node 1 (between nodes 2 and 3) and so on. In the second and
-    3rd order elements, the first 3 nodes are still the corners of the triangle, the remaining mid-edge nodes are
-    numbered sequentially along each edge, starting at edge 1. In the 3rd order element the final node is at the
-    element centroid. If this doesn't make sense to you, just look at my nice ascii art below.
-    3
+    An up-to-3rd-order 2d triangular element with 3, 6 or 10 nodes respectively.
+
+    The node numbering follows the meshio conventions shown below:
+
+    2nd order element:
+    2
     |\
     | \
-    7  5
+    5  4
     |   \
     |    \
-    6  10 4
+    0--3--1
+
+    3rd Order:
+    2
+    |\
+    | \
+    7  6
+    |   \
+    |    \
+    8  9  5
     |      \
     |       \
-    1--8--9--2
+    0--3--4--1
     """
 
     def __init__(self, order=1, numStates=None, quadratureOrder=None):
@@ -139,19 +148,19 @@ class TriElement2D(Element):
         if self.order == 1:
             return np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0]])
         elif self.order == 2:
-            return np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [0.5, 0.5], [0.0, 0.5], [0.5, 0.0]])
+            return np.array([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [0.5, 0.0], [0.5, 0.5], [0.0, 0.5]])
         elif self.order == 3:
             return np.array(
                 [
                     [0.0, 0.0],
                     [1.0, 0.0],
                     [0.0, 1.0],
-                    [2 / 3, 1 / 3],
-                    [1 / 3, 2 / 3],
-                    [0.0, 1 / 3],
-                    [0.0, 2 / 3],
                     [1 / 3, 0.0],
                     [2 / 3, 0.0],
+                    [2 / 3, 1 / 3],
+                    [1 / 3, 2 / 3],
+                    [0.0, 2 / 3],
+                    [0.0, 1 / 3],
                     [1 / 3, 1 / 3],
                 ]
             )
