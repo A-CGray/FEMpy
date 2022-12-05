@@ -803,6 +803,22 @@ class Element:
         N = self.computeShapeFunctions(paramCoords)
         return np.sum(N, axis=1)
 
+    def testInterpolation(self, n=10):
+        """Validate that, when the element geometry matches the reference element exactly, the parametric and real coordinates are the same
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of points to test at, by default 10
+        """
+        nodeCoords = np.zeros((1, self.numNodes, self.numDim))
+        nodeCoords[0] = self.getReferenceElementCoordinates()
+        paramCoords = self.getRandParamCoord(n)
+        error = np.zeros((n, self.numDim))
+        x = self.computeCoordinates(paramCoords, nodeCoords)
+        error = x - paramCoords
+        return error
+
     def testIdentityJacobian(self, n=10):
         """Validate that, when the element geometry matches the reference element exactly, the mapping Jacobian is the identity matrix everywhere.
 

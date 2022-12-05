@@ -24,7 +24,7 @@ import numpy as np
 import FEMpy as fp
 
 
-class testAssembly(unittest.TestCase):
+class testProblem(unittest.TestCase):
     def setUp(self):
         np.random.rand(1)
         # --- Create constitutive model, 7000 series Aluminium ---

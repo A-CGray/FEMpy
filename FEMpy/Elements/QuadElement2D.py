@@ -158,6 +158,6 @@ class QuadElement2D(Element):
         if order == 1:
             return np.array([0, 1, 3, 2])
         if order == 2:
-            return np.array([0, 4, 1, 7, 8, 5, 3, 6, 2])
+            return np.array([0, 2, 8, 6, 1, 5, 7, 3, 4])
         if order == 3:
-            return np.array([0, 4, 5, 1, 11, 12, 13, 6, 10, 15, 14, 7, 3, 9, 8, 2])
+            return np.array([0, 3, 15, 12, 1, 2, 7, 11, 14, 13, 8, 4, 5, 6, 10, 9])

@@ -120,6 +120,8 @@ def LagrangePoly2dDeriv(x, y, n):
         x coordinates of points to compute polynomial values at, should be between -1 and 1
     y : array of length nP (0D, nPx1 or 1xnP)
         y coordinates of points to compute polynomial values at, should be between -1 and 1s
+    z: array of length nP (0D, nPx1 or 1xnP)
+        yzcoordinates of points to compute polynomial values at, should be between -1 and 1s
     n : int
         Number of Lagrange polynomials, in 2d, there are n nodes in each direction, giving n^2, n-1 order polynomials
 
@@ -140,6 +142,85 @@ def LagrangePoly2dDeriv(x, y, n):
             for k in range(n):
                 N[i, 0, j * n + k] = dNdx[i, k] * Ny[i, j]
                 N[i, 1, j * n + k] = Nx[i, k] * dNdy[i, j]
+    return N
+
+
+@njit(cache=True)
+def LagrangePoly3d(x, y, z, n):
+    """Compute the derivatives of the 3d Lagrange polynomials at a series of points in 3d space
+
+
+
+    Parameters
+    ----------
+    x : array of length nP (0D, nPx1 or 1xnP)
+        x coordinates of points to compute polynomial values at, should be between -1 and 1
+    y : array of length nP (0D, nPx1 or 1xnP)
+        y coordinates of points to compute polynomial values at, should be between -1 and 1
+    z : array of length nP (0D, nPx1 or 1xnP)
+        z coordinates of points to compute polynomial values at, should be between -1 and 1
+    n : int
+        Number of Lagrange polynomials, in 3d, there are n nodes in each direction, giving n^2, n-1 order polynomials
+
+    Returns
+    -------
+    N : nP x n array
+        Shape function values
+    """
+    xp = x.flatten()
+    yp = y.flatten()
+    zp = z.flatten()
+    Nx = LagrangePoly1d(xp, n)
+    Ny = LagrangePoly1d(yp, n)
+    Nz = LagrangePoly1d(zp, n)
+    N = np.zeros((len(xp), n**3), dtype=xp.dtype)
+    for pointInd in range(len(xp)):
+        for zInd in range(n):
+            for yInd in range(n):
+                for xInd in range(n):
+                    flatInd = zInd * n**2 + yInd * n + xInd
+                    N[flatInd] = Nx[pointInd, xInd] * Ny[pointInd, yInd] * Nz[pointInd, zInd]
+    return N
+
+
+@njit(cache=True)
+def LagrangePoly3dDeriv(x, y, z, n):
+    """Compute the derivatives of the 3d Lagrange polynomials at a series of points in 3d space
+
+
+
+    Parameters
+    ----------
+    x : array of length nP (0D, nPx1 or 1xnP)
+        x coordinates of points to compute polynomial values at, should be between -1 and 1
+    y : array of length nP (0D, nPx1 or 1xnP)
+        y coordinates of points to compute polynomial values at, should be between -1 and 1s
+    n : int
+        Number of Lagrange polynomials, in 3d, there are n nodes in each direction, giving n^2, n-1 order polynomials
+
+    Returns
+    -------
+    dNdx : nP x 2 x n array
+        Shape function derivative values
+    """
+    xp = x.flatten()
+    yp = y.flatten()
+    zp = z.flatten()
+    Nx = LagrangePoly1d(xp, n)
+    Ny = LagrangePoly1d(yp, n)
+    Nz = LagrangePoly1d(zp, n)
+    dNdx = LagrangePoly1dDeriv(xp, n)
+    dNdy = LagrangePoly1dDeriv(yp, n)
+    dNdz = LagrangePoly1dDeriv(zp, n)
+    N = np.zeros((len(xp), 2, n**3))
+    for pointInd in range(len(xp)):
+        for zInd in range(n):
+            for yInd in range(n):
+                for xInd in range(n):
+                    flatInd = zInd * n**2 + yInd * n + xInd
+                    N[pointInd, 0, flatInd] = dNdx[pointInd, xInd] * Ny[pointInd, yInd] * Nz[pointInd, zInd]
+                    N[pointInd, 1, flatInd] = Nx[pointInd, xInd] * dNdy[pointInd, yInd] * Nz[pointInd, zInd]
+                    N[pointInd, 2, flatInd] = Nx[pointInd, xInd] * Ny[pointInd, yInd] * dNdz[pointInd, zInd]
     return N
 
 
@@ -176,9 +257,9 @@ def LagrangePolyTri(x, y, n):
         N[:, 0] = 2 * x2 + 4 * xy - 3 * xp + 2 * y2 - 3 * y + 1
         N[:, 1] = 2 * x2 - xp
         N[:, 2] = 2 * y2 - yp
-        N[:, 3] = 4 * xy
-        N[:, 4] = -4 * (xy + y2 - yp)
-        N[:, 5] = -4 * (x2 + xy - xp)
+        N[:, 3] = -4 * (x2 + xy - xp)
+        N[:, 4] = 4 * xy
+        N[:, 5] = -4 * (xy + y2 - yp)
 
     elif n == 3:
         x2 = xp**2
@@ -202,12 +283,12 @@ def LagrangePolyTri(x, y, n):
         )
         N[:, 1] = 0.5 * (9.0 * x3 - 9.0 * x2 + 2.0 * xp)
         N[:, 2] = 0.5 * (9.0 * y3 - 9.0 * y2 + 2.0 * yp)
-        N[:, 3] = 4.5 * (3.0 * x2y - xy)
-        N[:, 4] = 4.5 * (3.0 * xy2 - xy)
-        N[:, 5] = 4.5 * (3.0 * x2y + 6 * xy2 - 5.0 * xy + 3.0 * y3 - 5.0 * y2 + 2.0 * yp)
-        N[:, 6] = 4.5 * (-3.0 * xy2 + xy - 3.0 * y3 + 4.0 * y2 - yp)
-        N[:, 7] = 4.5 * (3.0 * x3 + 6.0 * x2y - 5.0 * x2 + 3.0 * xy2 - 5.0 * xy + 2.0 * xp)
-        N[:, 8] = 4.5 * (-3.0 * x3 - 3.0 * x2y + 4.0 * x2 + xy - xp)
+        N[:, 3] = 4.5 * (3.0 * x3 + 6.0 * x2y - 5.0 * x2 + 3.0 * xy2 - 5.0 * xy + 2.0 * xp)
+        N[:, 4] = 4.5 * (-3.0 * x3 - 3.0 * x2y + 4.0 * x2 + xy - xp)
+        N[:, 5] = 4.5 * (3.0 * x2y - xy)
+        N[:, 6] = 4.5 * (3.0 * xy2 - xy)
+        N[:, 7] = 4.5 * (-3.0 * xy2 + xy - 3.0 * y3 + 4.0 * y2 - yp)
+        N[:, 8] = 4.5 * (3.0 * x2y + 6 * xy2 - 5.0 * xy + 3.0 * y3 - 5.0 * y2 + 2.0 * yp)
         N[:, 9] = -27.0 * (x2y + xy2 - xy)
     return N
 
@@ -243,12 +324,12 @@ def LagrangePolyTriDeriv(x, y, n):
         dNdx[:, 1, 0] = 4.0 * xp + 4.0 * yp - 3.0
         dNdx[:, 0, 1] = 4.0 * xp - 1.0
         dNdx[:, 1, 2] = 4.0 * yp - 1.0
-        dNdx[:, 0, 3] = 4.0 * yp
-        dNdx[:, 1, 3] = 4.0 * xp
-        dNdx[:, 0, 4] = -4.0 * yp
-        dNdx[:, 1, 4] = -4.0 * (xp + 2.0 * yp - 1.0)
-        dNdx[:, 0, 5] = -4.0 * (2.0 * xp + yp - 1.0)
-        dNdx[:, 1, 5] = -4.0 * xp
+        dNdx[:, 0, 3] = -4.0 * (2.0 * xp + yp - 1.0)
+        dNdx[:, 1, 3] = -4.0 * xp
+        dNdx[:, 0, 4] = 4.0 * yp
+        dNdx[:, 1, 4] = 4.0 * xp
+        dNdx[:, 0, 5] = -4.0 * yp
+        dNdx[:, 1, 5] = -4.0 * (xp + 2.0 * yp - 1.0)
 
     elif n == 3:
         x2 = xp**2
@@ -261,23 +342,23 @@ def LagrangePolyTriDeriv(x, y, n):
 
         dNdx[:, 1, 2] = 0.5 * (27.0 * y2 - 18.0 * yp + 2.0)
 
-        dNdx[:, 0, 3] = 4.5 * (6.0 * xy - yp)
-        dNdx[:, 1, 3] = 4.5 * (3.0 * x2 - xp)
+        dNdx[:, 0, 3] = 4.5 * (9.0 * x2 + 12.0 * xy - 10.0 * xp + 3.0 * y2 - 5.0 * yp + 2.0)
+        dNdx[:, 1, 3] = 4.5 * (6.0 * x2 + 6.0 * xy - 5.0 * xp)
 
-        dNdx[:, 0, 4] = 4.5 * (3.0 * y2 - yp)
-        dNdx[:, 1, 4] = 4.5 * (6.0 * xy - xp)
+        dNdx[:, 0, 4] = 4.5 * (-9.0 * x2 - 6.0 * xy + 8.0 * xp + yp - 1.0)
+        dNdx[:, 1, 4] = 4.5 * (xp - 3.0 * x2)
 
-        dNdx[:, 0, 5] = 4.5 * (6.0 * xy + 6.0 * y2 - 5.0 * yp)
-        dNdx[:, 1, 5] = 4.5 * (3.0 * x2 + 12.0 * xy - 5.0 * xp + 9.0 * y2 - 10.0 * yp + 2.0)
+        dNdx[:, 0, 5] = 4.5 * (6.0 * xy - yp)
+        dNdx[:, 1, 5] = 4.5 * (3.0 * x2 - xp)
 
-        dNdx[:, 0, 6] = 4.5 * (-3.0 * y2 + yp)
-        dNdx[:, 1, 6] = 4.5 * (-6.0 * xy + xp - 9.0 * y2 + 8.0 * yp - 1.0)
+        dNdx[:, 0, 6] = 4.5 * (3.0 * y2 - yp)
+        dNdx[:, 1, 6] = 4.5 * (6.0 * xy - xp)
 
-        dNdx[:, 0, 7] = 4.5 * (9.0 * x2 + 12.0 * xy - 10.0 * xp + 3.0 * y2 - 5.0 * yp + 2.0)
-        dNdx[:, 1, 7] = 4.5 * (6.0 * x2 + 6.0 * xy - 5.0 * xp)
+        dNdx[:, 0, 8] = 4.5 * (6.0 * xy + 6.0 * y2 - 5.0 * yp)
+        dNdx[:, 1, 8] = 4.5 * (3.0 * x2 + 12.0 * xy - 5.0 * xp + 9.0 * y2 - 10.0 * yp + 2.0)
 
-        dNdx[:, 0, 8] = 4.5 * (-9.0 * x2 - 6.0 * xy + 8.0 * xp + yp - 1.0)
-        dNdx[:, 1, 8] = 4.5 * (xp - 3.0 * x2)
+        dNdx[:, 0, 7] = 4.5 * (-3.0 * y2 + yp)
+        dNdx[:, 1, 7] = 4.5 * (-6.0 * xy + xp - 9.0 * y2 + 8.0 * yp - 1.0)
 
         dNdx[:, 0, 9] = -27.0 * (2.0 * xy + y2 - yp)
         dNdx[:, 1, 9] = -27.0 * (x2 + 2.0 * xy - xp)

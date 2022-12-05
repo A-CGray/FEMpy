@@ -61,3 +61,17 @@ MeshSize {2} = 1;
 MeshSize {1, 2, 3} = 1;
 //+
 MeshSize {6, 4} = 0.1;
+//+
+MeshSize {2} = 1;
+//+
+MeshSize {2} = 10;
+//+
+MeshSize {6, 5, 4} = 0.1;
+//+
+MeshSize {6, 5, 4} = 1;
+//+
+MeshSize {2} = 10;
+//+
+MeshSize {2} = 10;
+//+
+MeshSize {5, 4, 6} = 0.1;
