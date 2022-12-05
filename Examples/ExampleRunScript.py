@@ -38,8 +38,8 @@ constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
 # ==============================================================================
 # Create the FEMpy model by loading in a mesh
 # ==============================================================================
-options = {"outputDir": "ExampleOutput", "outputFormat": ".dat"}
-model = fp.FEMpyModel(constitutiveModel, meshFileName="Meshes/LBracket.msh", options=options)
+options = {"outputDir": "ExampleOutput-Tri6", "outputFormat": ".vtu"}
+model = fp.FEMpyModel(constitutiveModel, meshFileName="Meshes/LBracket-Tri6.msh", options=options)
 # --- Define a boundary condition that will be applied in all problems, fixing the top edge of the bracket in x and y ---
 # For now I will just manually find the nodes that are on the top edge of the mesh, maybe we can add better functionality for doing things like this in future
 nodeCoords = model.getCoordinates()
