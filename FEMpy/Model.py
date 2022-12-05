@@ -462,12 +462,12 @@ class FEMpyModel(BaseSolver):
                         elObject = Elements.QuadElement2D(order=int(order), numStates=self.numStates)
 
         # --- 2D Triangle elements ---
-        # if elName == "triangle":
-        #     elObject = Elements.TriElement(order=1, numStates=self.numStates)
-        # if elName == "triangle6":
-        #     elObject = Elements.TriElement(order=2, numStates=self.numStates)
-        # if elName == "triangle10":
-        #     elObject = Elements.TriElement(order=3, numStates=self.numStates)
+        if elName == "triangle":
+            elObject = Elements.TriElement(order=1, numStates=self.numStates)
+        if elName == "triangle6":
+            elObject = Elements.TriElement(order=2, numStates=self.numStates)
+        if elName == "triangle10":
+            elObject = Elements.TriElement(order=3, numStates=self.numStates)
 
         # # --- 1D Line Elements ---
         # if elName[:4] == "line":

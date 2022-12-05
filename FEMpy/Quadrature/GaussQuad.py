@@ -8,10 +8,19 @@ Gauss Quadrature Points and Weights
 @Description : Methods for computing Gauss Quadrature points and weights
 """
 
-import numpy as np
-import pickle
-import os
+# ==============================================================================
+# Standard Python modules
+# ==============================================================================
 from functools import lru_cache
+
+# ==============================================================================
+# External Python modules
+# ==============================================================================
+import numpy as np
+
+# ==============================================================================
+# Extension modules
+# ==============================================================================
 
 
 @lru_cache(maxsize=None)

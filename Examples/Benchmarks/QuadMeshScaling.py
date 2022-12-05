@@ -76,7 +76,7 @@ def createGridMesh(nx, ny, warpFunc=None):
     return np.array([xNodes, yNodes]).T, conn
 
 
-El = fp.Elements.QuadElement()
+El = fp.Elements.QuadElement2D()
 con = fp.Constitutive.isoPlaneStrain(E=70e9, nu=0.3, t=1.0)
 
 numEl = [2, 5, 10, 20, 40, 80, 160, 320]

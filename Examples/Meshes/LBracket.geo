@@ -41,3 +41,23 @@ Physical Surface("surf", 10) = {1};
 Physical Curve(" FixedBC", 8) -= {6};
 //+
 Physical Curve(" LoadedEdge", 9) -= {3};
+//+
+MeshSize {5} = 0.01;
+//+
+MeshSize {5} = 0.01;
+//+
+MeshSize {2} = 0.1;
+//+
+MeshSize {2} = 10;
+//+
+MeshSize {2} = 100;
+//+
+MeshSize {2} = 1;
+//+
+MeshSize {2} = 0.1;
+//+
+MeshSize {2} = 1;
+//+
+MeshSize {1, 2, 3} = 1;
+//+
+MeshSize {6, 4} = 0.1;

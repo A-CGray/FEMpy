@@ -71,8 +71,8 @@ class Element:
         self.paramCoordLowerBounds = -np.ones(self.numDim)
         self.paramCoordUpperBounds = np.ones(self.numDim)
         self.paramCoordLinearConstaintMat = None
-        self.paramCoordLinearConstaintUBounds = None
-        self.paramCoordLinearConstaintLBounds = None
+        self.paramCoordLinearConstaintUpperBounds = None
+        self.paramCoordLinearConstaintLowerBounds = None
 
         # --- Define fast jacobian determinant function based on number of dimensions ---
         if self.numDim == 1:
@@ -631,8 +631,9 @@ class Element:
 
         def r(xParam):
             xTrue = self.computeCoordinates(np.atleast_2d(xParam), nodeCoordCopy).flatten()
-            print(f"{xParam=}, {xTrue=}, {point=}")
-            return np.linalg.norm(xTrue - point)
+            error = np.linalg.norm(xTrue - point)
+            print(f"{xParam=}, {xTrue=}, {point=}, {error=}")
+            return error
 
         def drdxParam(xParam):
             xTrue = self.computeCoordinates(np.atleast_2d(xParam), nodeCoordCopy).flatten()
@@ -645,16 +646,17 @@ class Element:
         maxAttempts = 10
         closestPointFound = False
         for _ in range(maxAttempts):
+            x0 = self.getRandParamCoord(1)[0]
             sol = minimize(
                 r,
-                np.random.rand(self.numDim),
+                x0,
                 jac=drdxParam,
                 bounds=paramCoordBounds,
                 constraints=paramCoordLinearConstraints,
                 method="trust-constr",
                 **kwargs,
             )
-            closestPointFound = sol.success
+            closestPointFound = sol.fun < 1e-4
             if closestPointFound:
                 break
 
