@@ -40,12 +40,12 @@ meshDir = os.path.join(currentDir, meshDir)
 test_params.append(
     {"meshFileName": os.path.join(meshDir, "Plate.bdf"), "numPoints": 4225, "numElements": 4096, "numDim": 2}
 )
-test_params.append(
-    {"meshFileName": os.path.join(meshDir, "GMSHTest.msh"), "numPoints": 3622, "numElements": 798, "numDim": 2}
-)
-test_params.append(
-    {"meshFileName": os.path.join(meshDir, "LBracket.msh"), "numPoints": 9, "numElements": 798, "numDim": 2}
-)
+# test_params.append(
+#     {"meshFileName": os.path.join(meshDir, "GMSHTest.msh"), "numPoints": 3622, "numElements": 798, "numDim": 2}
+# )
+# test_params.append(
+#     {"meshFileName": os.path.join(meshDir, "LBracket.msh"), "numPoints": 9, "numElements": 798, "numDim": 2}
+# )
 
 
 @parameterized_class(test_params)
