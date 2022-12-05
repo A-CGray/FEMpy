@@ -35,7 +35,7 @@ class testProblem(unittest.TestCase):
         # This thickness value is a design variable, by default all elements will use this value, but we can change it later if
         # we want
         t = 5e-3
-        constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
+        self.constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
 
         # --- Define node coordinates and element connectivity arrays ---
         # Mesh looks like this:
@@ -54,7 +54,7 @@ class testProblem(unittest.TestCase):
         self.nodeCoordinates += 1e-14 * np.random.rand(*self.nodeCoordinates.shape)
         self.connectivity = {"quad": np.array([[0, 1, 3, 2], [2, 3, 5, 4]])}
 
-        self.model = fp.FEMpyModel(constitutiveModel, nodeCoords=self.nodeCoordinates, connectivity=self.connectivity)
+        self.model = fp.FEMpyModel(self.constitutiveModel, nodeCoords=self.nodeCoordinates, connectivity=self.connectivity)
         self.problem = self.model.addProblem("Test")
         self.problem.addFixedBCToNodes(name="YFixed", nodeInds=[1, 5], dof=1, value=1.0)
         self.problem.addFixedBCToNodes(name="XFixed", nodeInds=5, dof=0, value=0.1)
@@ -121,6 +121,19 @@ class testProblem(unittest.TestCase):
                     values[1],
                     err_msg=f"{name} of the assembled matrix is not as expected",
                 )
+    
+    def testComputeFunction(self):
+        # test computation of total mass
+        expectedTotalMass = self.constitutiveModel.rho*2
+        np.testing.assert_allclose(expectedTotalMass, self.problem.computeFunction("Mass", elementReductionType="integrate", globalReductionType="sum"))
+
+        # test element reduction of mass
+        expectedValue = {"quad": np.array([self.constitutiveModel.rho, self.constitutiveModel.rho])}
+        np.testing.assert_equal(expectedValue, self.problem.computeFunction("Mass", elementReductionType="max"))
+
+        # test element global reduction
+        np.testing.assert_equal(self.constitutiveModel.rho*2, self.problem.computeFunction("Mass", elementReductionType="min", globalReductionType="sum"))
+
 
 
 if __name__ == "__main__":
