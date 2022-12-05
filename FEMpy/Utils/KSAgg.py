@@ -33,7 +33,7 @@ def ksAgg(g, ksType, rho=100.0):
     ----------
     g : 1d array
         Values to perform KS aggregation
-    ksType : string 
+    ksType : string
         determines which type of KS aggregation is performed ["min", "max"]
     rho : float, optional
         KS Weight parameter, larger values give a closer but less smooth approximation of the maximum, by default 100.0
@@ -44,16 +44,16 @@ def ksAgg(g, ksType, rho=100.0):
         The KS agregated value
     """
     assert ksType.lower() in ["min", "max"], "KS aggregation type not valid"
-    
+
     ng = len(g)
     if ksType.lower() == "min":
-        g = -1*g
-        
+        g = -1 * g
+
     maxg = np.max(g)
     ks = maxg + 1.0 / rho * np.log(1.0 / ng * np.sum(np.exp(rho * (g - maxg))))
 
     if ksType.lower() == "max":
         return ks
-        
+
     if ksType.lower() == "min":
-        return -1*ks
+        return -1 * ks

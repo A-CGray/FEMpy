@@ -226,42 +226,58 @@ class Element:
             elementDVs,
             quantities=["Coord", "State", "StateGrad", "DVs", "JacDet"],
         )
-        values = function(pointQuantities["Coord"], pointQuantities["State"], pointQuantities["StateGrad"], pointQuantities["DVs"])
+        values = function(
+            pointQuantities["Coord"], pointQuantities["State"], pointQuantities["StateGrad"], pointQuantities["DVs"]
+        )
         values = values.reshape((numElements, numIntPoints))
 
         # perform element reduction if specified
         if elementReductionType is not None:
-            assert elementReductionType.lower() in ["sum", "mean", "integrate", "min", "max", "ksmax", "ksmin"], "elementReductionType not valid"
+            assert elementReductionType.lower() in [
+                "sum",
+                "mean",
+                "integrate",
+                "min",
+                "max",
+                "ksmax",
+                "ksmin",
+            ], "elementReductionType not valid"
 
             # compute reduction
             if elementReductionType.lower() == "sum":
                 return np.sum(values, axis=1)
-            
+
             if elementReductionType.lower() == "mean":
                 return np.average(values, axis=1)
-            
+
             if elementReductionType.lower() == "min":
                 return np.min(values, axis=1)
-            
+
             if elementReductionType.lower() == "max":
                 return np.max(values, axis=1)
-            
+
             if elementReductionType.lower() == "integrate":
                 # compute integration using weighted sum of w*values*detJ over each set of element points
                 pointQuantities["JacDet"] = pointQuantities["JacDet"].reshape((numElements, numIntPoints))
 
-                return np.einsum("ep,ep,p->e", values, pointQuantities["JacDet"], intPointWeights, optimize=['einsum_path', (0, 1), (0, 1)])
-            
+                return np.einsum(
+                    "ep,ep,p->e",
+                    values,
+                    pointQuantities["JacDet"],
+                    intPointWeights,
+                    optimize=["einsum_path", (0, 1), (0, 1)],
+                )
+
             if elementReductionType.lower() == "ksmax":
                 reducedValues = np.zeros(numElements)
                 for i in range(numElements):
-                    reducedValues[i] = ksAgg(values[i,:], "max")
+                    reducedValues[i] = ksAgg(values[i, :], "max")
                 return reducedValues
-            
+
             if elementReductionType.lower() == "ksmin":
                 reducedValues = np.zeros(numElements)
                 for i in range(numElements):
-                    reducedValues[i] = ksAgg(values[i,:], "min")
+                    reducedValues[i] = ksAgg(values[i, :], "min")
                 return reducedValues
 
         return values

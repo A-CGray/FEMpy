@@ -277,14 +277,21 @@ class FEMpyProblem(BaseSolver):
             nodeCoords = self.model.getElementCoordinates(elType)
             nodeStates = self.getElementStates(elType)
             elementDvs = self.model.getElementDVs(elType)
-            
+
             functionValues[elType] = elObject.computeFunction(
                 nodeCoords, nodeStates, elementDvs, eval_func, elementReductionType
             )
 
         # perform global reduction if specified
         if globalReductionType is not None:
-            assert globalReductionType.lower() in ["sum", "mean", "min", "max", "ksmax", "ksmin"], "globalReductionType not valid"
+            assert globalReductionType.lower() in [
+                "sum",
+                "mean",
+                "min",
+                "max",
+                "ksmax",
+                "ksmin",
+            ], "globalReductionType not valid"
 
             # create reduction function
             if globalReductionType.lower() == "mean":
