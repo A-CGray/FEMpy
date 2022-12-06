@@ -2,7 +2,7 @@
 
 ## Code formatting and Linting
 
-The following checks will be run on any PR using [pre-commit](pre-commit.com) before it can be merged into the main branch:
+The following checks will be run on any PR using [pre-commit](https://www.pre-commit.com) before it can be merged into the main branch:
 
 - Black code formatter, with 120 column line width and target python versions 3.7-3.10
 - Flake8 linter, using the [MDO Lab's configuration file](https://raw.githubusercontent.com/mdolab/.github/master/.flake8)
