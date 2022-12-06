@@ -26,6 +26,7 @@ from scipy.spatial.transform import Rotation
 # Extension modules
 # ==============================================================================
 from FEMpy.LinAlg import det1, det2, det3, inv1, inv2, inv3
+from FEMpy.Utils.KSAgg import ksAgg
 
 
 class Element:
@@ -172,7 +173,7 @@ class Element:
     # ==============================================================================
     # Implemented methods
     # ==============================================================================
-    def computeFunction(self, nodeCoords, nodeStates, elementDVs, function, elementReductionType):
+    def computeFunction(self, nodeCoords, nodeStates, elementDVs, function, elementReductionType, intOrder=None):
         """Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element
 
         _extended_summary_
@@ -206,8 +207,80 @@ class Element:
         values : numElements array
             Value of the function for each element
         """
+
         numElements = nodeCoords.shape[0]
-        return np.random.rand(numElements)
+        nodeCoords = np.ascontiguousarray(nodeCoords)
+        nodeStates = np.ascontiguousarray(nodeStates)
+
+        # - Get integration point parametric coordinates and weights (same for all elements of same type)
+        intOrder = self.quadratureOrder if intOrder is None else intOrder
+        intPointWeights = self.getIntegrationPointWeights(intOrder)  # numIntPoints
+        intPointParamCoords = self.getIntegrationPointCoords(intOrder)  # numIntPoints x numDim
+        numIntPoints = len(intPointWeights)
+
+        # Get the quantities we need for the weak residual evaluation at the integration points for each element
+        pointQuantities = self._computeFunctionEvaluationQuantities(
+            intPointParamCoords,
+            nodeStates,
+            nodeCoords,
+            elementDVs,
+            quantities=["Coord", "State", "StateGrad", "DVs", "JacDet"],
+        )
+        values = function(
+            pointQuantities["State"], pointQuantities["StateGrad"], pointQuantities["Coord"], pointQuantities["DVs"]
+        )
+        values = values.reshape((numElements, numIntPoints))
+
+        # perform element reduction if specified
+        if elementReductionType is not None:
+            assert elementReductionType.lower() in [
+                "sum",
+                "mean",
+                "integrate",
+                "min",
+                "max",
+                "ksmax",
+                "ksmin",
+            ], "elementReductionType not valid"
+
+            # compute reduction
+            if elementReductionType.lower() == "sum":
+                return np.sum(values, axis=1)
+
+            if elementReductionType.lower() == "mean":
+                return np.average(values, axis=1)
+
+            if elementReductionType.lower() == "min":
+                return np.min(values, axis=1)
+
+            if elementReductionType.lower() == "max":
+                return np.max(values, axis=1)
+
+            if elementReductionType.lower() == "integrate":
+                # compute integration using weighted sum of w*values*detJ over each set of element points
+                pointQuantities["JacDet"] = pointQuantities["JacDet"].reshape((numElements, numIntPoints))
+
+                return np.einsum(
+                    "ep,ep,p->e",
+                    values,
+                    pointQuantities["JacDet"],
+                    intPointWeights,
+                    optimize=["einsum_path", (0, 1), (0, 1)],
+                )
+
+            if elementReductionType.lower() == "ksmax":
+                reducedValues = np.zeros(numElements)
+                for i in range(numElements):
+                    reducedValues[i] = ksAgg(values[i, :], "max")
+                return reducedValues
+
+            if elementReductionType.lower() == "ksmin":
+                reducedValues = np.zeros(numElements)
+                for i in range(numElements):
+                    reducedValues[i] = ksAgg(values[i, :], "min")
+                return reducedValues
+
+        return values
 
     def _computeFunctionEvaluationQuantities(self, paramCoords, nodeStates, nodeCoords, designVars, quantities):
         """Compute a series of values that are used for evaluating functions at multiple points over multiple elements
@@ -745,6 +818,22 @@ class Element:
         paramCoords = self.getRandParamCoord(n)
         N = self.computeShapeFunctions(paramCoords)
         return np.sum(N, axis=1)
+
+    def testInterpolation(self, n=10):
+        """Validate that, when the element geometry matches the reference element exactly, the parametric and real coordinates are the same
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of points to test at, by default 10
+        """
+        nodeCoords = np.zeros((1, self.numNodes, self.numDim))
+        nodeCoords[0] = self.getReferenceElementCoordinates()
+        paramCoords = self.getRandParamCoord(n)
+        error = np.zeros((n, self.numDim))
+        x = self.computeCoordinates(paramCoords, nodeCoords)
+        error = x - paramCoords
+        return error
 
     def testIdentityJacobian(self, n=10):
         """Validate that, when the element geometry matches the reference element exactly, the mapping Jacobian is the identity matrix everywhere.

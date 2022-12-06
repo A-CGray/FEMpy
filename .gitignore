@@ -1,6 +1,7 @@
 # Ignore examples results files
 Examples/ExampleOutput
 *.vtk
+*.vtu
 *.dat
 
 # Profiling files

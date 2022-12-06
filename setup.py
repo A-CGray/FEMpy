@@ -11,23 +11,6 @@ __version__ = re.findall(
 )[0]
 
 
-class installWrapper(install):
-    """wrapper around setuptools' install method that will run a post install script"""
-
-    def run(self):
-        from distutils.sysconfig import get_python_lib
-
-        install.run(self)
-
-
-class developWrapper(develop):
-    """wrapper around setuptools' develop method that will run a post install script"""
-
-    def run(self):
-        develop.run(self)
-        subprocess.run("pre-commit install", shell=True)
-
-
 setup(
     name="FEMpy",
     version=__version__,
@@ -47,18 +30,14 @@ setup(
     ],
     extras_require={
         "docs": [
-            "mkdocs",
-            "pymdown-extensions",
             "mkdocs-material",
             "mkdocstrings",
             "pytkdocs[numpy-style]",
-            "Jinja2<3.0,>=2.11",
         ],
-        "dev": ["parameterized", "testflo", "black==22.1.0", "flake8==3.9.2", "pre-commit"],
+        "dev": ["parameterized", "testflo", "black==22.1.0", "flake8", "pre-commit"],
     },
     classifiers=[
         "Operating System :: OS Independent",
         "Programming Language :: Python",
     ],
-    cmdclass={"install": installWrapper, "develop": developWrapper},
 )

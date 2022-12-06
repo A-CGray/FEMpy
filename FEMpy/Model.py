@@ -424,6 +424,7 @@ class FEMpyModel(BaseSolver):
         defaultOptions = {
             "outputDir": [str, "./"],
             "outputFormat": [str, "vtk"],
+            "outputFunctions": [list, []],
         }
         return defaultOptions
 
@@ -463,11 +464,11 @@ class FEMpyModel(BaseSolver):
 
         # --- 2D Triangle elements ---
         if elName == "triangle":
-            elObject = Elements.TriElement(order=1, numStates=self.numStates)
+            elObject = Elements.TriElement2D(order=1, numStates=self.numStates)
         if elName == "triangle6":
-            elObject = Elements.TriElement(order=2, numStates=self.numStates)
+            elObject = Elements.TriElement2D(order=2, numStates=self.numStates)
         if elName == "triangle10":
-            elObject = Elements.TriElement(order=3, numStates=self.numStates)
+            elObject = Elements.TriElement2D(order=3, numStates=self.numStates)
 
         # # --- 1D Line Elements ---
         # if elName[:4] == "line":

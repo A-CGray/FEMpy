@@ -38,7 +38,7 @@ constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
 # ==============================================================================
 # Create the FEMpy model by loading in a mesh
 # ==============================================================================
-options = {"outputDir": "ExampleOutput", "outputFormat": ".dat"}
+options = {"outputDir": "ExampleOutput", "outputFormat": ".vtu", "outputFunctions": ["Von-Mises-Stress"]}
 model = fp.FEMpyModel(constitutiveModel, meshFileName="Meshes/LBracket.msh", options=options)
 # --- Define a boundary condition that will be applied in all problems, fixing the top edge of the bracket in x and y ---
 # For now I will just manually find the nodes that are on the top edge of the mesh, maybe we can add better functionality for doing things like this in future
@@ -86,8 +86,8 @@ for problem in model.problems:
 # Compute some functions
 # ==============================================================================
 for problem in model.problems:
-    value = problem.computeFunction("Mass", elementReductionType=None, globalReductionType=None)
-    print(value)
+    value = problem.computeFunction("Mass", elementReductionType="integrate", globalReductionType="sum")
+    print("Total mass = ", value)
 
 # ==============================================================================
 # Change the thickness design variables and solve again

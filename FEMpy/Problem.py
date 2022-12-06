@@ -32,6 +32,7 @@ except ModuleNotFoundError:
 # Extension modules
 # ==============================================================================
 from FEMpy.Utils import AssemblyUtils
+from FEMpy.Utils.KSAgg import ksAgg
 
 
 class FEMpyProblem(BaseSolver):
@@ -73,7 +74,7 @@ class FEMpyProblem(BaseSolver):
         super().__init__(name, "Finite Element Problem", defaultOptions=defaultOptions, options=options)
 
         # --- Take some options from the model if they are not defined for this problem ---
-        inheritableOptions = ["outputDir", "outputFormat"]
+        inheritableOptions = ["outputDir", "outputFormat", "outputFunctions"]
         for option in inheritableOptions:
             if self.getOption(option) is None:
                 self.setOption(option, self.model.getOption(option))
@@ -248,7 +249,7 @@ class FEMpyProblem(BaseSolver):
         """Mark the status of the jacobian as up to date"""
         self.jacUpToDate = True
 
-    def computeFunction(self, name, elementReductionType=None, globalReductionType=None):
+    def computeFunction(self, name, elementReductionType, globalReductionType=None):
         """Compute a function over the whole model
 
         Parameters
@@ -256,9 +257,9 @@ class FEMpyProblem(BaseSolver):
         name : str, optional
             Name of the function to compute, this must be one of the function names of the problem's constitutive model, by default ""
         elementReductionType : _type_, optional
-            Type of reduction to do over each element (average, min, max, sum, integral etc), by default None
+            Type of reduction to do over each element (sum, mean, integrate, max, min, ksmax, ksmin), by default None
         globalReductionType : _type_, optional
-            Type of reduction to do over all elements (average, sum, min, max etc), by default None
+            Type of reduction to do over all elements (sum, mean, max, min, ksmax, ksmin), by default None
 
         Returns
         -------
@@ -267,49 +268,44 @@ class FEMpyProblem(BaseSolver):
         dict
             for element reduction
         """
-        # for each element type:
-        #   - Get the node coordinates and states and DVs for those elements
-        #   - Compute the function values for all elements of that type, using:
-        #       values = Element.computeFunction(nodeCoords, nodeStates, elementDVs, function, elementReductionType)
-        # Then, if globalReductionType is not None:
-        #   - Do the global reduction, return single value
-
         functionValues = {}
 
         elementDvs = self.model.dvs  # need to confirm size
         eval_func = self.model.constitutiveModel.getFunction(name)
-        print(self.model.elements)
         for elType in self.model.elements:
-            print(elType)
             elObject = self.model.elements[elType]["elementObject"]
             nodeCoords = self.model.getElementCoordinates(elType)
             nodeStates = self.getElementStates(elType)
             elementDvs = self.model.getElementDVs(elType)
-            # nodeCoords : numElements x numNodes x numDim array
-            #     Node coordinates for each element
-            # nodeStates : numElements x numNodes x numStates array
-            #     State values at the nodes of each element
-            # dvs : numElements x numDVs array
-            #     Design variable values for each element
-            # values: array of length numElements
-            #     Values of the function at each element
+
             functionValues[elType] = elObject.computeFunction(
                 nodeCoords, nodeStates, elementDvs, eval_func, elementReductionType
             )
 
         # perform global reduction if specified
         if globalReductionType is not None:
-            assert globalReductionType in ["average", "sum", "min", "max"], "globalReductionType not valid"
+            assert globalReductionType.lower() in [
+                "sum",
+                "mean",
+                "min",
+                "max",
+                "ksmax",
+                "ksmin",
+            ], "globalReductionType not valid"
 
             # create reduction function
-            if globalReductionType == "average":
+            if globalReductionType.lower() == "mean":
                 reductionFunc = np.average
-            if globalReductionType == "sum":
+            if globalReductionType.lower() == "sum":
                 reductionFunc = np.sum
-            if globalReductionType == "min":
+            if globalReductionType.lower() == "min":
                 reductionFunc = np.min
-            if globalReductionType == "max":
+            if globalReductionType.lower() == "max":
                 reductionFunc = np.max
+            if globalReductionType.lower() == "ksmax":
+                reductionFunc = lambda values: ksAgg(values, "max")
+            if globalReductionType.lower() == "ksmin":
+                reductionFunc = lambda values: ksAgg(values, "min")
 
             globalValues = np.zeros(len(self.model.elements))
             for i, elType in enumerate(functionValues):
@@ -492,6 +488,16 @@ class FEMpyProblem(BaseSolver):
             for name, values in elementDVs.items():
                 elementValues[elementType][name] = values
 
+        # Get element function values
+        for funcName in self.getOption("outputFunctions"):
+            for reduction_type in ["mean", "min", "max"]:
+                outName = f"{funcName}_{reduction_type}"
+                funcVals = self.computeFunction(
+                    name=funcName, elementReductionType=reduction_type, globalReductionType=None
+                )
+                for elementType in self.elements:
+                    elementValues[elementType][outName] = funcVals[elementType]
+
         outputMesh = self.model.createOutputData(nodeValues=nodeValues, elementValues=elementValues)
 
         if baseName is None:
@@ -619,6 +625,7 @@ class FEMpyProblem(BaseSolver):
             "printTiming": [bool, False],
             "outputDir": [(str, type(None)), None],
             "outputFormat": [(str, type(None)), None],
+            "outputFunctions": [(list, type(None)), None],
         }
         return defaultOptions
 

@@ -40,34 +40,41 @@ meshDir = os.path.join(currentDir, meshDir)
 test_params.append(
     {"meshFileName": os.path.join(meshDir, "Plate.bdf"), "numPoints": 4225, "numElements": 4096, "numDim": 2}
 )
-test_params.append(
-    {"meshFileName": os.path.join(meshDir, "GMSHTest.msh"), "numPoints": 3622, "numElements": 798, "numDim": 2}
-)
-test_params.append(
-    {"meshFileName": os.path.join(meshDir, "LBracket.msh"), "numPoints": 9, "numElements": 798, "numDim": 2}
-)
+# test_params.append(
+#     {"meshFileName": os.path.join(meshDir, "GMSHTest.msh"), "numPoints": 3622, "numElements": 798, "numDim": 2}
+# )
+# test_params.append(
+#     {"meshFileName": os.path.join(meshDir, "LBracket.msh"), "numPoints": 9, "numElements": 798, "numDim": 2}
+# )
+
+
+# --- Create constitutive model, 7000 series Aluminium ---
+E = 71.7e9
+nu = 0.33
+rho = 2
+
+# This thickness value is a design variable, by default all elements will use this value, but we can change it later if
+# we want
+t = 5e-3
+constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
 
 
 @parameterized_class(test_params)
-class ModelUnitTest(unittest.TestCase):
+class MeshReadTest(unittest.TestCase):
     """Unit tests for the FEMpy model class"""
 
     def setUp(self) -> None:
-        # --- Create constitutive model, 7000 series Aluminium ---
-        E = 71.7e9
-        nu = 0.33
-        rho = 2
-
-        # This thickness value is a design variable, by default all elements will use this value, but we can change it later if
-        # we want
-        t = 5e-3
-        constitutiveModel = fp.Constitutive.IsoPlaneStress(E, nu, rho, t)
         self.model = FEMpyModel(constitutiveModel=constitutiveModel, meshFileName=self.meshFileName)
 
     def testMeshRead(self):
         """Test that the mesh file was read in correctly"""
         self.assertEqual(self.model.numNodes, self.numPoints)
         self.assertEqual(self.model.numDim, self.numDim)
+
+
+class ModelTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.model = FEMpyModel(constitutiveModel=constitutiveModel, meshFileName=os.path.join(meshDir, "Plate.bdf"))
 
     def testaddFixedBCToNodes(self):
         """Test that the BC are added correctly"""

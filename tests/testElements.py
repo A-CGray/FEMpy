@@ -87,16 +87,26 @@ class ElementUnitTest(unittest.TestCase):
         JacDiff = self.element.testIdentityJacobian(self.numTestPoints)
         np.testing.assert_allclose(JacDiff, 0, atol=self.tol, rtol=self.tol)
 
+    def testInterpolation(self):
+        error = self.element.testInterpolation(self.numTestPoints)
+        np.testing.assert_allclose(error, 0, atol=self.tol, rtol=self.tol)
+
     def testStateGradient(self):
         stateGradDiff = self.element.testStateGradient(self.numTestPoints)
         np.testing.assert_allclose(stateGradDiff, 0, atol=self.tol, rtol=self.tol)
 
     def testGetClosestPoints(self):
-        self.skipTest("Not working robustly yet")
+        """Test that the closest points are found correctly
+
+        This test works by chossing some random parametric coordinates, computing their real coordinates and then
+        checking that we get back the same parametric coordinates when we ask for the closest points to the real coordinates.
+        """
+        # self.skipTest("Not working robustly yet")
         error = self.element.testGetClosestPoints(self.numTestPoints, tol=self.tol * 1e-3)
         np.testing.assert_allclose(error, 0, atol=self.tol * 1e7, rtol=self.tol * 1e7)
 
     def testZeroResidual(self):
+        """Validate that the residual is zero if all states are zero"""
         nodeCoordinates = np.zeros((self.numElements, self.element.numNodes, self.element.numDim))
         for ii in range(self.numElements):
             nodeCoordinates[ii] = self.element.getRandomElementCoordinates()
