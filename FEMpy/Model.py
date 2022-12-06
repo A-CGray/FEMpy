@@ -424,6 +424,7 @@ class FEMpyModel(BaseSolver):
         defaultOptions = {
             "outputDir": [str, "./"],
             "outputFormat": [str, "vtk"],
+            "outputFunctions": [list, []],
         }
         return defaultOptions
 

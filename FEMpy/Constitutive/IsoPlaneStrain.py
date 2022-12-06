@@ -59,7 +59,7 @@ class IsoPlaneStrain(ConstitutiveModel):
         stressNames = ["sigma_xx", "sigma_yy", "tau_xy"]
 
         # --- Functions ---
-        functionNames = ["Mass", "Von Mises Stress"]
+        functionNames = ["Mass", "Von-Mises-Stress"]
 
         # --- Material properties ---
         self.E = E
@@ -204,7 +204,7 @@ class IsoPlaneStrain(ConstitutiveModel):
 
             return massFunc
 
-        if name.lower() == "von mises stress":
+        if name.lower() == "von-mises-stress":
 
             def VMFunc(states, stateGradients, coords, dvs):
                 strains = self.computeStrains(states, stateGradients, coords, dvs)

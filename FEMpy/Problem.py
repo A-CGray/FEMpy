@@ -74,7 +74,7 @@ class FEMpyProblem(BaseSolver):
         super().__init__(name, "Finite Element Problem", defaultOptions=defaultOptions, options=options)
 
         # --- Take some options from the model if they are not defined for this problem ---
-        inheritableOptions = ["outputDir", "outputFormat"]
+        inheritableOptions = ["outputDir", "outputFormat", "outputFunctions"]
         for option in inheritableOptions:
             if self.getOption(option) is None:
                 self.setOption(option, self.model.getOption(option))
@@ -488,6 +488,16 @@ class FEMpyProblem(BaseSolver):
             for name, values in elementDVs.items():
                 elementValues[elementType][name] = values
 
+        # Get element function values
+        for funcName in self.getOption("outputFunctions"):
+            for reduction_type in ["mean", "min", "max"]:
+                outName = f"{funcName}_{reduction_type}"
+                funcVals = self.computeFunction(
+                    name=funcName, elementReductionType=reduction_type, globalReductionType=None
+                )
+                for elementType in self.elements:
+                    elementValues[elementType][outName] = funcVals[elementType]
+
         outputMesh = self.model.createOutputData(nodeValues=nodeValues, elementValues=elementValues)
 
         if baseName is None:
@@ -615,6 +625,7 @@ class FEMpyProblem(BaseSolver):
             "printTiming": [bool, False],
             "outputDir": [(str, type(None)), None],
             "outputFormat": [(str, type(None)), None],
+            "outputFunctions": [(list, type(None)), None],
         }
         return defaultOptions
 

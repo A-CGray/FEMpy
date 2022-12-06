@@ -227,7 +227,7 @@ class Element:
             quantities=["Coord", "State", "StateGrad", "DVs", "JacDet"],
         )
         values = function(
-            pointQuantities["Coord"], pointQuantities["State"], pointQuantities["StateGrad"], pointQuantities["DVs"]
+            pointQuantities["State"], pointQuantities["StateGrad"], pointQuantities["Coord"], pointQuantities["DVs"]
         )
         values = values.reshape((numElements, numIntPoints))
 
