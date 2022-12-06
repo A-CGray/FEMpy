@@ -54,7 +54,7 @@ setup(
             "pytkdocs[numpy-style]",
             "Jinja2<3.0,>=2.11",
         ],
-        "dev": ["parameterized", "testflo", "black==22.1.0", "flake8==3.9.2", "pre-commit"],
+        "dev": ["parameterized", "testflo", "black==22.1.0", "flake8", "pre-commit"],
     },
     classifiers=[
         "Operating System :: OS Independent",
