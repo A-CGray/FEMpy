@@ -4,4 +4,4 @@ pymdown-extensions
 mkdocs-material
 mkdocstrings
 pytkdocs[numpy-style]
-Jinja2<3.0,>=2.11
+Jinja2>=2.11,<4.0
