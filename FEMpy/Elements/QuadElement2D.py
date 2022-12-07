@@ -28,7 +28,10 @@ from FEMpy.Quadrature import getGaussQuadWeights, getGaussQuadPoints
 class QuadElement2D(Element):
     """An "arbitrary order" 2d quadrilateral finite element
 
-    Arbitrary order is in quotes at the moment because although the shape functions can in theory be computed for an arbitrary with the current LagrangePoly implementation, I have not figured out how to element the node reordering required to reorder the shape functions into the node ordering used by MeshIO yet for anything more than 3rd order elements.
+    Arbitrary order is in quotes at the moment because although the shape functions can in theory be computed for an
+    arbitrary with the current LagrangePoly implementation, I have not figured out how to element the node reordering
+    required to reorder the shape functions into the node ordering used by MeshIO yet for anything more than 3rd order
+    elements.
 
     Inherits from
     -------------

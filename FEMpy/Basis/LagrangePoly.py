@@ -27,8 +27,6 @@ from numba import njit
 def LagrangePoly1d(x, n):
     """Compute the values of the 1d Lagrange polynomials at a series of points
 
-
-
     Parameters
     ----------
     x : array of length nP (0D, nPx1 or 1xnP)
@@ -80,8 +78,6 @@ def LagrangePoly1dDeriv(x, n):
 def LagrangePoly2d(x, y, n):
     """Compute the derivatives of the 2d Lagrange polynomials at a series of points in 2d space
 
-
-
     Parameters
     ----------
     x : array of length nP (0D, nPx1 or 1xnP)
@@ -111,8 +107,6 @@ def LagrangePoly2d(x, y, n):
 @njit(cache=True)
 def LagrangePoly2dDeriv(x, y, n):
     """Compute the derivatives of the 2d Lagrange polynomials at a series of points in 2d space
-
-
 
     Parameters
     ----------
@@ -149,8 +143,6 @@ def LagrangePoly2dDeriv(x, y, n):
 def LagrangePoly3d(x, y, z, n):
     """Compute the derivatives of the 3d Lagrange polynomials at a series of points in 3d space
 
-
-
     Parameters
     ----------
     x : array of length nP (0D, nPx1 or 1xnP)
@@ -186,8 +178,6 @@ def LagrangePoly3d(x, y, z, n):
 @njit(cache=True)
 def LagrangePoly3dDeriv(x, y, z, n):
     """Compute the derivatives of the 3d Lagrange polynomials at a series of points in 3d space
-
-
 
     Parameters
     ----------
@@ -296,6 +286,7 @@ def LagrangePolyTri(x, y, n):
 @njit(cache=True)
 def LagrangePolyTriDeriv(x, y, n):
     """Compute the derivatives of the triangular basis Lagrange polynomials at a series of points in 2d space
+
     Parameters
     ----------
     x : array of length nP (0D, nPx1 or 1xnP)

@@ -106,7 +106,7 @@ class FEMpyProblem(BaseSolver):
 
     @property
     def numStates(self) -> int:
-        """Get the number of states
+        """The number of states
 
         This is not the total number of states in the problem, but the number of states associated with the problem's
         constitutive model, e.g for a heat transfer problem there is a single state (Temperature), and for a 2D
@@ -425,7 +425,7 @@ class FEMpyProblem(BaseSolver):
         loadingFunction : function or array of length numDim
             Pass an array to define a uniform field, otherwise, pass a function with the signature `F = loadingFunction(coord)` where coord is an n x numDim array of coordinates and F is an n x numDim array of loads at each point.
         """
-        return None
+        raise NotImplementedError("Body loads are not yet implemented, sorry :(")
 
     def getBCs(self) -> Dict[str, Dict[str, Union[Iterable[int], Iterable[float]]]]:
         """Get the full set of boundary conditions for this problem
