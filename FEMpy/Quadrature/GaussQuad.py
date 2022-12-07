@@ -105,4 +105,18 @@ def getGaussQuadPoints(numDim, order):
 
 @lru_cache(maxsize=None)
 def _getGaussQuad1dData(order):
+    """Just a wrapper around numpy's leggauss function that caches the results
+
+    Parameters
+    ----------
+    order : int
+        integration order
+
+    Returns
+    -------
+    1d array
+        1D gauss quadrature point coordinates
+    1d array
+        1D gauss quadrature weights
+    """
     return np.polynomial.legendre.leggauss(order)

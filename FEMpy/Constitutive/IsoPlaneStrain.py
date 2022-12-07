@@ -26,6 +26,16 @@ from FEMpy.Constitutive import ConstitutiveModel
 
 
 class IsoPlaneStrain(ConstitutiveModel):
+    """A constitutive model for the 2D isotropic plane strain equations
+
+    _extended_summary_
+
+    Inherits
+    ----------
+    ConstitutiveModel : _type_
+        The base class for FEMpy constitutive models
+    """
+
     def __init__(self, E, nu, rho, t, linear=True):
         """Create an isotropic plane stress constitutive model
 

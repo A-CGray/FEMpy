@@ -4,6 +4,20 @@ import numpy as np
 
 @njit(cache=True)
 def convertTo3D(A):
+    """Convert a numpy array from (n+2)D to 3D by flattening the first n dimensions.
+
+    Parameters
+    ----------
+    A : (n+2)D numpy array
+        Array to convert
+
+    Returns
+    -------
+    3D numpy array
+        The converted 3D array
+    int
+        The new flattened first dimension
+    """
     origShape = A.shape
     n = 1
     for ii in range(len(origShape) - 2):

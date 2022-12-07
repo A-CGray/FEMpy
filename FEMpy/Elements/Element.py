@@ -493,42 +493,6 @@ class Element:
         )
         return dRdq
 
-    # def integrate(self, integrand, nodeCoords, uNodes, dvs, intOrder=None):
-    #     """Integrate a function over a set of elements
-
-    #     _extended_summary_
-
-    #     Parameters
-    #     ----------
-    #     integrand : function
-    #         function to be integrated, should have the signature integrand(x, u, u', dvs)
-    #     nodeCoords : numElements x numNodes x numDim array
-    #         Node coordinates for each element,
-    #     uNodes : NumElements x numDOF array
-    #         The nodal state values for each element
-    #     dvs : NumElements x numDV array
-    #         The design variable values for each element
-    #     intOrder : int, optional
-    #         The integration order to use, uses element default if not provided
-    #     """
-    #     intOrder = self.defaultIntOrder if intOrder is None else intOrder
-    #     intPointWeights = self.getIntPointWeights(intOrder)  # NumElements x numIntPoints
-    #     intPointParamCoords = self.getPointParamCoords(intOrder)  # NumElements x numIntPoints x numDim
-
-    #     intPointRealCoords = self.getRealCoord(intPointParamCoords, nodeCoords)  # NumElements x numIntPoints x numDim
-    #     intPointu = self.getU(intPointParamCoords, nodeCoords, uNodes)  # NumElements x numIntPoints x numStates
-    #     intPointuPrime = self.getUPrime(
-    #         intPointParamCoords, nodeCoords, uNodes
-    #     )  # NumElements x numIntPoints x numStates x numDim
-    #     integrandValues = integrand(intPointRealCoords, intPointu, intPointuPrime, dvs)
-    #     intPointDetJ = self.jacDet(self.getJacobian(intPointParamCoords, nodeCoords))  # NumElements x numIntPoints
-
-    #     # Integrate over each element by computing the sum of the integrand values from each integration point, weight
-    #     # by the integration point weights and the determinant of the jacobian
-    #     integratedValues = np.tensordot(integrandValues, intPointWeights * intPointDetJ, axes=([1], [0]))
-
-    #     return integratedValues
-
     def computeStates(self, paramCoords, nodeStates):
         """Given nodal DOF, compute the state at given parametric coordinates within the element
 
@@ -699,6 +663,26 @@ class Element:
         return closestParamCoords, closestDistances
 
     def _getClosestPoint(self, nodeCoords, point, paramCoordBounds, paramCoordLinearConstraints, **kwargs):
+        """Find the closest point on a single element to a given point
+
+        Parameters
+        ----------
+        nodeCoords : numNodes x numDim array
+            The coordinates of the element nodes
+        point : array of length numDim
+            Target point coordinates
+        paramCoordBounds : scipy.optimize.Bounds object
+            Parametric coordinate bounds
+        paramCoordLinearConstraints : scipy.optimize.LinearConstraint object
+            Any linear constraints required to enforce the parametric coordinate bounds
+
+        Returns
+        -------
+        array of length numDim
+            The parametric coordinates of the closest point in the element
+        float
+            The distance from the closest point in the element to the target point
+        """
         nodeCoordCopy = np.zeros((1, self.numNodes, self.numDim))
         nodeCoordCopy[0] = nodeCoords
 
