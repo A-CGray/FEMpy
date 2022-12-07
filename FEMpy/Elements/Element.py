@@ -860,8 +860,8 @@ class Element:
 
         u_i = a_i * x + b_i * y + c_i * z + d_i
 
-        This field has a gradient, du/dx, of [a_i, b_i, c_i] everywhere in the element, which should be exactly reproduced by
-        the state gradient computed by the element.
+        This field has a gradient, du/dx, of [a_i, b_i, c_i] everywhere in the element, which should be exactly
+        reproduced by the state gradient computed by the element.
 
         Parameters
         ----------

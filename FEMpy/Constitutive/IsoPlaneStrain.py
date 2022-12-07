@@ -64,6 +64,7 @@ class IsoPlaneStrain(ConstitutiveModel):
         # --- Material properties ---
         self.E = E
         self.nu = nu
+        self.rho = rho
 
         numDim = 2
 
