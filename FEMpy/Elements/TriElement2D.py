@@ -54,6 +54,24 @@ class TriElement2D(Element):
     """
 
     def __init__(self, order=1, numStates=None, quadratureOrder=None):
+        """Create a new 2d triangular finite element object
+
+        Parameters
+        ----------
+        order : int, optional
+            Element order, a first order quad has 4 nodes, 2nd order 9, 3rd order 16 etc, currently only orders 1-3 are
+            supported, by default 1
+        numStates : int, optional
+            Number of states in the underlying PDE, by default 2
+        quadratureOrder : int, optional
+            Quadrature order to use for numerical integration, by default None, in which case a valid order for the
+            chosen element order is used
+
+        Raises
+        ------
+        ValueError
+            Raises error if order is not 1, 2 or 3
+        """
         if order not in [1, 2, 3]:
             raise ValueError("Triangular elements only support orders 1, 2 and 3")
         self.order = order

@@ -1,5 +1,29 @@
+"""
+==============================================================================
+FEMpy linear algebra module
+==============================================================================
+@File    :   LinAlg.py
+@Date    :   2022/12/07
+@Author  :   Alasdair Christison Gray
+@Description : This module contains function for computing determinants and
+inverses of 1x1, 2x2 and 3x3 matrices waaaaay faster than numpy. This is very
+useful inside the element classes for mapping between the real and reference
+elements.
+"""
+
+# ==============================================================================
+# Standard Python modules
+# ==============================================================================
+
+# ==============================================================================
+# External Python modules
+# ==============================================================================
 from numba import njit
 import numpy as np
+
+# ==============================================================================
+# Extension modules
+# ==============================================================================
 
 
 @njit(cache=True)

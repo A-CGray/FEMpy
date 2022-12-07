@@ -51,6 +51,21 @@ class FEMpyProblem(BaseSolver):
     """
 
     def __init__(self, name, model, options=None) -> None:
+        """Create a new problem object
+
+        It is usually a better idea to use the ``addProblem`` method of the model object to create a new problem than
+        to call this method directly
+
+        Parameters
+        ----------
+        name : str
+            A descriptive name for the problem
+        model : FEMpyModel object
+            The FEMpyModel object that this problem is associated with
+        options : dict, optional
+            The options for this problem, many of the options related to file output are inherited from the model if not
+            specified for the problem, by default None
+        """
         self.model = model
         self.states = np.zeros((self.numNodes, self.numStates))
         self.Jacobian = None
@@ -221,12 +236,26 @@ class FEMpyProblem(BaseSolver):
         self.updateState(np.zeros((self.numNodes, self.numStates)))
 
     def updateResidual(self, applyBCs: bool = True):
+        """Update the residual based on the current state
+
+        Parameters
+        ----------
+        applyBCs : bool, optional
+            Whether to apply the boundary conditions, by default True
+        """
         if not self.resUpToDate:
             print("Updating Residual")
             self.Res = self._assembleResidual(self.states, applyBCs=applyBCs)
             self.markResUpToDate()
 
     def updateJacobian(self, applyBCs: bool = True):
+        """Update the residual jacobian based on the current state
+
+        Parameters
+        ----------
+        applyBCs : bool, optional
+            Whether to apply the boundary conditions, by default True
+        """
         if not self.jacUpToDate:
             print("Updating Jacobian")
             self.Jacobian = self._assembleMatrix(self.states, applyBCs=applyBCs)
@@ -423,7 +452,9 @@ class FEMpyProblem(BaseSolver):
         name : str
             Name for the load
         loadingFunction : function or array of length numDim
-            Pass an array to define a uniform field, otherwise, pass a function with the signature `F = loadingFunction(coord)` where coord is an n x numDim array of coordinates and F is an n x numDim array of loads at each point.
+            Pass an array to define a uniform field, otherwise, pass a function with the signature
+            `F = loadingFunction(coord)` where coord is an n x numDim array of coordinates and F is an n x numDim array
+            of loads at each point.
         """
         raise NotImplementedError("Body loads are not yet implemented, sorry :(")
 
@@ -464,8 +495,6 @@ class FEMpyProblem(BaseSolver):
 
     def writeSolution(self, baseName: Optional[str] = None, fileFormat: Optional[str] = None):
         """Write the current solution to a file
-
-        _extended_summary_
 
         Parameters
         ----------
@@ -630,6 +659,13 @@ class FEMpyProblem(BaseSolver):
         return defaultOptions
 
     def _printTiming(self, times):
+        """Print some nicely formatted timing information about a solution
+
+        Parameters
+        ----------
+        times : dict
+            Dictionary of timing information
+        """
         resAssemblyTime = times["ResAssembled"] - times["Start"]
         matAssemblyTime = times["JacAssembled"] - times["ResAssembled"]
         solveTime = times["Solved"] - times["JacAssembled"]
