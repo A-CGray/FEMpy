@@ -11,6 +11,9 @@ Examples/ExampleOutput
 *.vtu
 *.dat
 
+# Ignore flake 8 config
+.flake8
+
 # Profiling files
 *.prof
 
