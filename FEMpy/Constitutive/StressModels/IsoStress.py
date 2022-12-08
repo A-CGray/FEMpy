@@ -115,8 +115,6 @@ def threeDMat(E, nu):
 def isoPlaneStressStress(strains, E, nu):
     """Compute stress from strains for a 2D plane stress state
 
-    _extended_summary_
-
     Parameters
     ----------
     strains : numPoints x numStrains array
@@ -138,7 +136,7 @@ def isoPlaneStressStress(strains, E, nu):
 
 
 def isoPlaneStressStressStrainSens(strains, E, nu):
-    """Compute the sensitivity of the stress with respect to the strain
+    """Compute the sensitivity of the stress with respect to the strain for a 2D plane stress state
 
     Parameters
     ----------
@@ -165,9 +163,7 @@ def isoPlaneStressStressStrainSens(strains, E, nu):
 
 
 def isoPlaneStrainStress(strains, E, nu):
-    """_summary_
-
-    _extended_summary_
+    """Compute stress from strains for a 2D plane strain state
 
     Parameters
     ----------
