@@ -243,18 +243,22 @@ class Element:
                 "ksmin",
             ], "elementReductionType not valid"
 
-            # compute reduction
-            if elementReductionType.lower() == "sum":
-                return np.sum(values, axis=1)
+            # Simple numpy reductions
+            if elementReductionType.lower() in ["sum", "mean", "min", "max"]:
 
-            if elementReductionType.lower() == "mean":
-                return np.average(values, axis=1)
+                if elementReductionType.lower() == "sum":
+                    reductFunc = np.sum
 
-            if elementReductionType.lower() == "min":
-                return np.min(values, axis=1)
+                if elementReductionType.lower() == "mean":
+                    reductFunc = np.average
 
-            if elementReductionType.lower() == "max":
-                return np.max(values, axis=1)
+                if elementReductionType.lower() == "min":
+                    reductFunc = np.min
+
+                if elementReductionType.lower() == "max":
+                    reductFunc = np.max
+
+                return reductFunc(values, axis=1)
 
             if elementReductionType.lower() == "integrate":
                 # compute integration using weighted sum of w*values*detJ over each set of element points
@@ -268,7 +272,7 @@ class Element:
                     optimize=["einsum_path", (0, 1), (0, 1)],
                 )
 
-            if elementReductionType.lower() == "ksmax":
+            if elementReductionType.lower() in ["ksmax", "ksmin"]:
                 reducedValues = np.zeros(numElements)
                 for i in range(numElements):
                     reducedValues[i] = ksAgg(values[i, :], "max")

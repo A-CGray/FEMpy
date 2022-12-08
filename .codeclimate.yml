@@ -20,9 +20,12 @@ checks:
       threshold: 50
   nested-control-flow:
     config:
-      threshold: 4
+      threshold: 3
   return-statements:
     config:
       threshold: 4
+  identical-code:
+    config:
+      threshold: 3
 exclude_patterns:
   - docs/
