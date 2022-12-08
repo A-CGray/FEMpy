@@ -86,8 +86,11 @@ for problem in model.problems:
 # Compute some functions
 # ==============================================================================
 for problem in model.problems:
-    value = problem.computeFunction("Mass", elementReductionType="integrate", globalReductionType="sum")
-    print("Total mass = ", value)
+    mass = problem.computeFunction("Mass", elementReductionType="integrate", globalReductionType="sum")
+    maxStress = problem.computeFunction("Von-Mises-Stress", elementReductionType="mean", globalReductionType="max")
+    print(f"\nProblem: {problem.name}")
+    print(f"Max von Mises stress = {maxStress:11.6e}")
+    print(f"Total mass = {mass:11.6e}\n")
 
 # ==============================================================================
 # Change the thickness design variables and solve again
