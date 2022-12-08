@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
 import re
@@ -20,7 +20,7 @@ setup(
     author_email="",
     url="https://github.com/A-Gray-94/FEMpy",
     license="Apache License Version 2.0",
-    packages=["FEMpy"],
+    packages=find_packages(where="."),
     install_requires=[
         "mdolab-baseclasses",
         "meshio",
