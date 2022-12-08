@@ -11,6 +11,9 @@ Examples/ExampleOutput
 *.vtu
 *.dat
 
+# Ignore testflo benchmark data
+**benchmark_data.csv
+
 # Ignore flake 8 config
 .flake8
 
