@@ -29,5 +29,5 @@ jobs:
     - name: Run examples
       run: |
         set -e
-        cd examples
+        cd Examples
         for f in *.py; do python "$f"; done
