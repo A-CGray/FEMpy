@@ -65,7 +65,7 @@ class QuadElement2D(Element):
         if quadratureOrder is None:
             shapeFuncOrder = 2 * order
             quadratureOrder = int(np.ceil((shapeFuncOrder + 1) / 2))
-        super().__init__(numNodes, numDim=2, numStates=numStates, quadratureOrder=quadratureOrder)
+        super().__init__(numNodes, numDim=2, quadratureOrder=quadratureOrder, numStates=numStates)
 
         self.name = f"Order{self.order}-LagrangeQuad"
 
@@ -75,7 +75,7 @@ class QuadElement2D(Element):
     # Public methods
     # ==============================================================================
 
-    def computeShapeFunctions(self, paramcoords):
+    def computeShapeFunctions(self, paramCoords):
         """Compute the shape function values at a given set of parametric coordinates
 
         Parameters
@@ -88,7 +88,7 @@ class QuadElement2D(Element):
         N: numPoint x numNodes array
             Array of shape function values at the given parametric coordinates, N[i][j] is the value of the jth shape function at the ith parametric point
         """
-        N = LP.LagrangePoly2d(paramcoords[:, 0], paramcoords[:, 1], self.order + 1)
+        N = LP.LagrangePoly2d(paramCoords[:, 0], paramCoords[:, 1], self.order + 1)
         return np.ascontiguousarray(N[:, self.shapeFuncToNodeOrder])
 
     def computeShapeFunctionGradients(self, paramCoords):

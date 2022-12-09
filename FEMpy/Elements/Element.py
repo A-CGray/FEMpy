@@ -32,7 +32,7 @@ from FEMpy.Utils.KSAgg import ksAgg
 class Element:
     """The base class from which all other elements are derived."""
 
-    def __init__(self, numNodes, numDim, numStates=None, quadratureOrder=2):
+    def __init__(self, numNodes, numDim, quadratureOrder, numStates=None):
         """Instantiate an element object
 
         Parameters
@@ -41,10 +41,10 @@ class Element:
             Number of nodes in the element
         numDim : int
             Number of spatial dimensions the element lives in
+        quadratureOrder : int
+            Integration quadrature order
         numStates : int, optional
             Number of states in the underlying PDE, a.k.a the number of DOF per node, by default uses numDim
-        quadratureOrder : int, optional
-            Integration quadrature order, by default 2
         """
         self.numNodes = numNodes
         self.numDim = numDim
@@ -171,7 +171,7 @@ class Element:
             Node coordinates for each element
         nodeStates : numElements x numNodes x numStates array
             State values at the nodes of each element
-        dvs : numElements x numDVs array
+        elementDVs : dict of numElement length arrays
             Design variable values for each element
         function : callable
             Function to evaluate at each point within each element, must have signature f(x, u, u', dvs), where:
@@ -500,6 +500,7 @@ class Element:
         Returns
         -------
         states : numElements x numPoint x numStates array
+            State values at the given parametric coordinates for each element
         """
 
         # Compute shape functions at the given parametric coordinates
@@ -581,9 +582,9 @@ class Element:
         Returns
         -------
         stateGradients : numElements x numPoint x numStates x numDim array
+            The gradient of the states at each point in each element, stateGradient[i, j, k, l] is the value of
+            $du_k/dx_l$ at the $j^{th}$ point in the $i^{th}$ element
         """
-        # J = NPrimeParam * nodeCoords
-        # u' = J^-1 * NPrimeParam * q
 
         numElements = nodeCoords.shape[0]
         numPoints = paramCoords.shape[0]

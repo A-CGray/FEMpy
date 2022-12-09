@@ -240,18 +240,19 @@ class ConstitutiveModel:
     def computeWeakResiduals(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the weak residual integrand
 
-        For an elasticity problem, the weak residual, derived from the virtual work principle is:
+        For a solid mechanics problem, the weak residual, derived from the virtual work principle is:
 
-        R = int r dV = int du'/dq^T * de/du'^T * sigma * scale d(element)
+        $R = \int r dV = \int (du'/dq)^T  (d\epsilon/du')^T  \sigma  \\theta d\Omega$
 
         Where:
 
-        - du'/dq is the sensitivity of the state gradient to the nodal state values, this is handled by the element
-        - de/du' is the sensitivity of the strain to the state gradient
-        - sigma are the stresses
-        - scale is the volume scaling parameter
+        - $du'/dq$ is the sensitivity of the state gradient to the nodal state values, this is handled by the element
+        - $d\epsilon/du'$ is the sensitivity of the strain to the state gradient
+        - $\sigma$ are the stresses
+        - $\\theta$ is the volume scaling parameter
+        - $\Omega$ is the element
 
-        This function computes `de/du'^T * sigma * scale` at each point
+        This function computes $(de/du')^T * \sigma * \\theta$ at each point
 
         Parameters
         ----------
@@ -266,8 +267,8 @@ class ConstitutiveModel:
 
         Returns
         -------
-        numPoints x self.numDim x self.numStates array
-
+        residuals : numPoints x self.numDim x self.numStates array
+            Weak residual integrand at each point
         """
         strain = self.computeStrains(states, stateGradients, coords, dvs)
         stress = self.computeStresses(strain, dvs)
@@ -278,14 +279,15 @@ class ConstitutiveModel:
         return np.einsum("pesd,pe,p->pds", strainSens, stress, scale, optimize=["einsum_path", (0, 1), (0, 1)])
 
     def computeWeakResidualJacobian(self, states, stateGradients, coords, dvs):
-        """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the weak residual jacobian
+        """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
+        weak residual jacobian integrand
 
-        Jac = de/du'^T * dsigma/de * de/du'
+        $j = (d\epsilon/du')^T \\times d\sigma/d\epsilon \\times d\epsilon/du'$
 
         Where:
 
-        - de/du' is the sensitivity of the strain to the state gradient
-        -  dsigma/de is the sensitivity of the stress to the strain gradient
+        - $d\epsilon/du'$ is the sensitivity of the strain to the state gradient
+        - $d\sigma/d\epsilon$ the sensitivity of the stress to the strain gradient
 
         This function computes `de/du'^T * sigma * scale` at each point
 
@@ -302,8 +304,8 @@ class ConstitutiveModel:
 
         Returns
         -------
-        numPoints x numDim x numStates x numStates x numDim array
-
+        Jacobians : numPoints x numDim x numStates x numStates x numDim array
+            The sensibility of the weak residual integrand components to the state gradients at each point
         """
         strainSens = self.computeStrainStateGradSens(states, stateGradients, coords, dvs)
         strain = self.computeStrains(states, stateGradients, coords, dvs)

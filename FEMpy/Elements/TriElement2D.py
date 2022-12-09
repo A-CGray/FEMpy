@@ -93,7 +93,7 @@ class TriElement2D(Element):
             shapeFuncOrder = order
             quadratureOrder = int(np.ceil((shapeFuncOrder + 1) / 2))
 
-        super().__init__(numNodes, numDim=2, numStates=numStates, quadratureOrder=quadratureOrder)
+        super().__init__(numNodes, numDim=2, quadratureOrder=quadratureOrder, numStates=numStates)
 
         self.name = f"Order{self.order}-LagrangeTri"
 

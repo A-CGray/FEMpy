@@ -102,5 +102,3 @@ model.setDesignVariables(DVs)
 for problem in model.problems:
     problem.solve()
     problem.writeSolution()
-
-# TODO: How should we set DV bounds?
