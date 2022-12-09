@@ -6,7 +6,7 @@ import time
 def nastyProduct(dUPrimedq, weakResJac, result):
     """_summary_
 
-    _extended_summary_
+
 
     Parameters
     ----------

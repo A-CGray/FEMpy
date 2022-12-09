@@ -28,7 +28,7 @@ from FEMpy.Constitutive import ConstitutiveModel
 class IsoPlaneStrain(ConstitutiveModel):
     """A constitutive model for the 2D isotropic plane strain equations
 
-    _extended_summary_
+
 
     Inherits
     ----------
@@ -39,7 +39,7 @@ class IsoPlaneStrain(ConstitutiveModel):
     def __init__(self, E, nu, rho, t, linear=True):
         """Create an isotropic plane stress constitutive model
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -83,7 +83,7 @@ class IsoPlaneStrain(ConstitutiveModel):
     def computeStrains(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the strains at each one
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -107,7 +107,7 @@ class IsoPlaneStrain(ConstitutiveModel):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
         sensitivity of the strains to the state gradient at each one
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -130,7 +130,7 @@ class IsoPlaneStrain(ConstitutiveModel):
     def computeStresses(self, strains, dvs):
         """Given the strains and design variables at a bunch of points, compute the stresses at each one
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -149,7 +149,7 @@ class IsoPlaneStrain(ConstitutiveModel):
     def computeStressStrainSens(self, strains, dvs):
         """Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one
 
-        _extended_summary_
+
 
         Parameters
         ----------

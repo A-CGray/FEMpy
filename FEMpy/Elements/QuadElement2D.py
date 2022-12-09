@@ -94,7 +94,7 @@ class QuadElement2D(Element):
     def computeShapeFunctionGradients(self, paramCoords):
         """Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates
 
-        _extended_summary_
+
 
         Parameters
         ----------

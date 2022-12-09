@@ -117,10 +117,7 @@ class ElementUnitTest(unittest.TestCase):
         np.testing.assert_allclose(res, 0, atol=self.tol, rtol=self.tol)
 
     def testResidualJacobian(self):
-        """Test that the residual Jacobian is consistent with the residual using finite differences
-
-        _extended_summary_
-        """
+        """Test that the residual Jacobian is consistent with the residual using finite differences"""
         nodeCoordinates = np.zeros((self.numElements, self.element.numNodes, self.element.numDim))
         for ii in range(self.numElements):
             nodeCoordinates[ii] = self.element.getRandomElementCoordinates()

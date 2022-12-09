@@ -6,7 +6,7 @@ import time
 def nastyProduct(dUPrimedq, weakRes, result):
     """Compute a nasty product of high dimensional arrays to compute integration point residuals
 
-    _extended_summary_
+
 
     Parameters
     ----------
@@ -39,7 +39,7 @@ def nastyProduct(dUPrimedq, weakRes, result):
 def nastyProductVectorize(dUPrimedq, weakRes, result):
     """Compute a nasty product of high dimensional arrays to compute integration point residuals
 
-    _extended_summary_
+
 
     Parameters
     ----------

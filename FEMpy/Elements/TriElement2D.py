@@ -31,26 +31,39 @@ class TriElement2D(Element):
 
     The node numbering follows the meshio conventions shown below:
 
-    2nd order element:
-    2
-    |\
-    | \
-    5  4
-    |   \
-    |    \
-    0--3--1
+    1st order element::
 
-    3rd Order:
-    2
-    |\
-    | \
-    7  6
-    |   \
-    |    \
-    8  9  5
-    |      \
-    |       \
-    0--3--4--1
+        2
+        |\\
+        | \\
+        |  \\
+        |   \\
+        |    \\
+        0-----1
+
+    2nd order element::
+
+        2
+        |\\
+        | \\
+        5  4
+        |   \\
+        |    \\
+        0--3--1
+
+    3rd Order::
+
+        2
+        |\\
+        | \\
+        7  6
+        |   \\
+        |    \\
+        8  9  5
+        |      \\
+        |       \\
+        0--3--4--1
+
     """
 
     def __init__(self, order=1, numStates=None, quadratureOrder=None):

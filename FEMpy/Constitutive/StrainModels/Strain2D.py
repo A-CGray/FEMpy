@@ -25,7 +25,7 @@ import numpy as np
 def Planar2DStrain(UPrime, nonlinear=False):
     """Compute 2D strains from the displacement gradient
 
-    _extended_summary_
+
 
     Parameters
     ----------
@@ -67,7 +67,7 @@ def Planar2DStrain(UPrime, nonlinear=False):
 def Planar2DStrainSens(UPrime, nonlinear=False):
     """_summary_
 
-    _extended_summary_
+
 
     Parameters
     ----------

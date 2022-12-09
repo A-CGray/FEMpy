@@ -30,23 +30,10 @@ from FEMpy.Utils.KSAgg import ksAgg
 
 
 class Element:
-    """_summary_
-
-    ## What do we need an element to do?:
-    - Given nodal DOF, compute state at given parametric coordinates within the element `computeState`
-    - Given nodal DOF, compute state gradients at given parametric coordinates within the element `computeStateGradients`
-    - Given nodal coordinates, compute coordinates at given parametric coordinates within the element `computeCoordinates`
-    - Given real coordinates, find the parametric coordinates of the closest point on the element to that point
-    - Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element
-    - Given a function that can depend on true coordinates, the state, state gradients and some design variables, integrate that function over the element
-    - Given state and design variable values, and a constitutive model, compute a residual
-    - Given state and design variable values, and a constitutive model, compute a residual Jacobian
-    """
+    """The base class from which all other elements are derived."""
 
     def __init__(self, numNodes, numDim, numStates=None, quadratureOrder=2):
         """Instantiate an element object
-
-        _extended_summary_
 
         Parameters
         ----------
@@ -113,7 +100,7 @@ class Element:
     def computeShapeFunctionGradients(self, paramCoords):
         """Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -176,7 +163,7 @@ class Element:
     def computeFunction(self, nodeCoords, nodeStates, elementDVs, function, elementReductionType, intOrder=None):
         """Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -289,7 +276,7 @@ class Element:
     def _computeFunctionEvaluationQuantities(self, paramCoords, nodeStates, nodeCoords, designVars, quantities):
         """Compute a series of values that are used for evaluating functions at multiple points over multiple elements
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -1008,7 +995,7 @@ def _computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
 def _computeDUPrimeDqProduct(JacInv, NPrimeParam, result):
     """_summary_
 
-    _extended_summary_
+
 
     Parameters
     ----------

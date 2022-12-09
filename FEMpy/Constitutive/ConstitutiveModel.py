@@ -28,23 +28,25 @@ class ConstitutiveModel:
     """The base class for all FEMpy constitutive models
 
     The constitutive model defines the underlying PDE being solved. Currently, this base class is defined for
-    elasticity problems, but in future it may be extended for other PDE types.
+    solid mechanics problems, but in future it may be extended for other PDE types.
 
     It contains information on:
+
     - The number of spatial dimensions the model is valid for
     - The number and names of the PDE states
     - The number and names of the stresses and strains for this model
     - The number and names of the design variables associated with the PDE
     - The names of functions which can be computed for this constitutive model (e.g mass, Von Mises stress etc)
 
-    #### What do we need a constitutive model to do?:
+    And contains methods to:
+
     - Given the coordinates, state value, state gradient, and design variables at a point, compute:
         - The strain components
         - The sensitivities of the strain components
         - The stress components
         - The sensitivities of the stress components
         - The pointwise mass
-        - The volume integral scaling parameter (e.g thickness for 2D plane models or 2*pi*r for 2D axisymmetric problems)
+        - The volume integral scaling parameter (e.g thickness for 2D plane models or $2 \pi r$ for 2D axisymmetric problems)
         - The weak form residual
         - The weak form residual Jacobian
         - Other arbitrary output values (e.g failure criterion)
@@ -53,7 +55,7 @@ class ConstitutiveModel:
     def __init__(self, numDim, stateNames, strainNames, stressNames, designVars, functionNames, linear=True) -> None:
         """_summary_
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -101,7 +103,7 @@ class ConstitutiveModel:
     def computeStrains(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the strains at each one
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -126,7 +128,7 @@ class ConstitutiveModel:
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
         sensitivity of the strains to the state gradient at each one
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -150,7 +152,7 @@ class ConstitutiveModel:
     def computeStresses(self, strains, dvs):
         """Given the strains and design variables at a bunch of points, compute the stresses at each one
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -170,7 +172,7 @@ class ConstitutiveModel:
     def computeStressStrainSens(self, strains, dvs):
         """Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one
 
-        _extended_summary_
+
 
         Parameters
         ----------

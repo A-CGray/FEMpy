@@ -28,6 +28,14 @@ theme:
         - search.highlight
 nav:
     - Home: index.md
+    - Elements:
+        Element Base Class: Elements/Element.md
+        2D Quad: Elements/Quad2D.md
+        2D Tri: Elements/Tri2D.md
+    - Constitutive Models:
+        Constitutive Model Base Class: ConstitutiveModels/ConstitutiveModel.md
+        Isotropic Plane Stress: ConstitutiveModels/IsoPlaneStress.md
+        Isotropic Plane Strain: ConstitutiveModels/IsoPlaneStrain.md
     - Contributing: DevelopmentGuide/DevelopmentGuide.md
     - Theory: Theory/Theory.md
 markdown_extensions:

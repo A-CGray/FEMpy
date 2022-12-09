@@ -6,7 +6,7 @@ import time
 def nastyProduct(dStraindUPrime, stress, volScaling, result):
     """Compute a nasty product of high dimensional arrays to compute the weak residual
 
-    _extended_summary_
+
 
     Parameters
     ----------
@@ -33,7 +33,7 @@ def nastyProduct(dStraindUPrime, stress, volScaling, result):
 def nastyProductJIT(dStraindUPrime, stress, volScaling, result):
     """Compute a nasty product of high dimensional arrays to compute the weak residual
 
-    _extended_summary_
+
 
     Parameters
     ----------
@@ -66,7 +66,7 @@ def nastyProductJIT(dStraindUPrime, stress, volScaling, result):
 def nastyProductVectorize(dStraindUPrime, stress, volScaling, result):
     """Compute a nasty product of high dimensional arrays to compute the weak residual
 
-    _extended_summary_
+
 
     Parameters
     ----------

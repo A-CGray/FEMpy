@@ -176,7 +176,7 @@ class FEMpyModel(BaseSolver):
     def createOutputData(self, nodeValues={}, elementValues={}):
         """Create the meshio data structure for writing out results
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -311,7 +311,7 @@ class FEMpyModel(BaseSolver):
     def getElementDVs(self, elementType: str):
         """Get the design variable values for a given element set
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -431,7 +431,7 @@ class FEMpyModel(BaseSolver):
     def _getElementObject(self, meshioName):
         """Given the meshio name for an element type return the corresponding FEMpy element object
 
-        _extended_summary_
+
 
         Parameters
         ----------

@@ -445,7 +445,7 @@ class FEMpyProblem(BaseSolver):
     def addBodyLoad(self, name: str, loadingFunction: Union[Callable, Iterable[float]]) -> None:
         """Add a volumetric forcing term, commonly known as a "body force"
 
-        _extended_summary_
+
 
         Parameters
         ----------
@@ -604,7 +604,7 @@ class FEMpyProblem(BaseSolver):
     def _assembleResidual(self, states: np.ndarray, applyBCs: Optional[bool] = True):
         """Assemble the global residual for the problem
 
-        _extended_summary_
+
 
         Parameters
         ----------

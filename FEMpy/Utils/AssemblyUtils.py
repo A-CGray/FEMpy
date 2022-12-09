@@ -222,7 +222,7 @@ def localMatricesToCOOArrays(localMats, localDOF):
 def scatterLocalResiduals(localResiduals, connectivity, globalResidual):
     """_summary_
 
-    _extended_summary_
+
 
     Parameters
     ----------

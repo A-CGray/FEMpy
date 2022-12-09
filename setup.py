@@ -31,7 +31,7 @@ setup(
     extras_require={
         "docs": [
             "mkdocs-material",
-            "mkdocstrings",
+            "mkdocstrings[python]",
             "pytkdocs[numpy-style]",
         ],
         "dev": ["parameterized", "testflo", "black==22.1.0", "flake8", "pre-commit"],

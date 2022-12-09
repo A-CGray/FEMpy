@@ -188,7 +188,7 @@ def isoPlaneStrainStress(strains, E, nu):
 def isoPlaneStrainStressStrainSens(strains, E, nu):
     """Compute the sensitivity of the stress with respect to the strain
 
-    _extended_summary_
+
 
     Parameters
     ----------
@@ -235,7 +235,7 @@ def iso3DStress(strains, E, nu):
 def iso3DStressStrainSens(strains, E, nu):
     """Compute the sensitivity of the stress with respect to the strain
 
-    _extended_summary_
+
 
     Parameters
     ----------
