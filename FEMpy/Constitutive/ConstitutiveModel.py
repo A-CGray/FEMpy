@@ -223,12 +223,13 @@ class ConstitutiveModel:
         Returns
         -------
         callable
-            A function that can be called to compute the desired function at a bunch of points with the signature, f(states, stateGradients, coords, dvs)
-            where:
-            states is a numPoints x numStates array
-            stateGradients is a numPoints x numStates x numDim array
-            coords is a numPoints x numDim array
-            dvs is a dictionary of numPoints length arrays
+            A function that can be called to compute the desired function at a bunch of points with the signature,
+            `f(states, stateGradients, coords, dvs)`, where:
+
+            - states is a numPoints x numStates array
+            - stateGradients is a numPoints x numStates x numDim array
+            - coords is a numPoints x numDim array
+            - dvs is a dictionary of numPoints length arrays
         """
 
         raise NotImplementedError
@@ -244,6 +245,7 @@ class ConstitutiveModel:
         R = int r dV = int du'/dq^T * de/du'^T * sigma * scale d(element)
 
         Where:
+
         - du'/dq is the sensitivity of the state gradient to the nodal state values, this is handled by the element
         - de/du' is the sensitivity of the strain to the state gradient
         - sigma are the stresses
@@ -281,6 +283,7 @@ class ConstitutiveModel:
         Jac = de/du'^T * dsigma/de * de/du'
 
         Where:
+
         - de/du' is the sensitivity of the strain to the state gradient
         -  dsigma/de is the sensitivity of the stress to the strain gradient
 
@@ -339,9 +342,10 @@ def _computeWeakJacobianProduct(strainSens, stressSens, scale):
     `de/du'^T * dsigma/de * de/du'`
 
     Where:
-        - de/du' is the sensitivity of the strain to the state gradient
-        - dsigma/de is the sensitivity of the stress to the strain gradient
-        - scale is the volume scaling parameter
+
+    - de/du' is the sensitivity of the strain to the state gradient
+    - dsigma/de is the sensitivity of the stress to the strain gradient
+    - scale is the volume scaling parameter
 
     Parameters
     ----------
