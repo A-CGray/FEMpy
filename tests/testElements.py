@@ -42,7 +42,7 @@ knownQuadStiffnessMat = 1.0e10 * np.array(
     ]
 )
 
-test_params = []
+testParams = []
 
 cm = IsoPlaneStrain(E=70e9, nu=0.3, rho=2700, t=1.0)
 
@@ -50,18 +50,18 @@ for el in [QuadElement2D, TriElement2D]:
     if el in [QuadElement2D, TriElement2D]:
         for order in range(1, 4):
             element = el(order=order)
-            test_params.append({"element": element, "name": element.name, "knownJac": False, "ConstitutiveModel": cm})
+            testParams.append({"element": element, "name": element.name, "knownJac": False, "ConstitutiveModel": cm})
         if el == QuadElement2D:
-            test_params[0]["knownJac"] = True
-            test_params[0]["knownJacCoords"] = np.array([[0.0, 0.0], [2.0, 0.0], [2.0, 1.0], [0.0, 2.0]])
-            test_params[0]["knownJacDVs"] = {"Thickness": 1.0}
-            test_params[0]["knownJacMat"] = knownQuadStiffnessMat
+            testParams[0]["knownJac"] = True
+            testParams[0]["knownJacCoords"] = np.array([[0.0, 0.0], [2.0, 0.0], [2.0, 1.0], [0.0, 2.0]])
+            testParams[0]["knownJacDVs"] = {"Thickness": 1.0}
+            testParams[0]["knownJacMat"] = knownQuadStiffnessMat
     else:
         element = el()
-        test_params.append({"element": element, "name": element.name, "ConstitutiveModel": cm})
+        testParams.append({"element": element, "name": element.name, "ConstitutiveModel": cm})
 
 
-@parameterized_class(test_params)
+@parameterized_class(testParams)
 class ElementUnitTest(unittest.TestCase):
     def setUp(self) -> None:
         self.tol = 1e-10

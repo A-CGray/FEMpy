@@ -210,16 +210,14 @@ class IsoPlaneStress(ConstitutiveModel):
 
         if name.lower() == "mass":
 
-            def massFunc(states, stateGradients, coords, dvs):
+            def func(states, stateGradients, coords, dvs):
                 return np.ones(states.shape[0]) * self.rho
-
-            return massFunc
 
         if name.lower() == "von-mises-stress":
 
-            def VMFunc(states, stateGradients, coords, dvs):
+            def func(states, stateGradients, coords, dvs):
                 strains = self.computeStrains(states, stateGradients, coords, dvs)
                 stresses = self.computeStresses(strains, dvs)
                 return vonMises2DPlaneStress(stresses)
 
-            return VMFunc
+        return func

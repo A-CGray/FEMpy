@@ -40,7 +40,7 @@ def Planar2DStrain(UPrime, nonlinear=False):
         Strains at each point, these are the engineering strains [e_xx, e_yy, gamma_xy]
     """
     numPoints = UPrime.shape[0]
-    strains = np.zeros((numPoints, 3))
+    strains = np.zeros((numPoints, 3), dtype=UPrime.dtype)
 
     # e_xx = du_x/dx
     strains[:, 0] = UPrime[:, 0, 0]
@@ -82,7 +82,7 @@ def Planar2DStrainSens(UPrime, nonlinear=False):
         Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
     """
     numPoints = UPrime.shape[0]
-    strainSens = np.zeros((numPoints, 3, 2, 2))
+    strainSens = np.zeros((numPoints, 3, 2, 2), dtype=UPrime.dtype)
 
     # e_xx = du_x/dx
     strainSens[:, 0, 0, 0] = 1.0
