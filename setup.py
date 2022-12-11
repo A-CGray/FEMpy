@@ -34,7 +34,7 @@ setup(
             "mkdocstrings[python]",
             "pytkdocs[numpy-style]",
         ],
-        "dev": ["parameterized", "testflo", "black==22.10.0", "flake8", "pre-commit", "paramaterized"],
+        "dev": ["parameterized", "testflo", "black==22.10.0", "flake8", "pre-commit", "parameterized"],
     },
     classifiers=[
         "Operating System :: OS Independent",
