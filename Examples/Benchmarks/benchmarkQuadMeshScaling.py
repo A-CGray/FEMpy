@@ -7,7 +7,7 @@ FEMpy 2D Quad Mesh benchmark case
 @Author  :   Alasdair Christison Gray
 @Description : This file contains a simple 2D case using quad elements that is
 used to benchmark the performance of FEMpy as part of a CI job. The case uses a
-316x316 mesh of 2D quad elements that results in almost exactly 200k degrees of
+223x223 mesh of 2D quad elements that results in almost exactly 100k degrees of
 freedom
 """
 

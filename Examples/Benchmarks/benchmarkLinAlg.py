@@ -37,7 +37,7 @@ for func in ["det", "inv"]:
 
 
 def nameFunc(testcase_func, param_num, params):
-    return f"LinAlgBenchmark-{params['method']}-{params['func']}-{params['size']}"
+    return f"BenchmarkLinAlg-{params['method']}-{params['func']}-{params['size']}"
 
 
 @parameterized.parameterized_class(test_params, class_name_func=nameFunc)
