@@ -32,7 +32,7 @@ def applyBCsToMatrix(rows, cols, values, bcDOF):
 
     To enforce the boundary condition ``u_i = c``, we alter the ith row of the matrix to represent this equation:
 
-        ``[0, ..., 1, ..., 0] @ [du_1, ..., du_i, ..., du_n].T = [c - u_i]``
+        ``[0, ..., 1, ..., 0] @ [du_1, ..., du_i, ..., du_n].T = [u_i - c]``
 
     This function performs the modification of the matrix data, the modification of the right hand side vector is
     performed by the function :func:`applyBCsToVector`.
@@ -53,15 +53,11 @@ def applyBCsToMatrix(rows, cols, values, bcDOF):
     rowInds :
     """
     indsToDelete = np.nonzero(np.in1d(rows, bcDOF))[0]
-
-    rows = np.delete(rows, indsToDelete)
-    cols = np.delete(cols, indsToDelete)
-    values = np.delete(values, indsToDelete)
+    values[indsToDelete] = 0.0
 
     rows = np.append(rows, bcDOF)
     cols = np.append(cols, bcDOF)
-    oneVec = np.ones(len(bcDOF))
-    values = np.append(values, oneVec)
+    values = np.append(values, np.ones(len(bcDOF)))
 
     return rows, cols, values
 
@@ -169,7 +165,7 @@ def convertLoadsDictToVector(loadsDict, numDOF: int):
     return loadForce
 
 
-# @njit(cache=True)
+@njit(cache=True)
 def localMatricesToCOOArrays(localMats, localDOF):
     """Convert a set of local matrices for a set of elements to COO format data for a global matrix
 
@@ -199,14 +195,14 @@ def localMatricesToCOOArrays(localMats, localDOF):
     for ii in range(numElements):
         # Figure out where in the COO arrays to write the entires from this element
         startInd = ii * dofPerElement**2
-        endInd = (ii + 1) * dofPerElement**2
 
-        # Now we need to flatten the local matrix and write it to the COO arrays
-        rowInds = np.repeat(localDOF[ii, :], dofPerElement)  # [0,0,0,..., 1,1,1,..., 2,2,2,...]
-        colInds = np.tile(localDOF[ii, :], dofPerElement)  # [0,1,2,..., 0,1,2,..., 0,1,2,...]
-        rows[startInd:endInd] = rowInds
-        cols[startInd:endInd] = colInds
-        values[startInd:endInd] = localMats[ii].flatten()
+        for rowInd in range(dofPerElement):
+            rowStartInd = startInd + rowInd * dofPerElement
+            for colInd in range(dofPerElement):
+                flatInd = rowStartInd + colInd
+                rows[flatInd] = localDOF[ii, rowInd]
+                cols[flatInd] = localDOF[ii, colInd]
+                values[flatInd] = localMats[ii, rowInd, colInd]
 
     # Now we have all the data, return only the non-zero entries
     nonzeroEntries = np.flatnonzero(values)
@@ -215,14 +211,12 @@ def localMatricesToCOOArrays(localMats, localDOF):
     cols = cols[nonzeroEntries]
     values = values[nonzeroEntries]
 
-    return rows.tolist(), cols.tolist(), values.tolist()
+    return rows, cols, values
 
 
 @njit(cache=True)
 def scatterLocalResiduals(localResiduals, connectivity, globalResidual):
-    """_summary_
-
-
+    """Scatter local element residuals into the global residual vector
 
     Parameters
     ----------

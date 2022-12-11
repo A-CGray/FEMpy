@@ -20,7 +20,7 @@ import os
 # External Python modules
 # ==============================================================================
 import numpy as np
-from scipy.sparse import csc_array, coo_array
+from scipy.sparse import csr_array, coo_array
 from baseclasses import BaseSolver
 
 try:
@@ -552,7 +552,7 @@ class FEMpyProblem(BaseSolver):
     # Private methods
     # ==============================================================================
 
-    def _assembleMatrix(self, states: np.ndarray, applyBCs: Optional[bool] = True) -> csc_array:
+    def _assembleMatrix(self, states: np.ndarray, applyBCs: Optional[bool] = True) -> csr_array:
         """Assemble the global residual Jacobian matrix for the problem (a.k.a the stiffness matrix)
 
         Parameters
@@ -564,7 +564,7 @@ class FEMpyProblem(BaseSolver):
 
         Returns
         -------
-        scipy csc_array
+        scipy csr_array
             The residual Jacobian
         """
 
@@ -585,9 +585,12 @@ class FEMpyProblem(BaseSolver):
 
             localMats = element.computeResidualJacobians(nodeStates, nodeCoords, elementDVs, self.constitutiveModel)
             row_inds, col_inds, values = AssemblyUtils.localMatricesToCOOArrays(localMats, elementData["DOF"])
-            matRows += row_inds
-            matColumns += col_inds
-            matEntries += values
+            matRows.append(row_inds)
+            matColumns.append(col_inds)
+            matEntries.append(values)
+        matRows = np.concatenate(matRows)
+        matColumns = np.concatenate(matColumns)
+        matEntries = np.concatenate(matEntries)
 
         # Apply boundary conditions to COO data
         if applyBCs:
@@ -596,10 +599,10 @@ class FEMpyProblem(BaseSolver):
             matRows, matColumns, matEntries = AssemblyUtils.applyBCsToMatrix(matRows, matColumns, matEntries, BCDOF)
 
         # create and return sparse matrix, we need to create a coo array first as this correctly handle duplicate
-        # entries, then we convert to a csc array as that's what the scipy sparse linear solver likes to work with
+        # entries, then we convert to a csr array as that's what the scipy sparse linear solver likes to work with
         mat = coo_array((matEntries, (matRows, matColumns)), shape=(self.numDOF, self.numDOF))
 
-        return csc_array(mat)
+        return csr_array(mat)
 
     def _assembleResidual(self, states: np.ndarray, applyBCs: Optional[bool] = True):
         """Assemble the global residual for the problem
