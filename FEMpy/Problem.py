@@ -138,34 +138,35 @@ class FEMpyProblem(BaseSolver):
         """Solve the finite element problem
 
         The solution is stored in the ``states`` attribute of the problem object
+
+        Returns
+        -------
+        Dictionary of timing data
         """
 
-        printTiming = self.getOption("printTiming")
-        if printTiming:
-            times = {}
-            times["Start"] = time.time()
+        times = {}
+        times["Start"] = time.time()
         # --- Assemble the residual ---
         self.updateResidual(applyBCs=True)
-        if printTiming:
-            times["ResAssembled"] = time.time()
+        times["ResAssembled"] = time.time()
 
         # --- Assemble the stiffness matrix ---
         self.updateJacobian(applyBCs=True)
-        if printTiming:
-            times["JacAssembled"] = time.time()
+        times["JacAssembled"] = time.time()
 
         # --- Solve for an update in the state ---
         update = self.solveJacLinear(-self.Res)
-        if printTiming:
-            times["Solved"] = time.time()
+        times["Solved"] = time.time()
 
         # --- Apply the state update ---
         self.incrementState(update)
 
-        if printTiming:
+        if self.getOption("printTiming"):
             self._printTiming(times)
 
         self.solveCounter += 1
+
+        return times
 
     def solveJacLinear(self, RHS: np.ndarray) -> np.ndarray:
         """Solve the linearised residual equations with a right hand side
@@ -676,7 +677,7 @@ class FEMpyProblem(BaseSolver):
         print("+-----------------------------------------------------------------+")
         print(f" Timing information for FEMpy problem: {self.name}")
         print("+-----------------------------------------------------------------+")
-        print("+ Residual Assembly: {:11.5e} s".format(resAssemblyTime))
-        print("+ Jacobian Assembly: {:11.5e} s".format(matAssemblyTime))
-        print("+ Linear Solution:   {:11.5e} s".format(solveTime))
+        print("Residual Assembly: {:11.5e} s".format(resAssemblyTime))
+        print("Jacobian Assembly: {:11.5e} s".format(matAssemblyTime))
+        print("Linear Solution:   {:11.5e} s".format(solveTime))
         print("+-----------------------------------------------------------------+\n")
