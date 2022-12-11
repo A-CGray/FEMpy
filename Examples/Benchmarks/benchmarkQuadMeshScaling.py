@@ -23,10 +23,7 @@ import unittest
 import numpy as np
 import FEMpy as fp
 from numba import njit
-import matplotlib.pyplot as plt
-import niceplots
 
-niceplots.setRCParams()
 # ==============================================================================
 # Extension modules
 # ==============================================================================
