@@ -915,6 +915,7 @@ def _interpolationProduct(N, nodeValues):
     cache=True,
     fastmath=True,
     boundscheck=False,
+    target="parallel",
 )
 def _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
     """This function computes a nasty product of two 3d arrays that is required when computing element mapping Jacobians
@@ -941,7 +942,7 @@ def _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
     """
     numElements = Jac.shape[0]
     numPoints = Jac.shape[1]
-    for ii in range(numElements):
+    for ii in prange(numElements):
         for jj in range(numPoints):
             Jac[ii, jj] = NPrimeParam[jj] @ nodeCoords[ii]
 
@@ -953,6 +954,7 @@ def _computeNPrimeCoordProduct(NPrimeParam, nodeCoords, Jac):
     cache=True,
     fastmath=True,
     boundscheck=False,
+    target="parallel",
 )
 def _computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
     """Compute the nasty product of 3 and 4d arrays required when computing state gradients at multiple points within
@@ -980,7 +982,7 @@ def _computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
     """
     numElements = JacInv.shape[0]
     numPoints = JacInv.shape[1]
-    for ii in range(numElements):
+    for ii in prange(numElements):
         for jj in range(numPoints):
             result[ii, jj] = (JacInv[ii, jj] @ NPrimeParam[jj] @ nodeStates[ii]).T
 
@@ -992,6 +994,7 @@ def _computeUPrimeProduct(JacInv, NPrimeParam, nodeStates, result):
     cache=True,
     fastmath=True,
     boundscheck=False,
+    target="parallel",
 )
 def _computeDUPrimeDqProduct(JacInv, NPrimeParam, result):
     """_summary_
@@ -1009,7 +1012,7 @@ def _computeDUPrimeDqProduct(JacInv, NPrimeParam, result):
     """
     numElements = JacInv.shape[0]
     numPoints = JacInv.shape[1]
-    for ii in range(numElements):
+    for ii in prange(numElements):
         for jj in range(numPoints):
             result[ii, jj] = JacInv[ii, jj] @ NPrimeParam[jj]
 

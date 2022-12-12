@@ -17,7 +17,7 @@ import abc
 # External Python modules
 # ==============================================================================
 import numpy as np
-from numba import njit
+from numba import njit, prange
 
 # ==============================================================================
 # Extension modules
@@ -335,7 +335,7 @@ class ConstitutiveModel:
     # ==============================================================================
 
 
-@njit(cache=True, fastmath=True, boundscheck=False)
+@njit(cache=True, fastmath=True, boundscheck=False, parallel=True)
 def _computeWeakJacobianProduct(strainSens, stressSens, scale):
     """Compute a nasty product of high dimensional arrays to compute the weak residual
 
@@ -362,7 +362,7 @@ def _computeWeakJacobianProduct(strainSens, stressSens, scale):
     """
     numPoints = strainSens.shape[0]
     result = np.zeros((numPoints, strainSens.shape[-1], strainSens.shape[-1]))
-    for ii in range(numPoints):
+    for ii in prange(numPoints):
         result[ii] = strainSens[ii].T @ stressSens[ii] @ strainSens[ii] * scale[ii]
 
     return result

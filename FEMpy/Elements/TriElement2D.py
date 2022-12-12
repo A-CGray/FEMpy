@@ -204,6 +204,7 @@ class TriElement2D(Element):
         ----------
         n : int, optional
             number of points to generate, by default 1
+
         Returns
         -------
         paramCoords : n x numDim array

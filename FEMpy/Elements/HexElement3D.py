@@ -26,14 +26,16 @@ from FEMpy.Quadrature import getGaussQuadWeights, getGaussQuadPoints
 
 
 class HexElement3D(Element):
-    """An `arbitrary order` 3d hexahedral finite element
+    """An "arbitrary order" 3d hexahedral finite element
 
-    Like the QuadElement2D, the arbitrary order bit is in quotes because I have not figured out how to do the node reordering from the shape function ordering to the node ordering used by MeshIO for anything more than 3nd order hex elements yet
+    Like the QuadElement2D, the arbitrary order bit is in quotes because I have not figured out how to do the node
+    reordering from the shape function ordering to the node ordering used by MeshIO for anything more than 2nd order
+    hex elements yet
 
-    Parameters
-    ----------
-    Element : _type_
-        _description_
+    Inherits from
+    -------------
+    Element : FEMpy Element class
+        The base FEMpy element class
     """
 
     def __init__(self, order=1, numStates=None, quadratureOrder=None):
