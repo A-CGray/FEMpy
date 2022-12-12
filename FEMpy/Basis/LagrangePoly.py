@@ -152,7 +152,7 @@ def LagrangePoly3d(x, y, z, n):
     z : array of length nP (0D, nPx1 or 1xnP)
         z coordinates of points to compute polynomial values at, should be between -1 and 1
     n : int
-        Number of Lagrange polynomials, in 3d, there are n nodes in each direction, giving n^2, n-1 order polynomials
+        Number of Lagrange polynomials, in 3d, there are n nodes in each direction, giving n^3, n-1 order polynomials
 
     Returns
     -------
@@ -171,7 +171,7 @@ def LagrangePoly3d(x, y, z, n):
             for yInd in range(n):
                 for xInd in range(n):
                     flatInd = zInd * n**2 + yInd * n + xInd
-                    N[flatInd] = Nx[pointInd, xInd] * Ny[pointInd, yInd] * Nz[pointInd, zInd]
+                    N[pointInd, flatInd] = Nx[pointInd, xInd] * Ny[pointInd, yInd] * Nz[pointInd, zInd]
     return N
 
 
@@ -202,7 +202,7 @@ def LagrangePoly3dDeriv(x, y, z, n):
     dNdx = LagrangePoly1dDeriv(xp, n)
     dNdy = LagrangePoly1dDeriv(yp, n)
     dNdz = LagrangePoly1dDeriv(zp, n)
-    N = np.zeros((len(xp), 2, n**3))
+    N = np.zeros((len(xp), 3, n**3))
     for pointInd in range(len(xp)):
         for zInd in range(n):
             for yInd in range(n):

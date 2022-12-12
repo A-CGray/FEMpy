@@ -23,11 +23,13 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy.Elements import QuadElement2D, TriElement2D
-from FEMpy.Constitutive import IsoPlaneStrain
+from FEMpy.Elements import QuadElement2D, TriElement2D, HexElement3D
+from FEMpy.Constitutive import IsoPlaneStrain, Iso3D
 
 # --- Elements to test: ---
 # QuadElement2D: 1st to 3rd order
+# TruElement2D: 1st to 3rd order
+# HexElement3D: 1st and 2rd order
 
 knownQuadStiffnessMat = 1.0e10 * np.array(
     [
@@ -44,21 +46,35 @@ knownQuadStiffnessMat = 1.0e10 * np.array(
 
 testParams = []
 
-cm = IsoPlaneStrain(E=70e9, nu=0.3, rho=2700, t=1.0)
+cm2D = IsoPlaneStrain(E=70e9, nu=0.3, rho=2700, t=1.0)
+cm3D = Iso3D(E=70e9, nu=0.3, rho=2700)
 
-for el in [QuadElement2D, TriElement2D]:
+for el in [QuadElement2D, TriElement2D, HexElement3D]:
     if el in [QuadElement2D, TriElement2D]:
         for order in range(1, 4):
             element = el(order=order)
-            testParams.append({"element": element, "name": element.name, "knownJac": False, "ConstitutiveModel": cm})
+            testParams.append({"element": element, "name": element.name, "knownJac": False})
         if el == QuadElement2D:
             testParams[0]["knownJac"] = True
             testParams[0]["knownJacCoords"] = np.array([[0.0, 0.0], [2.0, 0.0], [2.0, 1.0], [0.0, 2.0]])
             testParams[0]["knownJacDVs"] = {"Thickness": 1.0}
             testParams[0]["knownJacMat"] = knownQuadStiffnessMat
+    elif el in [HexElement3D]:
+        for order in range(1, 3):
+            element = el(order=order)
+            testParams.append({"element": element, "name": element.name, "knownJac": False})
     else:
         element = el()
-        testParams.append({"element": element, "name": element.name, "ConstitutiveModel": cm})
+        testParams.append({"element": element, "name": element.name})
+
+    for ii in range(len(testParams)):
+        element = testParams[ii]["element"]
+        if element.numDim == 2:
+            testParams[ii]["ConstitutiveModel"] = cm2D
+        elif element.numDim == 3:
+            testParams[ii]["ConstitutiveModel"] = cm3D
+        else:
+            raise ValueError("Invalid number of dimensions")
 
 
 @parameterized_class(testParams)

@@ -20,7 +20,7 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from .Element import Element
+from FEMpy.Elements import Element
 from FEMpy.Basis import LagrangePoly as LP
 from FEMpy.Quadrature import getGaussQuadWeights, getGaussQuadPoints
 
@@ -40,7 +40,7 @@ class QuadElement2D(Element):
     """
 
     def __init__(self, order=1, numStates=None, quadratureOrder=None):
-        """Create a new 2d quadrilateral finite element objectively
+        """Create a new 2d quadrilateral finite element object
 
         Parameters
         ----------

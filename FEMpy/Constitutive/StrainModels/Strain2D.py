@@ -16,23 +16,23 @@ Functions for computing strains in 2D
 # External Python modules
 # ==============================================================================
 import numpy as np
+from numba import njit
 
 # ==============================================================================
 # Extension modules
 # ==============================================================================
 
 
-def Planar2DStrain(UPrime, nonlinear=False):
+@njit(cache=True, fastmath=True)
+def strain2D(UPrime, nonlinear=False):
     """Compute 2D strains from the displacement gradient
-
-
 
     Parameters
     ----------
     UPrime : numPoints x 2 x 2 array
         Displacement gradients at each point
     nonlinear : bool, optional
-        Whether to compute the nonlinear strain, by default False
+        Whether to compute the nonlinear Greene strain, by default False
 
     Returns
     -------
@@ -64,17 +64,16 @@ def Planar2DStrain(UPrime, nonlinear=False):
     return strains
 
 
-def Planar2DStrainSens(UPrime, nonlinear=False):
-    """_summary_
-
-
+@njit(cache=True, fastmath=True)
+def strain2DSens(UPrime, nonlinear=False):
+    """Compute the sensitivity of the 2D strains to the displacement gradients
 
     Parameters
     ----------
-    UPrime : _type_
-        _description_
+    UPrime : numPoints x 2 x 2 array
+        Displacement gradients at each point
     nonlinear : bool, optional
-        _description_, by default False
+        Whether to use the nonlinear Greene strain, by default False
 
     Returns
     -------

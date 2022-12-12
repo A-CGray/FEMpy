@@ -20,7 +20,7 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy.Constitutive.StrainModels import Planar2DStrain, Planar2DStrainSens
+from FEMpy.Constitutive.StrainModels import strain2D, strain2DSens
 from FEMpy.Constitutive.StressModels import isoPlaneStressStress, isoPlaneStressStressStrainSens, vonMises2DPlaneStress
 from FEMpy.Constitutive import ConstitutiveModel
 
@@ -101,7 +101,7 @@ class IsoPlaneStress(ConstitutiveModel):
         numPoints x numStrains array
             Strain components at each point
         """
-        return Planar2DStrain(UPrime=stateGradients, nonlinear=not self.isLinear)
+        return strain2D(UPrime=stateGradients, nonlinear=not self.isLinear)
 
     def computeStrainStateGradSens(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
@@ -125,7 +125,7 @@ class IsoPlaneStress(ConstitutiveModel):
         numPoints x numStrains x numStates x numDim array
             Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
         """
-        return Planar2DStrainSens(UPrime=stateGradients, nonlinear=not self.isLinear)
+        return strain2DSens(UPrime=stateGradients, nonlinear=not self.isLinear)
 
     def computeStresses(self, strains, dvs):
         """Given the strains and design variables at a bunch of points, compute the stresses at each one

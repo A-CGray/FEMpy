@@ -470,6 +470,16 @@ class FEMpyModel(BaseSolver):
         if elName == "triangle10":
             elObject = Elements.TriElement2D(order=3, numStates=self.numStates)
 
+        # --- 3D Hex elements ---
+        if "hexahedron" in elName:
+            if elName == "hexahedron":
+                elObject = Elements.HexElement3D(order=1, numStates=self.numStates)
+            else:
+                # If the cube root of the number of nodes is a whole number then this is a valid hex element
+                order = np.cbrt(numNodes) - 1
+                if int(order) == order:
+                    elObject = Elements.HexElement3D(order=int(order), numStates=self.numStates)
+
         # # --- 1D Line Elements ---
         # if elName[:4] == "line":
         #     if elName == "line":
