@@ -270,13 +270,18 @@ class ConstitutiveModel:
         residuals : numPoints x self.numDim x self.numStates array
             Weak residual integrand at each point
         """
+        numPoints = coords.shape[0]
         strain = self.computeStrains(states, stateGradients, coords, dvs)
         stress = self.computeStresses(strain, dvs)
         scale = self.computeVolumeScaling(coords, dvs)
 
         strainSens = self.computeStrainStateGradSens(states, stateGradients, coords, dvs)
 
-        return np.einsum("pesd,pe,p->pds", strainSens, stress, scale, optimize=["einsum_path", (0, 1), (0, 1)])
+        residuals = np.zeros((numPoints, self.numDim, self.numStates))
+        _computeWeakResidualProduct(strainSens, stress, scale, residuals)
+        return residuals
+
+        # return np.einsum("pesd,pe,p->pds", strainSens, stress, scale, optimize=["einsum_path", (0, 1), (0, 1)])
 
     def computeWeakResidualJacobian(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
@@ -335,6 +340,50 @@ class ConstitutiveModel:
     # ==============================================================================
     # Private methods
     # ==============================================================================
+
+
+@njit(cache=True, fastmath=True, parallel=True)
+def _computeWeakResidualProduct(strainSens, stress, scale, result):
+    """_summary_
+
+    Equivalent to ::
+
+        np.einsum("pesd,pe,p->pds", strainSens, stress, scale, optimize=["einsum_path", (0, 1), (0, 1)])
+
+      Complete contraction:  pesd,pe,p->pds
+            Naive scaling:  4
+        Optimized scaling:  4
+        Naive FLOP count:  1.844e+8
+    Optimized FLOP count:  1.298e+8
+    Theoretical speedup:  1.421e+0
+    Largest intermediate:  1.025e+7 elements
+    --------------------------------------------------------------------------------
+    scaling        BLAS                current                             remaining
+    --------------------------------------------------------------------------------
+    2              0               p,pe->pe                          pesd,pe->pds
+    4              0           pe,pesd->pds                              pds->pds
+
+    Parameters
+    ----------
+    strainSens : _type_
+        _description_
+    stress : _type_
+        _description_
+    scale : _type_
+        _description_
+    result : _type_
+        _description_
+    """
+    numPoints = strainSens.shape[0]
+    numStrains = strainSens.shape[1]
+    numStates = strainSens.shape[2]
+    numDim = strainSens.shape[3]
+    for p in prange(numPoints):
+        for d in range(numDim):
+            for s in range(numStates):
+                for e in range(numStrains):
+                    result[p, d, s] += strainSens[p, e, s, d] * stress[p, e]
+        result[p] *= scale[p]
 
 
 @njit(parallel=True, cache=True, fastmath=True)

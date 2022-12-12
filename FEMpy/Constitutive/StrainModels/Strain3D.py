@@ -23,7 +23,7 @@ from numba import njit
 # ==============================================================================
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True, parallel=True)
 def strain3D(UPrime, nonlinear=False):
     """Compute 3D strains from the displacement gradient
 
@@ -88,7 +88,7 @@ def strain3D(UPrime, nonlinear=False):
     return strains
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True, parallel=True)
 def strain3DSens(UPrime, nonlinear=False):
     """Compute the sensitivity of the 3D strains to the displacement gradients
 
