@@ -319,14 +319,16 @@ class ConstitutiveModel:
         # stress = o
         # states = s
         # dim = d
-        Jacobians = np.einsum(
-            "posd,poe,peSD,p->pdsSD",
-            strainSens,
-            stressSens,
-            strainSens,
-            scale,
-            optimize=["einsum_path", (1, 3), (0, 2), (0, 1)],
-        )
+        # Jacobians = np.einsum(
+        #     "posd,poe,peSD,p->pdsSD",
+        #     strainSens,
+        #     stressSens,
+        #     strainSens,
+        #     scale,
+        #     optimize=["einsum_path", (1, 3), (0, 2), (0, 1)],
+        # )
+        Jacobians = np.zeros((numPoints, self.numDim, self.numStates, self.numStates, self.numDim))
+        _computeWeakJacobianProduct(strainSens, stressSens, scale, Jacobians)
 
         return Jacobians
 
@@ -335,34 +337,75 @@ class ConstitutiveModel:
     # ==============================================================================
 
 
-@njit(cache=True, fastmath=True, boundscheck=False, parallel=True)
-def _computeWeakJacobianProduct(strainSens, stressSens, scale):
-    """Compute a nasty product of high dimensional arrays to compute the weak residual
+@njit(parallel=True, cache=True, fastmath=True)
+def _computeWeakJacobianProduct(strainSens, stressSens, scale, jacs):
+    """Computes the following product which is necessary for compute the weak residual Jacobian:
 
-    Computing the weak residual requires computing the following product at each point:
+    $$j = (d\epsilon/du')^T \\times d\sigma/d\epsilon \\times d\epsilon/du'$$
 
-    `de/du'^T * dsigma/de * de/du'`
+    Equivalent to::
 
-    Where:
+        np.einsum(
+            "posd,poe,peSD,p->pdsSD",
+            strainSens,
+            stressSens,
+            strainSens,
+            scale,
+            optimize=["einsum_path", (1, 3), (0, 2), (0, 1)],
+            out = jacs
+        )
 
-    - de/du' is the sensitivity of the strain to the state gradient
-    - dsigma/de is the sensitivity of the stress to the strain gradient
-    - scale is the volume scaling parameter
+    # points = p
+    # strains = e
+    # stress = o
+    # states = s
+    # dim = d
+
+    Complete contraction:  posd,poe,peSD,p->pdsSD
+            Naive scaling:  7
+        Optimized scaling:  6
+        Naive FLOP count:  1.866e+10
+    Optimized FLOP count:  2.650e+9
+    Theoretical speedup:  7.043e+0
+    Largest intermediate:  1.296e+8 elements
+    --------------------------------------------------------------------------------
+    scaling        BLAS                current                             remaining
+    --------------------------------------------------------------------------------
+    3              0             p,poe->poe                  posd,peSD,poe->pdsSD
+    5              0         poe,posd->pesd                      peSD,pesd->pdsSD
+    6              0       pesd,peSD->pdsSD                          pdsSD->pdsSD
 
     Parameters
     ----------
-    dStraindUPrime : numPoints x numStrains x numStates x numDim array
-            Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
-    stress : numPoints x numStrains array
-        Stresses at each point
-    volScaling : numPoints array
-        Volume scaling at each point
-    result : numPoints x numDim x numStates array
+    strainSens : _type_
+        _description_
+    stressSens : _type_
+        _description_
+    scale : _type_
+        _description_
+    jacs : _type_
         _description_
     """
-    numPoints = strainSens.shape[0]
-    result = np.zeros((numPoints, strainSens.shape[-1], strainSens.shape[-1]))
-    for ii in prange(numPoints):
-        result[ii] = strainSens[ii].T @ stressSens[ii] @ strainSens[ii] * scale[ii]
+    numPoints = jacs.shape[0]
+    numDim = jacs.shape[1]
+    numStrains = stressSens.shape[1]
+    numStates = jacs.shape[2]
 
-    return result
+    # poe,posd,p->pesd
+    intProd1 = np.zeros((numPoints, numStrains, numStates, numDim))
+    for p in prange(numPoints):
+        for e in range(numStrains):
+            for s in range(numStates):
+                for d in range(numDim):
+                    for o in range(numStrains):
+                        intProd1[p, e, s, d] += stressSens[p, o, e] * strainSens[p, o, s, d]
+        intProd1[p] *= scale[p]
+
+    # pesd,peSD->pdsSD
+    for p in prange(numPoints):
+        for d in range(numDim):
+            for s in range(numStates):
+                for S in range(numStates):
+                    for D in range(numDim):
+                        for e in range(numStrains):
+                            jacs[p, d, s, S, D] += intProd1[p, e, s, d] * strainSens[p, e, S, D]

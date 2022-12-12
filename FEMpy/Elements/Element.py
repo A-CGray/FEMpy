@@ -468,13 +468,15 @@ class Element:
         )
 
         # Compute dr/dq = du'/dq^T * dr/du' * du'/dq
-        Jacs = np.einsum(
-            "pdn,pdsSD,pDN->pnsNS",
-            pointQuantities["StateGradSens"],
-            weakJacs,
-            pointQuantities["StateGradSens"],
-            optimize=["einsum_path", (0, 2), (0, 1)],
-        )
+        # Jacs = np.einsum(
+        #     "pdn,pdsSD,pDN->pnsNS",
+        #     pointQuantities["StateGradSens"],
+        #     weakJacs,
+        #     pointQuantities["StateGradSens"],
+        #     optimize=["einsum_path", (0, 2), (0, 1)],
+        # )
+        Jacs = np.zeros((numElements * numIntPoints, self.numNodes, self.numStates, self.numNodes, self.numStates))
+        _transformResidualJacobians(pointQuantities["StateGradSens"], weakJacs, Jacs)
         Jacs = Jacs.reshape((numElements, numIntPoints, self.numDOF, self.numDOF))
         pointQuantities["JacDet"] = pointQuantities["JacDet"].reshape((numElements, numIntPoints))
 
@@ -884,7 +886,7 @@ class Element:
         return error
 
 
-@njit(cache=True)
+@njit(cache=True, fastmath=True, parallel=True)
 def _interpolationProduct(N, nodeValues):
     """Compute the product of the interpolation matrix and a set of node values
 
@@ -903,7 +905,7 @@ def _interpolationProduct(N, nodeValues):
     numElements, _, numStates = nodeValues.shape
     numPoints = N.shape[0]
     product = np.zeros((numElements, numPoints, numStates))
-    for ii in range(numElements):
+    for ii in prange(numElements):
         product[ii] = N @ nodeValues[ii]
     return product
 
@@ -1015,6 +1017,69 @@ def _computeDUPrimeDqProduct(JacInv, NPrimeParam, result):
     for ii in prange(numElements):
         for jj in range(numPoints):
             result[ii, jj] = JacInv[ii, jj] @ NPrimeParam[jj]
+
+
+@njit(parallel=True, cache=True, fastmath=True)
+def _transformResidualJacobians(stateGradSens, weakJacs, jacs):
+    """
+    When computing the residual jacobians, we first compute the weak residual jacobians from the constitutive model,
+    which are the sensitivities of the weak residuals to the state gradient at each point. Then, we need to transform
+    those sensitivities to be with respect to the nodal states, to do that we need to compute the product:
+    $$dr/dq = du'/dq^T * dr/du' * du'/dq$$
+    Where:
+
+    - $q$ are the nodal states
+    - $u'$ are the state gradients at each point
+    - $r$ are the weak residuals
+
+    This function computes this product, it is essentially an explicitly written version of the following numpy call ::
+
+        Jacs = np.einsum(
+            "pdn,pdsSD,pDN->pnsNS",
+            pointQuantities["StateGradSens"],
+            weakJacs,
+            pointQuantities["StateGradSens"],
+            optimize=["einsum_path", (0, 1), (0, 1)],
+        )
+
+    Where the optimized path was computed by opt_einsum, opt_einsum's path summary is below::
+
+        Complete contraction:  pdn,pdsSD,pDN->pnsNS
+                Naive scaling:  7
+            Optimized scaling:  6
+            Naive FLOP count:  2.212e+10
+        Optimized FLOP count:  6.758e+9
+        Theoretical speedup:  3.273e+0
+        Largest intermediate:  8.192e+8 elements
+        --------------------------------------------------------------------------------
+        scaling        BLAS                current                             remaining
+        --------------------------------------------------------------------------------
+        6              0       pdsSD,pdn->psSDn                      pDN,psSDn->pnsNS
+        6              0       psSDn,pDN->pnsNS                          pnsNS->pnsNS
+    """
+    numPoints = jacs.shape[0]
+    numDim = stateGradSens.shape[1]
+    numNodes = stateGradSens.shape[2]
+    numStates = jacs.shape[-1]
+
+    intProd1 = np.zeros((numPoints, numStates, numStates, numDim, numNodes))
+    # This loop does the pdsSD,pdn->psSDn bit
+    for p in prange(numPoints):
+        for s in prange(numStates):  #
+            for S in range(numStates):
+                for D in range(numDim):
+                    for n in range(numNodes):
+                        for i in range(numDim):
+                            intProd1[p, s, S, D, n] += weakJacs[p, i, s, S, D] * stateGradSens[p, i, n]
+
+    # And this one does the psSDn,pDN->pnsNS bit
+    for p in prange(numPoints):
+        for n in prange(numNodes):
+            for s in range(numStates):
+                for N in range(numNodes):
+                    for S in range(numStates):
+                        for i in range(numDim):
+                            jacs[p, n, s, N, S] += intProd1[p, s, S, i, n] * stateGradSens[p, i, N]
 
 
 @guvectorize(
