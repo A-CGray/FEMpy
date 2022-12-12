@@ -4,7 +4,7 @@ FEMpy 2D Quad Mesh benchmark case
 ==============================================================================
 @File    :   QuadMeshScaling.py
 @Date    :   2021/05/04
-@Author  :   Jasmin Lim 
+@Author  :   Jasmin Lim
              Modeled by script written by: Alasdair Christison Gray
 @Description : This file contains a simple 2D case using quad elements that is
 used to benchmark the performance of FEMpy as part of a CI job. The case uses a
@@ -32,6 +32,7 @@ niceplots.setRCParams()
 # Extension modules
 # ==============================================================================
 
+
 @njit(cache=True)
 def warpFunc(x, y):
     return 2.0 * x, (2.0 - x) * y
@@ -56,6 +57,7 @@ def createGridMesh(nx, ny, warpFunc=None):
 
     return np.array([xNodes, yNodes]).T, conn
 
+
 def solve_problem(n):
     con = fp.Constitutive.IsoPlaneStrain(E=70e9, nu=0.3, t=1.0, rho=2700.0)
     nodeCoords, conn = createGridMesh(n, n, warpFunc=warpFunc)
@@ -73,15 +75,16 @@ def solve_problem(n):
 
     return nodeCoords, times
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     numEl = [2, 5, 10, 20, 40, 80, 160, 320]
-    
+
     forceIntTimeList = []
     assemblyTimeList = []
     solveTimeList = []
     totalTimeList = []
     numDOFList = []
-    
+
     # run problem
     for i in range(len(numEl)):
         nodeCoords, times = solve_problem(numEl[i])
@@ -98,7 +101,6 @@ if __name__=="__main__":
         solveTimeList.append(solveTime)
         totalTimeList.append(resAssemblyTime + matAssemblyTime + solveTime)
 
-    
     # plot results
     fig, ax = plt.subplots()
     ax.set_xlabel("DOF")
@@ -120,4 +122,3 @@ if __name__=="__main__":
     plt.show()
 
     np.savetxt("NewQuadMeshScaling.csv", plotVars, delimiter=",")
-    
