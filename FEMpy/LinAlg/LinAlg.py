@@ -18,7 +18,7 @@ elements.
 # ==============================================================================
 # External Python modules
 # ==============================================================================
-from numba import njit
+from numba import njit, prange
 import numpy as np
 
 # ==============================================================================
@@ -67,7 +67,7 @@ def det1(A):
     return np.ascontiguousarray(A.reshape(A.shape[:-2]))
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True, parallel=True)
 def det2(A):
     """Compute the determinants of a series of 2x2 matrices.
 
@@ -85,12 +85,12 @@ def det2(A):
     A, n = convertTo3D(A)
 
     dets = np.zeros(n)
-    for i in range(n):
+    for i in prange(n):
         dets[i] = A[i, 0, 0] * A[i, 1, 1] - A[i, 0, 1] * A[i, 1, 0]
     return np.ascontiguousarray(dets.reshape(origShape[:-2]))
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True, parallel=True)
 def det3(A):
     """Compute the determinants of a series of 3x3 matrices.
 
@@ -107,7 +107,7 @@ def det3(A):
     origShape = A.shape
     A, n = convertTo3D(A)
     dets = np.zeros(n)
-    for i in range(n):
+    for i in prange(n):
         dets[i] = (
             A[i, 0, 0] * (A[i, 1, 1] * A[i, 2, 2] - A[i, 1, 2] * A[i, 2, 1])
             - A[i, 0, 1] * (A[i, 1, 0] * A[i, 2, 2] - A[i, 1, 2] * A[i, 2, 0])
@@ -132,7 +132,7 @@ def inv1(A):
     return 1.0 / A
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True, parallel=True)
 def inv2(A):
     """Compute the inverses of a series of 2x2 matrices.
 
@@ -149,9 +149,8 @@ def inv2(A):
     origShape = A.shape
     A, n = convertTo3D(A)
     invdets = 1.0 / det2(A)
-    n = len(invdets)
     invs = np.zeros((n, 2, 2))
-    for i in range(n):
+    for i in prange(n):
         invs[i, 0, 0] = invdets[i] * A[i, 1, 1]
         invs[i, 1, 1] = invdets[i] * A[i, 0, 0]
         invs[i, 0, 1] = -invdets[i] * A[i, 0, 1]
@@ -159,7 +158,7 @@ def inv2(A):
     return np.ascontiguousarray(invs.reshape(origShape))
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True, parallel=True)
 def inv3(A):
     """Compute the inverses of a series of 3x3 matrices.
 
@@ -176,9 +175,8 @@ def inv3(A):
     origShape = A.shape
     A, n = convertTo3D(A)
     invdets = 1.0 / det3(A)
-    n = len(invdets)
     invs = np.zeros((n, 3, 3))
-    for i in range(n):
+    for i in prange(n):
         invs[i, 0, 0] = invdets[i] * (A[i, 1, 1] * A[i, 2, 2] - A[i, 1, 2] * A[i, 2, 1])
         invs[i, 0, 1] = -invdets[i] * (A[i, 0, 1] * A[i, 2, 2] - A[i, 0, 2] * A[i, 2, 1])
         invs[i, 0, 2] = invdets[i] * (A[i, 0, 1] * A[i, 1, 2] - A[i, 0, 2] * A[i, 1, 1])

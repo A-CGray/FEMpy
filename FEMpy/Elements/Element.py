@@ -419,9 +419,11 @@ class Element:
         pointQuantities["JacDet"] = pointQuantities["JacDet"].reshape((numElements, numIntPoints))
 
         # - Compute R, weighted sum of w * r * detJ over each set of integration points
-        R = np.einsum(
-            "epns,ep,p->ens", r, pointQuantities["JacDet"], intPointWeights, optimize=["einsum_path", (1, 2), (0, 1)]
-        )
+        # R = np.einsum(
+        #     "epns,ep,p->ens", r, pointQuantities["JacDet"], intPointWeights, optimize=["einsum_path", (1, 2), (0, 1)]
+        # )
+        R = np.zeros((numElements, self.numNodes, self.numStates))
+        _integrate(r, pointQuantities["JacDet"], intPointWeights, R)
         return R
 
     def computeResidualJacobians(self, nodeStates, nodeCoords, designVars, constitutiveModel, intOrder=None):
@@ -477,14 +479,14 @@ class Element:
         # )
         Jacs = np.zeros((numElements * numIntPoints, self.numNodes, self.numStates, self.numNodes, self.numStates))
         _transformResidualJacobians(pointQuantities["StateGradSens"], weakJacs, Jacs)
-        Jacs = Jacs.reshape((numElements, numIntPoints, self.numDOF, self.numDOF))
+        Jacs = Jacs.reshape((numElements, numIntPoints, self.numNodes, self.numStates, self.numNodes, self.numStates))
         pointQuantities["JacDet"] = pointQuantities["JacDet"].reshape((numElements, numIntPoints))
 
         # - Compute R, weighted sum of w * r * detJ over each set of integration points
-        dRdq = np.einsum(
-            "epdc,ep,p->edc", Jacs, pointQuantities["JacDet"], intPointWeights, optimize=["einsum_path", (1, 2), (0, 1)]
-        )
-        return dRdq
+        dRdq = np.zeros((numElements, self.numNodes, self.numStates, self.numNodes, self.numStates))
+        _integrate(Jacs, pointQuantities["JacDet"], intPointWeights, dRdq)
+
+        return dRdq.reshape((numElements, self.numDOF, self.numDOF))
 
     def computeStates(self, paramCoords, nodeStates):
         """Given nodal DOF, compute the state at given parametric coordinates within the element
@@ -1113,6 +1115,30 @@ def _transformResidual(dUPrimedq, weakRes, result):
 
     for ii in prange(numPoints):
         result[ii] = dUPrimedq[ii].T @ weakRes[ii]
+
+
+@njit(cache=True, fastmath=True, parallel=True)
+def _integrate(intPointQuantities, jacDets, intPointWeights, result):
+    """Given a set of quantities (scalar, vector, tensor) at each integration point in a set of elements,
+    integrate them to get a quantity for each element
+
+    Parameters
+    ----------
+    intPointQuantities : numElement x numIntPoint x ... array
+        The quantities to integrate
+    jacDets : numElement x numIntPoint array
+        Element mapping jacobian determinatnts at each integration point in each element
+    intPointWeights : array of length numIntPoint
+        Integration point weights, same for every element
+    result : numElement x ... array
+        Integrated quantities
+    """
+    numElements = intPointQuantities.shape[0]
+    numPoints = intPointQuantities.shape[1]
+
+    for e in prange(numElements):
+        for p in range(numPoints):
+            result[e] += intPointQuantities[e, p] * jacDets[e, p] * intPointWeights[p]
 
 
 @njit(cache=True, fastmath=True, boundscheck=False)
