@@ -60,7 +60,7 @@ class BenchmarkQuadMeshSolve(unittest.TestCase):
         self.nodeCoords, self.conn = createGridMesh(317, 317, warpFunc=warpFunc)
         self.conn = {"quad": self.conn}
         self.model = fp.FEMpyModel(self.con, nodeCoords=self.nodeCoords, connectivity=self.conn)
-        self.prob = self.model.addProblem("Static")
+        self.prob = self.model.addProblem("Static", options={"printTiming": True})
         rightEdgeNodeInds = np.argwhere(self.nodeCoords[:, 0] == 2.0).flatten()
         leftEdgeNodeInds = np.argwhere(self.nodeCoords[:, 0] == 0.0).flatten()
         self.prob.addFixedBCToNodes("Fixed", leftEdgeNodeInds, dof=[0, 1], value=0.0)
