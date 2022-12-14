@@ -154,21 +154,21 @@ def strain3DSens(UPrime, nonlinear=False):
         strainSens[:, 3, 2, 1] += UPrime[:, 2, 0]
 
         # gamma_xz = du_x/dz + du_z/dx + (du_x/dx * du_x/dz + du_y/dx * du_y/dz + du_z/dx * du_z/dz)
-        strainSens[:, 3, 0, 0] += UPrime[:, 0, 2]
-        strainSens[:, 3, 1, 0] += UPrime[:, 1, 2]
-        strainSens[:, 3, 2, 0] += UPrime[:, 2, 2]
+        strainSens[:, 4, 0, 0] += UPrime[:, 0, 2]
+        strainSens[:, 4, 1, 0] += UPrime[:, 1, 2]
+        strainSens[:, 4, 2, 0] += UPrime[:, 2, 2]
 
-        strainSens[:, 3, 0, 2] += UPrime[:, 0, 0]
-        strainSens[:, 3, 1, 2] += UPrime[:, 1, 0]
-        strainSens[:, 3, 2, 2] += UPrime[:, 2, 0]
+        strainSens[:, 4, 0, 2] += UPrime[:, 0, 0]
+        strainSens[:, 4, 1, 2] += UPrime[:, 1, 0]
+        strainSens[:, 4, 2, 2] += UPrime[:, 2, 0]
 
         # gamma_yz = du_y/dz + du_z/dy + (du_x/dy * du_x/dz + du_y/dy * du_y/dz + du_z/dy * du_z/dz)
-        strainSens[:, 3, 0, 1] += UPrime[:, 0, 2]
-        strainSens[:, 3, 1, 1] += UPrime[:, 1, 2]
-        strainSens[:, 3, 2, 1] += UPrime[:, 2, 2]
+        strainSens[:, 5, 0, 1] += UPrime[:, 0, 2]
+        strainSens[:, 5, 1, 1] += UPrime[:, 1, 2]
+        strainSens[:, 5, 2, 1] += UPrime[:, 2, 2]
 
-        strainSens[:, 3, 0, 2] += UPrime[:, 0, 1]
-        strainSens[:, 3, 1, 2] += UPrime[:, 1, 1]
-        strainSens[:, 3, 2, 2] += UPrime[:, 2, 1]
+        strainSens[:, 5, 0, 2] += UPrime[:, 0, 1]
+        strainSens[:, 5, 1, 2] += UPrime[:, 1, 1]
+        strainSens[:, 5, 2, 2] += UPrime[:, 2, 1]
 
     return strainSens
