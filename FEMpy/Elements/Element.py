@@ -276,8 +276,6 @@ class Element:
     def _computeFunctionEvaluationQuantities(self, paramCoords, nodeStates, nodeCoords, designVars, quantities):
         """Compute a series of values that are used for evaluating functions at multiple points over multiple elements
 
-
-
         Parameters
         ----------
         paramCoords : numPoint x numDim array
