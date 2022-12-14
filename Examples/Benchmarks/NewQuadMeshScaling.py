@@ -102,14 +102,14 @@ if __name__ == "__main__":
         totalTimeList.append(resAssemblyTime + matAssemblyTime + solveTime)
 
     # plot results
-    plotVars_old = np.genfromtxt('QuadMeshScaling.csv', delimiter=',') # get old FEMpy
+    plotVars_old = np.genfromtxt("QuadMeshScaling.csv", delimiter=",")  # get old FEMpy
 
     plotVars_new = [forceIntTimeList, assemblyTimeList, solveTimeList, totalTimeList]
     plotVarNames = ["Force Assembly", "Matrix Assembly", "Linear Solution", "Total"]
     plotFEMpy = ["Old FEMpy", "New FEMpy"]
     markers = ["-o", "--o"]
 
-    fig, ax = plt.subplots(1,2, figsize=(25,8))
+    fig, ax = plt.subplots(1, 2, figsize=(25, 8))
 
     for i, plotVars in enumerate([plotVars_old, plotVars_new]):
         ax[i].set_xlabel("DOF")
@@ -118,7 +118,6 @@ if __name__ == "__main__":
         ax[i].set_yscale("log")
         ax[i].set_title(plotFEMpy[i])
         niceplots.adjust_spines(ax[i], outward=True)
-
 
         for v, name in zip(plotVars, plotVarNames):
             ax[i].plot(numDOFList, v, "-o", markeredgecolor="w", label=name, clip_on=False)
