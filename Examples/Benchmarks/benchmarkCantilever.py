@@ -63,33 +63,43 @@ Error = []
 numDOF = []
 for refine in refineVal:
 
+    # create constitutive model
     con = fp.Constitutive.IsoPlaneStrain(E=70e9, nu=0.0, t=1.0, rho=2700.0)
+
+    # create mesh
     nodeCoords, conn = createGridMesh(10 * refine, 1 * refine, warpFunc=warpFunc)
     conn = {"quad": conn}
+
+    # create model
     model = fp.FEMpyModel(con, nodeCoords=nodeCoords, connectivity=conn, options={"outputFormat": ".dat"})
     prob = model.addProblem("Static")
+
+    # Find the right, left and top edges
     rightEdgeNodeInds = np.argwhere(nodeCoords[:, 0] == 1.0).flatten()
     topEdgeNodeInds = np.argwhere(nodeCoords[:, 1] == np.max(nodeCoords[:, 1])).flatten()
     leftEdgeNodeInds = np.argwhere(nodeCoords[:, 0] == 0.0).flatten()
+
+    # apply BCs
     prob.addFixedBCToNodes("Fixed", leftEdgeNodeInds, dof=[0, 1], value=0.0)
     prob.addLoadToNodes("Load", topEdgeNodeInds, dof=[1], value=-(10**3), totalLoad=True)
 
+    # Calculate analytic displacement
     momInertia = 1 / 12 * 0.02**3
     dmax_analytic = 10**3 / (8 * 70e9 * momInertia)
 
+    # solve the problem
     prob.solve()
     prob.writeSolution(baseName="mesh%s.dat" % refine)
 
+    # average the displacement from numerical model and compute the error
     averageDisplacement = np.average(prob.states[rightEdgeNodeInds, 1])
     Error.append(np.abs(-averageDisplacement - dmax_analytic))
     numDOF.append(prob.numDOF)
 
+# plot the convergence
 plt.loglog(1 / np.sqrt(np.array(numDOF)), Error, marker="o")
 plt.xlabel(r"$DOF^{-1/2}$")
 plt.ylabel("Tip displacement Error")
-
-
-# plt.yticks(y_ticks, [str(i) for i in y_ticks])
 niceplots.adjust_spines()
 plt.savefig("validation.pdf")
 plt.show()
