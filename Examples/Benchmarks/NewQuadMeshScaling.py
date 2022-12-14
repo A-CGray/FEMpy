@@ -100,14 +100,14 @@ if __name__ == "__main__":
 
     
     # plot results
-    plotVars_old = np.genfromtxt('QuadMeshScaling.csv', delimiter=',') # get old FEMpy
+    plotVars_old = np.genfromtxt("QuadMeshScaling.csv", delimiter=",")  # get old FEMpy
 
     plotVars_new = [forceIntTimeList, assemblyTimeList, solveTimeList, totalTimeList]
     plotVarNames = ["Force Assembly", "Matrix Assembly", "Linear Solution", "Total"]
     plotFEMpy = ["Old FEMpy", "New FEMpy"]
     markers = ["-o", "--o"]
 
-    fig, ax = plt.subplots(1,2, figsize=(25,8))
+    fig, ax = plt.subplots(1, 2, figsize=(25, 8))
 
     for i, plotVars in enumerate([plotVars_old, plotVars_new]):
         ax[i].set_xlabel("DOF")
