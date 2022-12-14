@@ -51,8 +51,8 @@ def createGridMesh(nx, ny, warpFunc=None):
     conn = np.zeros((numEl, 4), dtype=int)
     conn[:, 0] = np.tile(np.arange(nx), ny) + np.repeat((nx + 1) * np.arange(ny), nx)  # Lower left
     conn[:, 1] = conn[:, 0] + 1  # lower right
-    conn[:, 2] = conn[:, 1] + nx  # upper right
-    conn[:, 3] = conn[:, 2] + 1  # upper left
+    conn[:, 2] = conn[:, 1] + nx + 1  # upper right
+    conn[:, 3] = conn[:, 2] - 1  # upper left
 
     return np.array([xNodes, yNodes]).T, conn
 
@@ -100,22 +100,31 @@ if __name__=="__main__":
 
     
     # plot results
-    fig, ax = plt.subplots()
-    ax.set_xlabel("DOF")
-    ax.set_xscale("log")
-    ax.set_ylabel("Time\n(s)", rotation="horizontal", ha="right")
-    ax.set_yscale("log")
-    niceplots.adjust_spines(ax, outward=True)
+    plotVars_old = np.genfromtxt('QuadMeshScaling.csv', delimiter=',') # get old FEMpy
 
-    plotVars = [forceIntTimeList, assemblyTimeList, solveTimeList, totalTimeList]
+    plotVars_new = [forceIntTimeList, assemblyTimeList, solveTimeList, totalTimeList]
     plotVarNames = ["Force Assembly", "Matrix Assembly", "Linear Solution", "Total"]
+    plotFEMpy = ["Old FEMpy", "New FEMpy"]
+    markers = ["-o", "--o"]
 
-    for v, name in zip(plotVars, plotVarNames):
-        ax.plot(numDOFList, v, "-o", markeredgecolor="w", label=name, clip_on=False)
+    fig, ax = plt.subplots(1,2, figsize=(25,8))
 
-    ax.set_xticks(numDOFList)
-    ax.set_xticklabels(numDOFList)
-    ax.legend(labelcolor="linecolor")
+    for i, plotVars in enumerate([plotVars_old, plotVars_new]):
+        ax[i].set_xlabel("DOF")
+        ax[i].set_xscale("log")
+        ax[i].set_ylabel("Time\n(s)", rotation="horizontal", ha="right")
+        ax[i].set_yscale("log")
+        ax[i].set_title(plotFEMpy[i])
+        niceplots.adjust_spines(ax[i], outward=True)
+
+
+        for v, name in zip(plotVars, plotVarNames):
+            ax[i].plot(numDOFList, v, "-o", markeredgecolor="w", label=name, clip_on=False)
+
+        ax[i].set_xticks(numDOFList)
+        ax[i].set_xticklabels(numDOFList)
+        ax[i].legend(labelcolor="linecolor")
+
     fig.savefig("../../docs/docs/Images/NewQuadElScaling.png", dpi=400)
     plt.show()
 
