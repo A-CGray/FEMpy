@@ -32,3 +32,4 @@ jobs:
         cd Examples/Benchmarks
         testflo -n 1 -v --benchmark .
         python formatBenchmarkData.py
+        python CantileverValidation.py

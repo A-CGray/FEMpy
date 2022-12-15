@@ -1,14 +1,10 @@
 """
 ==============================================================================
-FEMpy 2D Quad Mesh benchmark case
+FEMpy cantilever beam validation case
 ==============================================================================
-@File    :   QuadMeshScaling.py
-@Date    :   2021/05/04
-@Author  :   Alasdair Christison Gray
-@Description : This file contains a simple 2D case using quad elements that is
-used to benchmark the performance of FEMpy as part of a CI job. The case uses a
-223x223 mesh of 2D quad elements that results in almost exactly 100k degrees of
-freedom
+@Description : This file contains a simple 2D validation case where we compare
+FEMpy against the analytical solution for a cantilevel beam subject to a uniform
+load.
 """
 
 # ==============================================================================
@@ -55,9 +51,10 @@ def createGridMesh(nx, ny, warpFunc=None):
 
 
 if __name__ == "__main__":
-    refineVal = [1, 2, 4, 8, 16, 32, 64, 128]
+    refineVal = [1, 2, 4, 8, 16, 32, 64]
     Error = []
     numDOF = []
+    meshSize = []
     for refine in refineVal:
 
         # create constitutive model
@@ -88,7 +85,23 @@ if __name__ == "__main__":
         prob.solve()
         prob.writeSolution(baseName="mesh%s.dat" % refine)
 
-        # average the displacement from numerical model and compute the error
+        # average the vertical displacements along the tip of the beam and compute the error
         averageDisplacement = np.average(prob.states[rightEdgeNodeInds, 1])
         Error.append(np.abs(-averageDisplacement - dmax_analytic))
         numDOF.append(prob.numDOF)
+        meshSize.append(1 / np.sqrt(numDOF[-1]))
+
+    # Print the results
+    Error = np.array(Error)
+    numDOF = np.array(numDOF)
+    meshSize = np.array(meshSize)
+    print("======================================")
+    print("Cantilever Beam Validation Results")
+    print("======================================")
+    print("|    num DOF     |        Error      |")
+    for i in range(len(Error)):
+        print(f"|{numDOF[i]:>10}      |   {Error[i]:11.6e}    |")
+    print("=====================================")
+
+    logFitCoeff = np.polyfit(np.log(meshSize[-3:]), np.log(Error[-3:]), 1)
+    print(f"Displacement error convergence Rate: {logFitCoeff[0]}")
