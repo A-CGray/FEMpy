@@ -73,7 +73,7 @@ def det2(A):
 
     Parameters
     ----------
-    A : nxmx...x2x2 array_like
+    A : nx...x2x2 array_like
         Multidimensional array of 2x2 arrays to compute determinants of
 
     Returns
@@ -96,8 +96,8 @@ def det3(A):
 
     Parameters
     ----------
-    A : nx3x3 array_like
-        Arrays to compute determinants of
+    A : nx...x2x2 array_like
+        Multidimensional array of 3x3 arrays to compute determinants of
 
     Returns
     -------
@@ -138,8 +138,8 @@ def inv2(A):
 
     Parameters
     ----------
-    A : nx2x2 array_like
-        Arrays to compute inverses of
+    A : nx...x2x2 array_like
+        Multidimensional array of 2x2 arrays to compute inverses of
 
     Returns
     -------
@@ -164,8 +164,8 @@ def inv3(A):
 
     Parameters
     ----------
-    A : nx3x3 array_like
-        Arrays to compute inverses of
+    A : nx...x2x2 array_like
+        Multidimensional array of 3x3 arrays to compute inverses of
 
     Returns
     -------
