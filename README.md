@@ -23,7 +23,8 @@ pip install .
 ```
 Or, if you want to make changes to the code:
 ```shell
-pip install -e .
+pip install -e .[dev]
+pre-commit install
 ```
 
 To run unit tests.
