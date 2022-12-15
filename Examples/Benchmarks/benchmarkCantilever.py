@@ -15,8 +15,6 @@ freedom
 # Standard Python modules
 # ==============================================================================
 
-import matplotlib.pyplot as plt
-import niceplots
 from numba import njit
 
 # ==============================================================================
@@ -29,8 +27,6 @@ import FEMpy as fp
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-
-niceplots.setRCParams()
 
 
 @njit(cache=True)
@@ -96,11 +92,3 @@ if __name__ == "__main__":
         averageDisplacement = np.average(prob.states[rightEdgeNodeInds, 1])
         Error.append(np.abs(-averageDisplacement - dmax_analytic))
         numDOF.append(prob.numDOF)
-
-    # plot the convergence
-    plt.loglog(1 / np.sqrt(np.array(numDOF)), Error, marker="o")
-    plt.xlabel(r"$DOF^{-1/2}$")
-    plt.ylabel("Tip displacement Error")
-    niceplots.adjust_spines()
-    plt.savefig("validation.pdf")
-    plt.show()
