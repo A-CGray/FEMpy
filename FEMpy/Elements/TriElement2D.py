@@ -196,7 +196,7 @@ class TriElement2D(Element):
                 ]
             )
 
-    def getRandParamCoord(self, n):
+    def getRandParamCoord(self, n, rng=None):
         """Generate a set of random parametric coordinates
         For a tri element we need u and v in range [0,1] and u + v <= 1, we can generate these points by generating
         random points in a square on the domain [0,1] and then reflecting any points outside the triangle to the inside.
@@ -204,13 +204,18 @@ class TriElement2D(Element):
         ----------
         n : int, optional
             number of points to generate, by default 1
+        rng : numpy random Generator, optional
+            Random number generator to use, useful for creating consistent test behaviour, by default None, in which
+            case a new one is created for this call
 
         Returns
         -------
         paramCoords : n x numDim array
             isoparametric coordinates, one row for each point
         """
-        coords = np.atleast_2d(np.random.rand(n, 2))
+        if rng is None:
+            rng = np.random.default_rng()
+        coords = np.atleast_2d(rng.random((n, 2)))
         for i in range(n):
             coordSum = coords[i, 0] + coords[i, 1]
             if coordSum > 1:

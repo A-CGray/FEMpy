@@ -82,6 +82,7 @@ class ElementUnitTest(unittest.TestCase):
     def setUp(self) -> None:
         self.tol = 1e-10
         self.numTestPoints = 4
+        self.rng = np.random.default_rng(1)
         np.random.seed(1)
 
         self.numElements = 10
@@ -92,23 +93,23 @@ class ElementUnitTest(unittest.TestCase):
         self.absFDTol = 1e-5
 
     def testShapeFunctionDerivatives(self):
-        error = self.element.testShapeFunctionDerivatives(self.numTestPoints)
+        error = self.element.testShapeFunctionDerivatives(self.numTestPoints, rng=self.rng)
         np.testing.assert_allclose(error, 0, atol=self.tol, rtol=self.tol)
 
     def testShapeFunctionSum(self):
-        shapeFuncSum = self.element.testShapeFunctionSum(self.numTestPoints)
+        shapeFuncSum = self.element.testShapeFunctionSum(self.numTestPoints, rng=self.rng)
         np.testing.assert_allclose(shapeFuncSum, 1, atol=self.tol, rtol=self.tol)
 
     def testIdentityJacobian(self):
-        JacDiff = self.element.testIdentityJacobian(self.numTestPoints)
+        JacDiff = self.element.testIdentityJacobian(self.numTestPoints, rng=self.rng)
         np.testing.assert_allclose(JacDiff, 0, atol=self.tol, rtol=self.tol)
 
     def testInterpolation(self):
-        error = self.element.testInterpolation(self.numTestPoints)
+        error = self.element.testInterpolation(self.numTestPoints, rng=self.rng)
         np.testing.assert_allclose(error, 0, atol=self.tol, rtol=self.tol)
 
     def testStateGradient(self):
-        stateGradDiff = self.element.testStateGradient(self.numTestPoints)
+        stateGradDiff = self.element.testStateGradient(self.numTestPoints, rng=self.rng)
         np.testing.assert_allclose(stateGradDiff, 0, atol=self.tol, rtol=self.tol)
 
     def testGetClosestPoints(self):
@@ -118,14 +119,14 @@ class ElementUnitTest(unittest.TestCase):
         checking that we get back the same parametric coordinates when we ask for the closest points to the real coordinates.
         """
         # self.skipTest("Not working robustly yet")
-        error = self.element.testGetClosestPoints(self.numTestPoints, tol=self.tol * 1e-3)
+        error = self.element.testGetClosestPoints(self.numTestPoints, tol=self.tol * 1e-3, rng=self.rng)
         np.testing.assert_allclose(error, 0, atol=self.tol * 1e7, rtol=self.tol * 1e7)
 
     def testZeroResidual(self):
         """Validate that the residual is zero if all states are zero"""
         nodeCoordinates = np.zeros((self.numElements, self.element.numNodes, self.element.numDim))
         for ii in range(self.numElements):
-            nodeCoordinates[ii] = self.element.getRandomElementCoordinates()
+            nodeCoordinates[ii] = self.element.getRandomElementCoordinates(rng=self.rng)
         nodeStates = np.zeros_like(nodeCoordinates)
         dvs = {"Thickness": np.ones(self.numElements)}
         res = self.element.computeResiduals(nodeStates, nodeCoordinates, dvs, self.ConstitutiveModel)
@@ -136,10 +137,10 @@ class ElementUnitTest(unittest.TestCase):
         """Test that the residual Jacobian is consistent with the residual using finite differences"""
         nodeCoordinates = np.zeros((self.numElements, self.element.numNodes, self.element.numDim))
         for ii in range(self.numElements):
-            nodeCoordinates[ii] = self.element.getRandomElementCoordinates()
+            nodeCoordinates[ii] = self.element.getRandomElementCoordinates(rng=self.rng)
 
-        nodeStates = np.random.rand(*(nodeCoordinates.shape))
-        dvs = {"Thickness": np.random.rand(self.numElements)}
+        nodeStates = self.rng.random(nodeCoordinates.shape)
+        dvs = {"Thickness": self.rng.random(self.numElements)}
 
         # This is a special case where we know what the stiffness matrix should be
         if self.knownJac:
@@ -156,7 +157,7 @@ class ElementUnitTest(unittest.TestCase):
         # --- Test some random finite difference perturbations of the residual against mat-vec products with the Jacobians ---
         res0 = self.element.computeResiduals(nodeStates, nodeCoordinates, dvs, self.ConstitutiveModel)
         for _ in range(self.numPerts):
-            pert = np.random.rand(*(nodeStates.shape)) * self.stepSize - self.stepSize * 0.5
+            pert = self.rng.random(nodeStates.shape) * self.stepSize - self.stepSize * 0.5
             resPert = self.element.computeResiduals(nodeStates + pert, nodeCoordinates, dvs, self.ConstitutiveModel)
             resChange = resPert - res0
 

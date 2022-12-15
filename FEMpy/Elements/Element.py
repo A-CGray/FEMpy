@@ -713,7 +713,7 @@ class Element:
 
         return sol.x, sol.fun
 
-    def getRandomElementCoordinates(self):
+    def getRandomElementCoordinates(self, rng=None):
         """Compute random node coordinates for an element
 
         The random node coordinates are computed by taking the reference element coordinates and then applying:
@@ -721,8 +721,15 @@ class Element:
         - Random translation in each dimension
         - Random scalings in each dimension
         - Random rotations around each available axis
+
+        Parameters
+        ----------
+        rng : numpy random Generator, optional
+            Random number generator to use, useful for creating consistent test behaviour, by default None, in which
+            case a new one is created for this call
         """
-        rng = np.random.default_rng()
+        if rng is None:
+            rng = np.random.default_rng()
         coords = self.getReferenceElementCoordinates()  # numNodes x numDim array
 
         # Perturb coordinates by up to 10% of the maximum distance between any two nodes
@@ -755,7 +762,7 @@ class Element:
     # Testing methods
     # ==============================================================================
 
-    def getRandParamCoord(self, n):
+    def getRandParamCoord(self, n, rng=None):
         """Get a random set of parametric coordinates within the element
 
         By default this method assumes the the valid parametric coordinates are between -1 and 1 in each direction. If this is not the case for a particular element then that element should reimplemnt this method.
@@ -764,18 +771,26 @@ class Element:
         ----------
         n : int
             Number of points to generate
+        rng : numpy random Generator, optional
+            Random number generator to use, useful for creating consistent test behaviour, by default None, in which
+            case a new one is created for this call
         """
-        return np.random.rand(n, self.numDim) * 2 - 1
+        if rng is None:
+            rng = np.random.default_rng()
+        return rng.random((n, self.numDim)) * 2 - 1
 
-    def testShapeFunctionDerivatives(self, n=10):
+    def testShapeFunctionDerivatives(self, n=10, rng=None):
         """Test the implementation of the shape function derivatives using the complex-step method
 
         Parameters
         ----------
         n : int, optional
             Number of random coordinates to generate, by default 10
+        rng : numpy random Generator, optional
+            Random number generator to use, useful for creating consistent test behaviour, by default None, in which
+            case a new one is created for this call
         """
-        paramCoords = self.getRandParamCoord(n)
+        paramCoords = self.getRandParamCoord(n, rng=rng)
         coordPert = np.zeros_like(paramCoords, dtype="complex128")
         dN = self.computeShapeFunctionGradients(paramCoords)
         dNApprox = np.zeros_like(dN)
@@ -785,52 +800,61 @@ class Element:
             dNApprox[:, i, :] = 1e200 * np.imag(self.computeShapeFunctions(coordPert))
         return dN - dNApprox
 
-    def testShapeFunctionSum(self, n=10):
+    def testShapeFunctionSum(self, n=10, rng=None):
         """Test the basic property that shape function values should sum to 1 everywhere within an element
 
         Parameters
         ----------
         n : int, optional
             Number of points to test at, by default 10
+        rng : numpy random Generator, optional
+            Random number generator to use, useful for creating consistent test behaviour, by default None, in which
+            case a new one is created for this call
         """
-        paramCoords = self.getRandParamCoord(n)
+        paramCoords = self.getRandParamCoord(n, rng=rng)
         N = self.computeShapeFunctions(paramCoords)
         return np.sum(N, axis=1)
 
-    def testInterpolation(self, n=10):
+    def testInterpolation(self, n=10, rng=None):
         """Validate that, when the element geometry matches the reference element exactly, the parametric and real coordinates are the same
 
         Parameters
         ----------
         n : int, optional
             Number of points to test at, by default 10
+        rng : numpy random Generator, optional
+            Random number generator to use, useful for creating consistent test behaviour, by default None, in which
+            case a new one is created for this call
         """
         nodeCoords = np.zeros((1, self.numNodes, self.numDim))
         nodeCoords[0] = self.getReferenceElementCoordinates()
-        paramCoords = self.getRandParamCoord(n)
+        paramCoords = self.getRandParamCoord(n, rng=rng)
         error = np.zeros((n, self.numDim))
         x = self.computeCoordinates(paramCoords, nodeCoords)
         error = x - paramCoords
         return error
 
-    def testIdentityJacobian(self, n=10):
+    def testIdentityJacobian(self, n=10, rng=None):
         """Validate that, when the element geometry matches the reference element exactly, the mapping Jacobian is the identity matrix everywhere.
 
         Parameters
         ----------
         n : int, optional
             Number of points to test at, by default 10
+        rng : numpy random Generator, optional
+            Random number generator to use, useful for creating consistent test behaviour, by default None, in which
+            case a new one is created for this call
         """
         nodeCoords = np.zeros((1, self.numNodes, self.numDim))
         nodeCoords[0] = self.getReferenceElementCoordinates()
-        paramCoords = self.getRandParamCoord(n)
+        paramCoords = self.getRandParamCoord(n, rng=rng)
 
         # The expected Jacobians are a stack of n identity matrices
         expectedJacs = np.tile(np.eye(self.numDim), (1, n, 1, 1))
         Jacs = self.computeJacobians(paramCoords, nodeCoords)
         return Jacs - expectedJacs
 
-    def testStateGradient(self, n=10):
+    def testStateGradient(self, n=10, rng=None):
         """Test that the state gradient is correctly reconstructed within the element
 
         This test works by generating random node coordinates, then computing the states at each node using the
@@ -845,15 +869,18 @@ class Element:
         ----------
         n : int, optional
             _description_, by default 10
+        rng : numpy random Generator, optional
+            Random number generator to use, useful for creating consistent test behaviour, by default None, in which
+            case a new one is created for this call
         """
+        if rng is None:
+            rng = np.random.default_rng()
         nodeCoords = np.zeros((1, self.numNodes, self.numDim))
-        nodeCoords[0] = self.getRandomElementCoordinates()
-        paramCoords = self.getRandParamCoord(n)
+        nodeCoords[0] = self.getRandomElementCoordinates(rng=rng)
+        paramCoords = self.getRandParamCoord(n, rng=rng)
 
-        randStateGradient = np.random.rand(self.numStates, self.numDim)
-        ExpectedStateGradients = np.tile(
-            randStateGradient, (1, n, 1, 1)
-        )  # np.ones((1, n, self.numStates, self.numDim))
+        randStateGradient = rng.random((self.numStates, self.numDim))
+        ExpectedStateGradients = np.tile(randStateGradient, (1, n, 1, 1))
 
         nodeStates = np.zeros((1, self.numNodes, self.numStates))
         for ii in range(self.numNodes):
@@ -864,7 +891,7 @@ class Element:
 
         return stateGradient - ExpectedStateGradients
 
-    def testGetClosestPoints(self, n=10, tol=1e-10):
+    def testGetClosestPoints(self, n=10, tol=1e-10, rng=None):
         """Test the getClosestPoints method
 
         This test works by generating a set of random parametric coordinates, converting them to real coordinates, and
@@ -874,10 +901,13 @@ class Element:
         ----------
         n : int, optional
             Number of random coordinates to generate, by default 10
+        rng : numpy random Generator, optional
+            Random number generator to use, useful for creating consistent test behaviour, by default None, in which
+            case a new one is created for this call
         """
         nodeCoords = np.zeros((1, self.numNodes, self.numDim))
-        nodeCoords[0] = self.getRandomElementCoordinates()
-        paramCoords = self.getRandParamCoord(n)
+        nodeCoords[0] = self.getRandomElementCoordinates(rng=rng)
+        paramCoords = self.getRandParamCoord(n, rng=rng)
         realCoords = self.computeCoordinates(paramCoords, nodeCoords)
         error = np.zeros_like(realCoords)
         for i in range(n):
