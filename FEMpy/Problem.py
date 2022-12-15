@@ -534,7 +534,7 @@ class FEMpyProblem(BaseSolver):
             baseName = f"{self.name}_{self.solveCounter:04d}"
         else:
             # Get filename without extension
-            baseName - os.path.splitext(baseName)[0]
+            baseName = os.path.splitext(baseName)[0]
 
         if fileFormat is None:
             fileFormat = self.getOption("outputFormat")
