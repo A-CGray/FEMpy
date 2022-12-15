@@ -37,7 +37,7 @@ for cm in [IsoPlaneStrain, IsoPlaneStress, Iso3D]:
 
 
 @parameterized_class(testParams)
-class ElementUnitTest(unittest.TestCase):
+class ConstitutiveUnitTest(unittest.TestCase):
     def setUp(self) -> None:
 
         self.tol = 1e-10
