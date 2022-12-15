@@ -78,12 +78,13 @@ def solve_problem(n):
 
 if __name__ == "__main__":
     numEl = [2, 2, 4, 8, 16, 32, 64, 128, 256, 512]
+    numReps = 3
 
-    forceIntTimeList = []
-    assemblyTimeList = []
-    solveTimeList = []
-    totalTimeList = []
-    numDOFList = []
+    forceIntTimeArray = np.ones(len(numEl)) * 1e12
+    assemblyTimeArray = np.ones(len(numEl)) * 1e12
+    solveTimeArray = np.ones(len(numEl)) * 1e12
+    totalTimeArray = np.ones(len(numEl)) * 1e12
+    numDOF = []
 
     # run problem
     for i in range(len(numEl)):
@@ -92,52 +93,37 @@ if __name__ == "__main__":
 
             numNodes = np.shape(nodeCoords)[0]
             if j == 0:
-                numDOFList.append(2 * numNodes)
+                numDOF.append(2 * numNodes)
 
             resAssemblyTime = times["ResAssembled"] - times["Start"]
             matAssemblyTime = times["JacAssembled"] - times["ResAssembled"]
             solveTime = times["Solved"] - times["JacAssembled"]
             totalTime = resAssemblyTime + matAssemblyTime + solveTime
 
-            if j == 0:
-                forceIntTimeList.append(resAssemblyTime)
-                assemblyTimeList.append(matAssemblyTime)
-                solveTimeList.append(solveTime)
-                totalTimeList.append(totalTime)
-
-            if j == 1:
-                forceIntTimeList[-1] = min(forceIntTimeList[-1], resAssemblyTime)
-                assemblyTimeList[-1] = min(assemblyTimeList[-1], matAssemblyTime)
-                solveTimeList[-1] = min(solveTimeList[-1], solveTime)
-                totalTimeList[-1] = min(totalTimeList[-1], totalTime)
+            forceIntTimeArray[i] = min(forceIntTimeArray[i], resAssemblyTime)
+            assemblyTimeArray[i] = min(assemblyTimeArray[i], matAssemblyTime)
+            solveTimeArray[i] = min(solveTimeArray[i], solveTime)
+            totalTimeArray[i] = min(totalTimeArray[i], totalTime)
 
     # plot results
-    plotVars_old = np.genfromtxt("QuadMeshScaling.csv", delimiter=",")  # get old FEMpy
-
-    plotVars_new = [forceIntTimeList, assemblyTimeList, solveTimeList, totalTimeList]
+    plotVars = [forceIntTimeArray, assemblyTimeArray, solveTimeArray, totalTimeArray]
     plotVarNames = ["Residual Assembly", "Matrix Assembly", "Linear Solution", "Total"]
-    plotFEMpy = ["Old FEMpy", "New FEMpy"]
-    markers = ["-o", "--o"]
 
-    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+    fig, ax = plt.subplots(figsize=(12, 8))
 
-    for i, plotVars in enumerate([plotVars_old, plotVars_new]):
-        if i == 1:
-            ax.set_xlabel("DOF")
-            ax.set_xscale("log")
-            ax.set_ylabel("Time\n(s)", rotation="horizontal", ha="right")
-            ax.set_yscale("log")
-            # ax.set_title(plotFEMpy[i])
-            niceplots.adjust_spines(ax, outward=True)
+    ax.set_xlabel("DOF")
+    ax.set_xscale("log")
+    ax.set_ylabel("Time\n(s)", rotation="horizontal", ha="right")
+    ax.set_yscale("log")
+    niceplots.adjust_spines(ax, outward=True)
 
-            for v, name in zip(plotVars, plotVarNames):
-                ax.plot(numDOFList[1:], v[1:], "-o", markeredgecolor="w", label=name, clip_on=False)
+    for v, name in zip(plotVars, plotVarNames):
+        ax.plot(numDOF[1:], v[1:], "-o", markeredgecolor="w", label=name, clip_on=False)
 
-            ax.set_xticks(numDOFList[1:])
-            ax.set_xticklabels(numDOFList[1:])
-            ax.legend(labelcolor="linecolor")
+    ax.set_xticks(numDOF[1:])
+    ax.set_xticklabels(numDOF[1:])
+    ax.legend(labelcolor="linecolor")
 
-    fig.savefig("../../docs/docs/Images/NewQuadElScaling.png", dpi=400)
-    # plt.show()
+    fig.savefig("../../docs/docs/Images/QuadElScaling.png", dpi=400)
 
-    np.savetxt("NewQuadMeshScaling.csv", plotVars, delimiter=",")
+    np.savetxt("QuadMeshScaling.csv", plotVars, delimiter=",")
