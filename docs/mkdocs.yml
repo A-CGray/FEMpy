@@ -29,13 +29,16 @@ theme:
 nav:
     - Home: index.md
     - Elements:
-         Generic Element: Elements/Element.md
-         2D Quad: Elements/QuadElement.md
-         Serendipity Quad: Elements/SerendipityQuad.md
-         1D Line Element: Elements/Lagrange1dElement.md
-    - Utilities:
-        Linear Algebra: LinAlg/LinAlg.md
+        Element Base Class: Elements/Element.md
+        2D Quad: Elements/Quad2D.md
+        2D Tri: Elements/Tri2D.md
+        3D Hex: Elements/Hex3D.md
+    - Constitutive Models:
+        Constitutive Model Base Class: ConstitutiveModels/ConstitutiveModel.md
+        Isotropic Plane Stress: ConstitutiveModels/IsoPlaneStress.md
+        Isotropic Plane Strain: ConstitutiveModels/IsoPlaneStrain.md
     - Contributing: DevelopmentGuide/DevelopmentGuide.md
+    - Theory: Theory/Theory.md
 markdown_extensions:
     - pymdownx.superfences
     - pymdownx.progressbar
@@ -56,6 +59,10 @@ markdown_extensions:
         # set to false to turn off pygments_style
         noclasses: False
     - pymdownx.tasklist
+    - pymdownx.arithmatex:
+        generic: true
+
+
 extra_javascript:
     - js/flowchart-loader.js
     - js/details.js
@@ -63,6 +70,9 @@ extra_javascript:
     - https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js
     - https://cdnjs.cloudflare.com/ajax/libs/js-sequence-diagrams/1.0.6/sequence-diagram-min.js
     - https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.8.0/flowchart.min.js
+    - javascripts/mathjax.js
+    - https://polyfill.io/v3/polyfill.min.js?features=es6
+    - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 extra_css:
     - css/progress_bar.css
     - css/details.css
@@ -77,6 +87,3 @@ plugins:
                     docstring_style: 'numpy'
                 rendering:
                     show_if_no_docstring: True
-google_analytics:
-  - G-CE4BXN9PR8
-  - auto

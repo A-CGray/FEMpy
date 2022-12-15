@@ -1,20 +1,11 @@
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 
-from .Element import *
-from .QuadElement import *
-from .SerendipityQuad import *
-from .Lagrange1dElement import *
-from .Constitutive import *
-from .isoPlaneStrain import *
-from .isoPlaneStress import *
-from .OrthoPlaneStress import *
-from .AxialBar import *
-from .LagrangePoly import *
-from .GaussQuad import *
-from .Assembly import *
-from .Dynamics import *
-from .TecplotIO import *
-from .Mesh import *
-from .Smoothing import getSmoother
-from .Utils import *
-from .LinAlg import *
+
+from . import LinAlg
+from . import Quadrature
+from . import Constitutive
+from . import Basis
+from . import Elements
+from . import Utils
+from .Problem import FEMpyProblem
+from .Model import FEMpyModel

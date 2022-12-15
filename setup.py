@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
 import re
@@ -11,41 +11,6 @@ __version__ = re.findall(
 )[0]
 
 
-def computeGaussQuadValues(n, outdir=None):
-    from numpy.polynomial.legendre import leggauss
-    import pickle
-
-    if outdir is None:
-        outdir = ""
-    gaussWeights = {}
-    gaussCoords = {}
-    for i in range(1, n + 1):
-        gaussCoords[i - 1], gaussWeights[i - 1] = leggauss(i)
-    with open(os.path.join(outdir, "FEMpy/GaussQuadWeights.pkl"), "wb") as f:
-        pickle.dump(gaussWeights, f, protocol=-1)
-    with open(os.path.join(outdir, "FEMpy/GaussQuadCoords.pkl"), "wb") as f:
-        pickle.dump(gaussCoords, f, protocol=-1)
-
-
-class installWrapper(install):
-    """wrapper around setuptools' install method that will run a post install script"""
-
-    def run(self):
-        from distutils.sysconfig import get_python_lib
-
-        install.run(self)
-        computeGaussQuadValues(64, outdir=get_python_lib())
-
-
-class developWrapper(develop):
-    """wrapper around setuptools' develop method that will run a post install script"""
-
-    def run(self):
-        develop.run(self)
-        computeGaussQuadValues(64)
-        subprocess.run("pre-commit install", shell=True)
-
-
 setup(
     name="FEMpy",
     version=__version__,
@@ -55,21 +20,19 @@ setup(
     author_email="",
     url="https://github.com/A-Gray-94/FEMpy",
     license="Apache License Version 2.0",
-    packages=["FEMpy"],
+    packages=find_packages(where="."),
     install_requires=[
+        "mdolab-baseclasses",
+        "meshio",
         "numpy",
         "numba",
-        "scipy",
-        "pyComposite @ git+https://github.com/A-Gray-94/pyComposite.git",
+        "scipy>=1.8.0",
     ],
     extras_require={
         "docs": [
-            "mkdocs",
-            "pymdown-extensions",
             "mkdocs-material",
-            "mkdocstrings",
+            "mkdocstrings[python]",
             "pytkdocs[numpy-style]",
-            "Jinja2<3.0,>=2.11",
         ],
         "dev": ["parameterized", "testflo", "black==22.12.0", "flake8==3.9.2", "pre-commit"],
     },
@@ -77,5 +40,4 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
     ],
-    cmdclass={"install": installWrapper, "develop": developWrapper},
 )

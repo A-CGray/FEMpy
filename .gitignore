@@ -1,5 +1,21 @@
-# Gauss quadrature pkl files
-Gauss*.pkl
+# Ignore images, except those in the docs
+*.png
+*.pdf
+!docs/docs/Images/**.png
+!docs/docs/Images/**.pdf
+**.autosave.ipe
+
+# Ignore examples results files
+Examples/ExampleOutput
+*.vtk
+*.vtu
+*.dat
+
+# Ignore testflo benchmark data
+**benchmark_data.csv
+
+# Ignore flake 8 config
+.flake8
 
 # Profiling files
 *.prof

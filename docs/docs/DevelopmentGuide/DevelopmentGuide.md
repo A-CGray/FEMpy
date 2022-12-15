@@ -2,10 +2,11 @@
 
 ## Code formatting and Linting
 
-The following checks will be run on any PR using [pre-commit](pre-commit.com) before it can be merged into the main branch:
+The following checks will be run on any PR using [pre-commit](https://www.pre-commit.com) before it can be merged into the main branch:
 
-- Black code formatter, with 120 column line width and target python versions 3.7-3.10
-- Flake8 linter, using the [MDO Lab's configuration file](https://raw.githubusercontent.com/mdolab/.github/master/.flake8)
+- [Black](black.readthedocs.io/en/stable) code formatter, with 120 column line width and target python versions 3.8-3.10
+- [Flake8](https://flake8.pycqa.org/en/latest) linter, using the [MDO Lab's configuration file](https://raw.githubusercontent.com/mdolab/.github/master/.flake8)
+- [Interrogate](https://interrogate.readthedocs.io) docstring check
 - `check-yaml` - checks yaml files for parseable syntax.
 - `check-json` - checks json files for parseable syntax.
 - `check-added-large-files` - prevents giant files from being committed.

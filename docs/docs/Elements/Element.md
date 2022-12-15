@@ -1,3 +1,3 @@
-# Element Parent Class
+# Element Base Class
 
-::: FEMpy.Element.Element
+::: FEMpy.Elements.Element.Element
