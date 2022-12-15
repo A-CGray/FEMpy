@@ -27,9 +27,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install .[dev]
 
-    - name: Run benchmarks
+    - name: Run performance benchmarks
       run: |
         cd Examples/Benchmarks
         testflo -n 1 -v --benchmark .
         python formatBenchmarkData.py
+        python CantileverValidation.py
+
+    - name: Run validation benchmarks
+      run: |
+        cd Examples/Benchmarks
         python CantileverValidation.py
