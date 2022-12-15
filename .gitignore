@@ -1,8 +1,8 @@
 # Ignore images, except those in the docs
 *.png
 *.pdf
-!docs/docs/Images**.png
-!docs/docs/Images**.pdf
+!docs/docs/Images/**.png
+!docs/docs/Images/**.pdf
 **.autosave.ipe
 
 # Ignore examples results files
