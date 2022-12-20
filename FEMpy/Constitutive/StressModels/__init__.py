@@ -1,4 +1,6 @@
 from .IsoStress import (
+    iso1DStress,
+    iso1DStressStrainSens,
     isoPlaneStressStress,
     isoPlaneStressStressStrainSens,
     isoPlaneStrainStress,

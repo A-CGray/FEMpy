@@ -110,6 +110,48 @@ def threeDMat(E, nu):
 
 
 # ==============================================================================
+# 1D stress
+# ==============================================================================
+def iso1DStress(strains, E):
+    """Compute stress from strains for a 1D axial stress state
+
+    Parameters
+    ----------
+    strains : numPoints x 1 array
+        Strains at each point (e_xx)
+    E : float
+        Elastic modulus
+
+    Returns
+    -------
+    stresses : numPoints x 1 array
+        Stresses at each point (sigma_xx, sigma_yy, tau_xy)
+    """
+
+    return E * strains
+
+
+def iso1DStressStrainSens(strains, E):
+    """Compute the sensitivity of the stress with respect to the strain for a 1D axial stress state
+
+    Parameters
+    ----------
+    strains : numPoints x 1 array
+        Strains at each point (e_xx)
+    E : float
+        Elastic modulus
+    nu : float
+        Poisson's ratio
+
+    Returns
+    -------
+    numPoints x 1 x 1 array
+        Sensitivity of each stress to each strain at each point
+    """
+    return E * np.ones((strains.shape[0], 1, 1))
+
+
+# ==============================================================================
 # 2D plane stress
 # ==============================================================================
 def isoPlaneStressStress(strains, E, nu):
