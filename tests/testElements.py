@@ -27,6 +27,7 @@ from FEMpy.Elements import QuadElement2D, TriElement2D, HexElement3D, LineElemen
 from FEMpy.Constitutive import IsoPlaneStrain, Iso3D, Iso1D
 
 # --- Elements to test: ---
+# LineElement1D: 1st to 5th order
 # QuadElement2D: 1st to 3rd order
 # TruElement2D: 1st to 3rd order
 # HexElement3D: 1st and 2rd order
