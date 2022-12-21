@@ -23,8 +23,8 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy.Elements import QuadElement2D, TriElement2D, HexElement3D
-from FEMpy.Constitutive import IsoPlaneStrain, Iso3D
+from FEMpy.Elements import QuadElement2D, TriElement2D, HexElement3D, LineElement1D
+from FEMpy.Constitutive import IsoPlaneStrain, Iso3D, Iso1D
 
 # --- Elements to test: ---
 # QuadElement2D: 1st to 3rd order
@@ -44,37 +44,47 @@ knownQuadStiffnessMat = 1.0e10 * np.array(
     ]
 )
 
+knownLineStiffnessMat = 70e9 * 1e-2 * np.array([[1.0, -1.0], [-1.0, 1.0]])
+
 testParams = []
 
+cm1D = Iso1D(E=70e9, rho=2700, A=1e-2)
 cm2D = IsoPlaneStrain(E=70e9, nu=0.3, rho=2700, t=1.0)
 cm3D = Iso3D(E=70e9, nu=0.3, rho=2700)
 
-for el in [QuadElement2D, TriElement2D, HexElement3D]:
-    if el in [QuadElement2D, TriElement2D]:
-        for order in range(1, 4):
-            element = el(order=order)
-            testParams.append({"element": element, "name": element.name, "knownJac": False})
-        if el == QuadElement2D:
-            testParams[0]["knownJac"] = True
-            testParams[0]["knownJacCoords"] = np.array([[0.0, 0.0], [2.0, 0.0], [2.0, 1.0], [0.0, 2.0]])
-            testParams[0]["knownJacDVs"] = {"Thickness": 1.0}
-            testParams[0]["knownJacMat"] = knownQuadStiffnessMat
-    elif el in [HexElement3D]:
-        for order in range(1, 3):
-            element = el(order=order)
-            testParams.append({"element": element, "name": element.name, "knownJac": False})
-    else:
-        element = el()
-        testParams.append({"element": element, "name": element.name})
+# --- 1D element tests ---
+for order in range(1, 6):
+    element = LineElement1D(order=order)
+    testParams.append({"element": element, "name": element.name, "knownJac": False, "ConstitutiveModel": cm1D})
+    # We have a known true Jacobian for the 1st order line element
+    if order == 1:
+        testParams[-1]["knownJac"] = True
+        testParams[-1]["knownJacCoords"] = np.array([[0.0], [1.0]])
+        testParams[-1]["knownJacDVs"] = {"Area": 1e-2}
+        testParams[-1]["knownJacMat"] = knownLineStiffnessMat
 
-    for ii in range(len(testParams)):
-        element = testParams[ii]["element"]
-        if element.numDim == 2:
-            testParams[ii]["ConstitutiveModel"] = cm2D
-        elif element.numDim == 3:
-            testParams[ii]["ConstitutiveModel"] = cm3D
-        else:
-            raise ValueError("Invalid number of dimensions")
+# --- 2D element tests ---
+
+# Tri elements
+for order in range(1, 4):
+    element = TriElement2D(order=order)
+    testParams.append({"element": element, "name": element.name, "knownJac": False, "ConstitutiveModel": cm2D})
+
+# Quad elements
+for order in range(1, 4):
+    element = QuadElement2D(order=order)
+    testParams.append({"element": element, "name": element.name, "knownJac": False, "ConstitutiveModel": cm2D})
+    # We have a known true Jacobian for the 1st order quad element
+    if order == 1:
+        testParams[-1]["knownJac"] = True
+        testParams[-1]["knownJacCoords"] = np.array([[0.0, 0.0], [2.0, 0.0], [2.0, 1.0], [0.0, 2.0]])
+        testParams[-1]["knownJacDVs"] = {"Thickness": 1.0}
+        testParams[-1]["knownJacMat"] = knownQuadStiffnessMat
+
+# --- 3D element tests ---
+for order in range(1, 3):
+    element = HexElement3D(order=order)
+    testParams.append({"element": element, "name": element.name, "knownJac": False, "ConstitutiveModel": cm3D})
 
 
 @parameterized_class(testParams)
@@ -128,7 +138,9 @@ class ElementUnitTest(unittest.TestCase):
         for ii in range(self.numElements):
             nodeCoordinates[ii] = self.element.getRandomElementCoordinates(rng=self.rng)
         nodeStates = np.zeros_like(nodeCoordinates)
-        dvs = {"Thickness": np.ones(self.numElements)}
+        dvs = {}
+        for dv in self.ConstitutiveModel.designVariables:
+            dvs[dv] = self.rng.random(self.numElements)
         res = self.element.computeResiduals(nodeStates, nodeCoordinates, dvs, self.ConstitutiveModel)
         self.assertEqual(res.shape, (self.numElements, self.element.numNodes, self.element.numStates))
         np.testing.assert_allclose(res, 0, atol=self.tol, rtol=self.tol)
@@ -140,7 +152,9 @@ class ElementUnitTest(unittest.TestCase):
             nodeCoordinates[ii] = self.element.getRandomElementCoordinates(rng=self.rng)
 
         nodeStates = self.rng.random(nodeCoordinates.shape)
-        dvs = {"Thickness": self.rng.random(self.numElements)}
+        dvs = {}
+        for dv in self.ConstitutiveModel.designVariables:
+            dvs[dv] = self.rng.random(self.numElements)
 
         # This is a special case where we know what the stiffness matrix should be
         if self.knownJac:
