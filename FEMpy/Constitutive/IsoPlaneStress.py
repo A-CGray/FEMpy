@@ -93,8 +93,8 @@ class IsoPlaneStress(ConstitutiveModel):
             State gradients at each point
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------
@@ -117,8 +117,8 @@ class IsoPlaneStress(ConstitutiveModel):
             State gradients at each point
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------
@@ -136,8 +136,8 @@ class IsoPlaneStress(ConstitutiveModel):
         ----------
         strains : numPoints x numStrains array
             Strain components at each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------
@@ -155,8 +155,8 @@ class IsoPlaneStress(ConstitutiveModel):
         ----------
         strains : numPoints x numStrains array
             Strain components at each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------
@@ -174,8 +174,8 @@ class IsoPlaneStress(ConstitutiveModel):
         ----------
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------

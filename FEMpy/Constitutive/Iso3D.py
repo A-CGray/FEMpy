@@ -30,14 +30,12 @@ class Iso3D(ConstitutiveModel):
 
     Inherits
     ----------
-    ConstitutiveModel : _type_
+    ConstitutiveModel : FEMpy.Constitutive.ConstitutiveModel
         The base class for FEMpy constitutive models
     """
 
     def __init__(self, E, nu, rho, linear=True):
         """Create an isotropic plane stress constitutive model
-
-
 
         Parameters
         ----------
@@ -86,8 +84,8 @@ class Iso3D(ConstitutiveModel):
             State gradients at each point
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------
@@ -110,8 +108,8 @@ class Iso3D(ConstitutiveModel):
             State gradients at each point
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------
@@ -129,8 +127,8 @@ class Iso3D(ConstitutiveModel):
         ----------
         strains : numPoints x numStrains array
             Strain components at each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------
@@ -148,8 +146,8 @@ class Iso3D(ConstitutiveModel):
         ----------
         strains : numPoints x numStrains array
             Strain components at each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------
@@ -167,8 +165,8 @@ class Iso3D(ConstitutiveModel):
         ----------
         coords : numPoints x numDim array
             Coordinates of each point
-        dvs : _type_
-            _description_
+        dvs : dict of arrays of length numPoints
+            Design variable values at each point
 
         Returns
         -------

@@ -35,7 +35,7 @@ class QuadElement2D(Element):
 
     Inherits from
     -------------
-    Element : FEMpy.Element
+    Element : FEMpy.Elements.Element
         The FEMpy element base class
     """
 
