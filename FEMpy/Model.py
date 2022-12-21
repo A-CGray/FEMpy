@@ -445,8 +445,6 @@ class FEMpyModel(BaseSolver):
         elName = meshioName.lower()
         elObject = None
 
-        # TODO: Add more element types once they're implemented
-
         # --- 2D Quad elements ---
         if elName[:4] == "quad":
             if elName == "quad":
@@ -481,13 +479,13 @@ class FEMpyModel(BaseSolver):
                     elObject = Elements.HexElement3D(order=int(order), numStates=self.numStates)
 
         # # --- 1D Line Elements ---
-        # if elName[:4] == "line":
-        #     if elName == "line":
-        #         elObject = Elements.QuadElement(order=1, numStates=self.numStates)
-        #     else:
-        #         numNodes = int(elName[4:])
-        #         order = numNodes - 1
-        #         elObject = Elements.QuadElement(order=order, numStates=self.numStates)
+        if elName[:4] == "line":
+            if elName == "line":
+                elObject = Elements.LineElement1D(order=1, numStates=self.numStates)
+            else:
+                numNodes = int(elName[4:])
+                order = numNodes - 1
+                elObject = Elements.LineElement1D(order=order, numStates=self.numStates)
 
         return elObject
 
