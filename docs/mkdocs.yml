@@ -35,8 +35,10 @@ nav:
         3D Hex: Elements/Hex3D.md
     - Constitutive Models:
         Constitutive Model Base Class: ConstitutiveModels/ConstitutiveModel.md
+        Isotropic 1D Elasticity: ConstitutiveModels/Iso1D.md
         Isotropic Plane Stress: ConstitutiveModels/IsoPlaneStress.md
         Isotropic Plane Strain: ConstitutiveModels/IsoPlaneStrain.md
+        Isotropic 3D Elasticity: ConstitutiveModels/Iso3D.md
     - Contributing: DevelopmentGuide/DevelopmentGuide.md
     - Theory: Theory/Theory.md
 markdown_extensions:
