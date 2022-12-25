@@ -732,13 +732,13 @@ class Element:
             rng = np.random.default_rng()
         coords = self.getReferenceElementCoordinates()  # numNodes x numDim array
 
-        # Perturb coordinates by up to 10% of the maximum distance between any two nodes
-        maxDistance, _ = _computeMaxMinDistance(coords)
-        coords += rng.random(coords.shape) * 0.1 * maxDistance
+        # Perturb coordinates by up to 40% of the minimum distance between any two nodes
+        _, minDistance = _computeMaxMinDistance(coords)
+        coords += rng.random(coords.shape) * 0.4 * minDistance
 
         # Apply random translation
         for ii in range(self.numDim):
-            translation = rng.random() * 2 * maxDistance - maxDistance
+            translation = rng.random() * 2 * minDistance - minDistance
             coords[:, ii] += translation
 
         # Scale each dimension by a random factor between 0.1 and 10
@@ -1192,5 +1192,5 @@ def _computeMaxMinDistance(coords):
         for jj in range(ii + 1, numPoints):
             distance = np.linalg.norm(coords[ii] - coords[jj])
             maxDistance = max(maxDistance, distance)
-            maxDistance = max(maxDistance, distance)
+            minDistance = min(minDistance, distance)
     return maxDistance, minDistance

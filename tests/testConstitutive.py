@@ -22,17 +22,19 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy.Constitutive import IsoPlaneStrain, IsoPlaneStress, Iso3D
+from FEMpy.Constitutive import IsoPlaneStrain, IsoPlaneStress, Iso3D, Iso1D
 
 
 testParams = []
 
-for cm in [IsoPlaneStrain, IsoPlaneStress, Iso3D]:
+for cm in [Iso1D, IsoPlaneStrain, IsoPlaneStress, Iso3D]:
     for linear in [True, False]:
         if cm in [IsoPlaneStrain, IsoPlaneStress]:
             constitutiveModel = cm(E=70e9, nu=0.3, rho=2700, t=1.0, linear=linear)
-        else:
+        elif cm == Iso3D:
             constitutiveModel = cm(E=70e9, nu=0.3, rho=2700, linear=linear)
+        elif cm == Iso1D:
+            constitutiveModel = cm(E=70e9, rho=2700, A=1.0, linear=linear)
         testParams.append({"ConstitutiveModel": constitutiveModel})
 
 

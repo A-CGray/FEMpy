@@ -1,10 +1,10 @@
 """
 ==============================================================================
-2D Isotropic plane strain constitutive model
+1D elasticity constitutive model base class
 ==============================================================================
-@File    :   NewIsoPlaneStrain.py
-@Date    :   2022/11/30
-@Author  :   Alasdair Christison Gray and M.A. Saja A.Kaiyoom
+@File    :   Iso1D.py
+@Date    :   2022/12/20
+@Author  :   Alasdair Christison Gray
 @Description :
 """
 
@@ -20,63 +20,57 @@ import numpy as np
 # ==============================================================================
 # Extension modules
 # ==============================================================================
-from FEMpy.Constitutive.StrainModels import strain2D, strain2DSens
-from FEMpy.Constitutive.StressModels import isoPlaneStrainStress, isoPlaneStrainStressStrainSens, vonMises2DPlaneStrain
 from FEMpy.Constitutive import ConstitutiveModel
+from FEMpy.Constitutive.StrainModels import strain1D, strain1DSens
+from FEMpy.Constitutive.StressModels import iso1DStress, iso1DStressStrainSens
 
 
-class IsoPlaneStrain(ConstitutiveModel):
-    """A constitutive model for the 2D isotropic plane strain equations
+class Iso1D(ConstitutiveModel):
+    """Constitutive model for an axial bar
 
-
+    _extended_summary_
 
     Inherits
     ----------
-    ConstitutiveModel : _type_
+    ConstitutiveModel : FEMpy.Constitutive.ConstitutiveModel
         The base class for FEMpy constitutive models
     """
 
-    def __init__(self, E, nu, rho, t, linear=True):
-        """Create an isotropic plane stress constitutive model
-
-
+    def __init__(self, E, rho, A, linear=True):
+        """Create an axial bar constitutive model
 
         Parameters
         ----------
         E : float
             Elastic Modulus
-        nu : float
-            Poisson's ratio
         rho : float
             Density
-        t : float
-            Thickness, this will be used as the initial thickness value for all elements but can be changed later by calling setDesignVariables in the model
+        A : float
+            Cross-sectional area
         linear : bool, optional
             Whether to use the linear kinematic equations for strains, by default True
         """
         # --- Design variables ---
-        # This model has only one design variable, the thickness of the material
         designVars = {}
-        designVars["Thickness"] = {"defaultValue": t}
+        designVars["Area"] = {"defaultValue": A}
 
         # --- States ---
-        stateNames = ["X-Displacement", "Y-Displacement"]
+        stateNames = ["X-Displacement"]
 
         # --- Strains ---
-        strainNames = ["e_xx", "e_yy", "gamma_xy"]
+        strainNames = ["e_xx"]
 
         # --- Stresses ---
-        stressNames = ["sigma_xx", "sigma_yy", "tau_xy"]
+        stressNames = ["sigma_xx"]
 
         # --- Functions ---
-        functionNames = ["Mass", "Von-Mises-Stress"]
+        functionNames = ["Mass", "Stress", "Strain"]
 
         # --- Material properties ---
         self.E = E
-        self.nu = nu
         self.rho = rho
 
-        numDim = 2
+        numDim = 1
 
         super().__init__(numDim, stateNames, strainNames, stressNames, designVars, functionNames, linear)
 
@@ -101,7 +95,7 @@ class IsoPlaneStrain(ConstitutiveModel):
         numPoints x numStrains array
             Strain components at each point
         """
-        return strain2D(UPrime=stateGradients, nonlinear=not self.isLinear)
+        return strain1D(UPrime=stateGradients, nonlinear=not self.isLinear)
 
     def computeStrainStateGradSens(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
@@ -125,7 +119,7 @@ class IsoPlaneStrain(ConstitutiveModel):
         numPoints x numStrains x numStates x numDim array
             Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
         """
-        return strain2DSens(UPrime=stateGradients, nonlinear=not self.isLinear)
+        return strain1DSens(UPrime=stateGradients, nonlinear=not self.isLinear)
 
     def computeStresses(self, strains, dvs):
         """Given the strains and design variables at a bunch of points, compute the stresses at each one
@@ -144,12 +138,10 @@ class IsoPlaneStrain(ConstitutiveModel):
         numPoints x numStresses array
             Stress components at each point
         """
-        return isoPlaneStrainStress(strains, E=self.E, nu=self.nu)
+        return iso1DStress(strains, E=self.E)
 
     def computeStressStrainSens(self, strains, dvs):
         """Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one
-
-
 
         Parameters
         ----------
@@ -163,7 +155,7 @@ class IsoPlaneStrain(ConstitutiveModel):
         sens : numPoints x numStrains x numStates x numDim array
             Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l
         """
-        return isoPlaneStrainStressStrainSens(strains, E=self.E, nu=self.nu)
+        return iso1DStressStrainSens(strains, E=self.E)
 
     def computeVolumeScaling(self, coords, dvs):
         """Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one
@@ -182,7 +174,7 @@ class IsoPlaneStrain(ConstitutiveModel):
         numPoints length array
             Volume scaling parameter at each point
         """
-        return dvs["Thickness"]
+        return dvs["Area"]
 
     def getFunction(self, name):
         """Return a function that can be computed for this constitutive model
@@ -202,7 +194,7 @@ class IsoPlaneStrain(ConstitutiveModel):
             coords is a numPoints x numDim array
             dvs is a dictionary of numPoints length arrays
         """
-        lowerCaseFuncNames = [func.lower() for func in self.functionNames]
+
         if name.lower() not in self.lowerCaseFuncNames:
             raise ValueError(
                 f"{name} is not a valid function name for this constitutive model, valid choices are {self.functionNames}"
@@ -213,11 +205,15 @@ class IsoPlaneStrain(ConstitutiveModel):
             def func(states, stateGradients, coords, dvs):
                 return np.ones(states.shape[0]) * self.rho
 
-        if name.lower() == "von-mises-stress":
+        if name.lower() == "strain":
+
+            def func(states, stateGradients, coords, dvs):
+                return self.computeStrains(states, stateGradients, coords, dvs).flatten()
+
+        if name.lower() == "stress":
 
             def func(states, stateGradients, coords, dvs):
                 strains = self.computeStrains(states, stateGradients, coords, dvs)
-                stresses = self.computeStresses(strains, dvs)
-                return vonMises2DPlaneStrain(stresses, self.nu)
+                return iso1DStress(strains, E=self.E).flatten()
 
         return func
