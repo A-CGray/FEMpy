@@ -30,6 +30,7 @@ nav:
     - Home: index.md
     - Elements:
         Element Base Class: Elements/Element.md
+        1D Line: Elements/Line1D.md
         2D Quad: Elements/Quad2D.md
         2D Tri: Elements/Tri2D.md
         3D Hex: Elements/Hex3D.md
