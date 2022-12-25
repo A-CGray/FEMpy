@@ -12,14 +12,14 @@
         <meta name="author" content="Ali Gray">
       
       
-        <link rel="canonical" href="https://a-cgray.github.io/FEMpy/ConstitutiveModels/IsoPlaneStress/">
+        <link rel="canonical" href="https://a-cgray.github.io/FEMpy/ConstitutiveModels/Iso1D/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
     
     
       
-        <title>Isotropic Plane Stress - FEMpy</title>
+        <title>Isotropic 1D Elasticity - FEMpy</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#isotropic-plane-stress" class="md-skip">
+        <a href="#isotropic-1-dimensional-elasticity" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Isotropic Plane Stress
+              Isotropic 1D Elasticity
             
           </span>
         </div>
@@ -493,20 +493,6 @@
               
   
   
-  
-    <li class="md-nav__item">
-      <a href="../Iso1D/" class="md-nav__link">
-        Isotropic 1D Elasticity
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
     
   
   
@@ -519,12 +505,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Isotropic Plane Stress
+          Isotropic 1D Elasticity
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Isotropic Plane Stress
+        Isotropic 1D Elasticity
       </a>
       
         
@@ -543,15 +529,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress" class="md-nav__link">
-    FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D" class="md-nav__link">
+    FEMpy.Constitutive.Iso1D.Iso1D
   </a>
   
-    <nav class="md-nav" aria-label="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress">
+    <nav class="md-nav" aria-label="FEMpy.Constitutive.Iso1D.Iso1D">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress--inherits" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D--inherits" class="md-nav__link">
     Inherits
   </a>
   
@@ -563,70 +549,63 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.E" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.E" class="md-nav__link">
     E
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.nu" class="md-nav__link">
-    nu
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.rho" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.rho" class="md-nav__link">
     rho
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.__init__" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.__init__" class="md-nav__link">
     __init__()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStrainStateGradSens" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeStrainStateGradSens" class="md-nav__link">
     computeStrainStateGradSens()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStrains" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeStrains" class="md-nav__link">
     computeStrains()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStressStrainSens" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeStressStrainSens" class="md-nav__link">
     computeStressStrainSens()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStresses" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeStresses" class="md-nav__link">
     computeStresses()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeVolumeScaling" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeVolumeScaling" class="md-nav__link">
     computeVolumeScaling()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.getFunction" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.getFunction" class="md-nav__link">
     getFunction()
   </a>
   
@@ -636,6 +615,20 @@
   
 </nav>
       
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IsoPlaneStress/" class="md-nav__link">
+        Isotropic Plane Stress
+      </a>
     </li>
   
 
@@ -732,15 +725,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress" class="md-nav__link">
-    FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D" class="md-nav__link">
+    FEMpy.Constitutive.Iso1D.Iso1D
   </a>
   
-    <nav class="md-nav" aria-label="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress">
+    <nav class="md-nav" aria-label="FEMpy.Constitutive.Iso1D.Iso1D">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress--inherits" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D--inherits" class="md-nav__link">
     Inherits
   </a>
   
@@ -752,70 +745,63 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.E" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.E" class="md-nav__link">
     E
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.nu" class="md-nav__link">
-    nu
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.rho" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.rho" class="md-nav__link">
     rho
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.__init__" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.__init__" class="md-nav__link">
     __init__()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStrainStateGradSens" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeStrainStateGradSens" class="md-nav__link">
     computeStrainStateGradSens()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStrains" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeStrains" class="md-nav__link">
     computeStrains()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStressStrainSens" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeStressStrainSens" class="md-nav__link">
     computeStressStrainSens()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStresses" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeStresses" class="md-nav__link">
     computeStresses()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeVolumeScaling" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.computeVolumeScaling" class="md-nav__link">
     computeVolumeScaling()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.getFunction" class="md-nav__link">
+  <a href="#FEMpy.Constitutive.Iso1D.Iso1D.getFunction" class="md-nav__link">
     getFunction()
   </a>
   
@@ -835,32 +821,33 @@
                 
                   
 
-  <a href="https://github.com/A-CGray/FEMpy/edit/master/docs/ConstitutiveModels/IsoPlaneStress.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/A-CGray/FEMpy/edit/master/docs/ConstitutiveModels/Iso1D.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="isotropic-plane-stress">Isotropic Plane Stress</h1>
+<h1 id="isotropic-1-dimensional-elasticity">Isotropic 1 Dimensional Elasticity</h1>
 
 
 <div class="doc doc-object doc-class">
 
 
-<a id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress"></a>
+<a id="FEMpy.Constitutive.Iso1D.Iso1D"></a>
   <div class="doc doc-contents first">
       <p class="doc doc-class-bases">
         Bases: <code><span title="FEMpy.Constitutive.ConstitutiveModel">ConstitutiveModel</span></code></p>
 
   
-      <p>A constitutive model for the 2D isotropic plane stress equations</p>
-<h3 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress--inherits">Inherits</h3>
-<p>ConstitutiveModel :
+      <p>Constitutive model for an axial bar</p>
+<p><em>extended_summary</em></p>
+<h3 id="FEMpy.Constitutive.Iso1D.Iso1D--inherits">Inherits</h3>
+<p>ConstitutiveModel : FEMpy.Constitutive.ConstitutiveModel
     The base class for FEMpy constitutive models</p>
 
 
         <details class="quote">
-          <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+          <summary>Source code in <code>FEMpy/Constitutive/Iso1D.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
 <span class="normal"> 29</span>
 <span class="normal"> 30</span>
@@ -1052,62 +1039,52 @@
 <span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IsoPlaneStress</span><span class="p">(</span><span class="n">ConstitutiveModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A constitutive model for the 2D isotropic plane stress equations</span>
+<span class="normal">219</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Iso1D</span><span class="p">(</span><span class="n">ConstitutiveModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Constitutive model for an axial bar</span>
 
-
+<span class="sd">    _extended_summary_</span>
 
 <span class="sd">    Inherits</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ConstitutiveModel :</span>
+<span class="sd">    ConstitutiveModel : FEMpy.Constitutive.ConstitutiveModel</span>
 <span class="sd">        The base class for FEMpy constitutive models</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create an isotropic plane stress constitutive model</span>
-
-
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create an axial bar constitutive model</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        E : float</span>
 <span class="sd">            Elastic Modulus</span>
-<span class="sd">        nu : float</span>
-<span class="sd">            Poisson&#39;s ratio</span>
 <span class="sd">        rho : float</span>
 <span class="sd">            Density</span>
-<span class="sd">        t : float</span>
-<span class="sd">            Thickness, this will be used as the initial thickness value for all elements but can be changed later by calling setDesignVariables in the model</span>
+<span class="sd">        A : float</span>
+<span class="sd">            Cross-sectional area</span>
 <span class="sd">        linear : bool, optional</span>
 <span class="sd">            Whether to use the linear kinematic equations for strains, by default True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># --- Design variables ---</span>
-        <span class="c1"># This model has only one design variable, the thickness of the material</span>
         <span class="n">designVars</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">designVars</span><span class="p">[</span><span class="s2">&quot;Thickness&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;defaultValue&quot;</span><span class="p">:</span> <span class="n">t</span><span class="p">}</span>
+        <span class="n">designVars</span><span class="p">[</span><span class="s2">&quot;Area&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;defaultValue&quot;</span><span class="p">:</span> <span class="n">A</span><span class="p">}</span>
 
         <span class="c1"># --- States ---</span>
-        <span class="n">stateNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X-Displacement&quot;</span><span class="p">,</span> <span class="s2">&quot;Y-Displacement&quot;</span><span class="p">]</span>
+        <span class="n">stateNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X-Displacement&quot;</span><span class="p">]</span>
 
         <span class="c1"># --- Strains ---</span>
-        <span class="n">strainNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e_xx&quot;</span><span class="p">,</span> <span class="s2">&quot;e_yy&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_xy&quot;</span><span class="p">]</span>
+        <span class="n">strainNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e_xx&quot;</span><span class="p">]</span>
 
         <span class="c1"># --- Stresses ---</span>
-        <span class="n">stressNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma_xx&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma_yy&quot;</span><span class="p">,</span> <span class="s2">&quot;tau_xy&quot;</span><span class="p">]</span>
+        <span class="n">stressNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma_xx&quot;</span><span class="p">]</span>
 
         <span class="c1"># --- Functions ---</span>
-        <span class="n">functionNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Mass&quot;</span><span class="p">,</span> <span class="s2">&quot;Von-Mises-Stress&quot;</span><span class="p">]</span>
+        <span class="n">functionNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Mass&quot;</span><span class="p">,</span> <span class="s2">&quot;Stress&quot;</span><span class="p">,</span> <span class="s2">&quot;Strain&quot;</span><span class="p">]</span>
 
         <span class="c1"># --- Material properties ---</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="n">E</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">=</span> <span class="n">nu</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span>
 
-        <span class="n">numDim</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">numDim</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">numDim</span><span class="p">,</span> <span class="n">stateNames</span><span class="p">,</span> <span class="n">strainNames</span><span class="p">,</span> <span class="n">stressNames</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">functionNames</span><span class="p">,</span> <span class="n">linear</span><span class="p">)</span>
 
@@ -1132,7 +1109,7 @@
 <span class="sd">        numPoints x numStrains array</span>
 <span class="sd">            Strain components at each point</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">strain2D</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">strain1D</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">computeStrainStateGradSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the</span>
@@ -1156,7 +1133,7 @@
 <span class="sd">        numPoints x numStrains x numStates x numDim array</span>
 <span class="sd">            Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">strain2DSens</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">strain1DSens</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">computeStresses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given the strains and design variables at a bunch of points, compute the stresses at each one</span>
@@ -1175,12 +1152,10 @@
 <span class="sd">        numPoints x numStresses array</span>
 <span class="sd">            Stress components at each point</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">isoPlaneStressStress</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iso1DStress</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">computeStressStrainSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one</span>
-
-
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1194,7 +1169,7 @@
 <span class="sd">        sens : numPoints x numStrains x numStates x numDim array</span>
 <span class="sd">            Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">isoPlaneStressStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iso1DStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">computeVolumeScaling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one</span>
@@ -1213,7 +1188,7 @@
 <span class="sd">        numPoints length array</span>
 <span class="sd">            Volume scaling parameter at each point</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">dvs</span><span class="p">[</span><span class="s2">&quot;Thickness&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dvs</span><span class="p">[</span><span class="s2">&quot;Area&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">getFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a function that can be computed for this constitutive model</span>
@@ -1244,12 +1219,16 @@
             <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span>
 
-        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;von-mises-stress&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;strain&quot;</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">computeStrains</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;stress&quot;</span><span class="p">:</span>
 
             <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
                 <span class="n">strains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">computeStrains</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span>
-                <span class="n">stresses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">computeStresses</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">vonMises2DPlaneStress</span><span class="p">(</span><span class="n">stresses</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">iso1DStress</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">func</span>
 </code></pre></div></td></tr></table></div>
@@ -1269,7 +1248,7 @@
 
 
 
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.E" class="doc doc-heading">
+<h2 id="FEMpy.Constitutive.Iso1D.Iso1D.E" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">E</span> <span class="o">=</span> <span class="n">E</span></code>
   
   <span class="doc doc-labels">
@@ -1288,26 +1267,7 @@
 
 
 
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.nu" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">nu</span> <span class="o">=</span> <span class="n">nu</span></code>
-  
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
-  </span>
-
-</h2>
-
-
-  <div class="doc doc-contents ">
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.rho" class="doc doc-heading">
+<h2 id="FEMpy.Constitutive.Iso1D.Iso1D.rho" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span></code>
   
   <span class="doc doc-labels">
@@ -1328,15 +1288,15 @@
 
 
 
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<h2 id="FEMpy.Constitutive.Iso1D.Iso1D.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 </h2>
 
 
   <div class="doc doc-contents ">
   
-      <p>Create an isotropic plane stress constitutive model</p>
+      <p>Create an axial bar constitutive model</p>
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1360,16 +1320,6 @@
           </td>
         </tr>
         <tr>
-          <td><code>nu</code></td>
-          <td>
-                <code>float</code>
-          </td>
-          <td><p>Poisson's ratio</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
           <td><code>rho</code></td>
           <td>
                 <code>float</code>
@@ -1380,11 +1330,11 @@
           </td>
         </tr>
         <tr>
-          <td><code>t</code></td>
+          <td><code>A</code></td>
           <td>
                 <code>float</code>
           </td>
-          <td><p>Thickness, this will be used as the initial thickness value for all elements but can be changed later by calling setDesignVariables in the model</p></td>
+          <td><p>Cross-sectional area</p></td>
           <td>
               <em>required</em>
           </td>
@@ -1403,7 +1353,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+        <summary>Source code in <code>FEMpy/Constitutive/Iso1D.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
@@ -1440,53 +1390,41 @@
 <span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create an isotropic plane stress constitutive model</span>
-
-
+<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create an axial bar constitutive model</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    E : float</span>
 <span class="sd">        Elastic Modulus</span>
-<span class="sd">    nu : float</span>
-<span class="sd">        Poisson&#39;s ratio</span>
 <span class="sd">    rho : float</span>
 <span class="sd">        Density</span>
-<span class="sd">    t : float</span>
-<span class="sd">        Thickness, this will be used as the initial thickness value for all elements but can be changed later by calling setDesignVariables in the model</span>
+<span class="sd">    A : float</span>
+<span class="sd">        Cross-sectional area</span>
 <span class="sd">    linear : bool, optional</span>
 <span class="sd">        Whether to use the linear kinematic equations for strains, by default True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># --- Design variables ---</span>
-    <span class="c1"># This model has only one design variable, the thickness of the material</span>
     <span class="n">designVars</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">designVars</span><span class="p">[</span><span class="s2">&quot;Thickness&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;defaultValue&quot;</span><span class="p">:</span> <span class="n">t</span><span class="p">}</span>
+    <span class="n">designVars</span><span class="p">[</span><span class="s2">&quot;Area&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;defaultValue&quot;</span><span class="p">:</span> <span class="n">A</span><span class="p">}</span>
 
     <span class="c1"># --- States ---</span>
-    <span class="n">stateNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X-Displacement&quot;</span><span class="p">,</span> <span class="s2">&quot;Y-Displacement&quot;</span><span class="p">]</span>
+    <span class="n">stateNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X-Displacement&quot;</span><span class="p">]</span>
 
     <span class="c1"># --- Strains ---</span>
-    <span class="n">strainNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e_xx&quot;</span><span class="p">,</span> <span class="s2">&quot;e_yy&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma_xy&quot;</span><span class="p">]</span>
+    <span class="n">strainNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;e_xx&quot;</span><span class="p">]</span>
 
     <span class="c1"># --- Stresses ---</span>
-    <span class="n">stressNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma_xx&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma_yy&quot;</span><span class="p">,</span> <span class="s2">&quot;tau_xy&quot;</span><span class="p">]</span>
+    <span class="n">stressNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sigma_xx&quot;</span><span class="p">]</span>
 
     <span class="c1"># --- Functions ---</span>
-    <span class="n">functionNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Mass&quot;</span><span class="p">,</span> <span class="s2">&quot;Von-Mises-Stress&quot;</span><span class="p">]</span>
+    <span class="n">functionNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Mass&quot;</span><span class="p">,</span> <span class="s2">&quot;Stress&quot;</span><span class="p">,</span> <span class="s2">&quot;Strain&quot;</span><span class="p">]</span>
 
     <span class="c1"># --- Material properties ---</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">=</span> <span class="n">E</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">=</span> <span class="n">nu</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span>
 
-    <span class="n">numDim</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">numDim</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">numDim</span><span class="p">,</span> <span class="n">stateNames</span><span class="p">,</span> <span class="n">strainNames</span><span class="p">,</span> <span class="n">stressNames</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">functionNames</span><span class="p">,</span> <span class="n">linear</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -1499,7 +1437,7 @@
 
 
 
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStrainStateGradSens" class="doc doc-heading">
+<h2 id="FEMpy.Constitutive.Iso1D.Iso1D.computeStrainStateGradSens" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">computeStrainStateGradSens</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
@@ -1583,8 +1521,14 @@ sensitivity of the strains to the state gradient at each one</p>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
+        <summary>Source code in <code>FEMpy/Constitutive/Iso1D.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
 <span class="normal">109</span>
@@ -1600,13 +1544,7 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="normal">119</span>
 <span class="normal">120</span>
 <span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStrainStateGradSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
+<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStrainStateGradSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the</span>
 <span class="sd">    sensitivity of the strains to the state gradient at each one</span>
 
@@ -1628,7 +1566,7 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    numPoints x numStrains x numStates x numDim array</span>
 <span class="sd">        Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">strain2DSens</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">strain1DSens</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1639,7 +1577,7 @@ sensitivity of the strains to the state gradient at each one</p>
 
 
 
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStrains" class="doc doc-heading">
+<h2 id="FEMpy.Constitutive.Iso1D.Iso1D.computeStrains" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">computeStrains</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
@@ -1722,29 +1660,29 @@ sensitivity of the strains to the state gradient at each one</p>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStrains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
+        <summary>Source code in <code>FEMpy/Constitutive/Iso1D.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStrains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the strains at each one</span>
 
 
@@ -1765,7 +1703,7 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    numPoints x numStrains array</span>
 <span class="sd">        Strain components at each point</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">strain2D</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">strain1D</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1776,7 +1714,7 @@ sensitivity of the strains to the state gradient at each one</p>
 
 
 
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStressStrainSens" class="doc doc-heading">
+<h2 id="FEMpy.Constitutive.Iso1D.Iso1D.computeStressStrainSens" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">computeStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
@@ -1839,8 +1777,14 @@ sensitivity of the strains to the state gradient at each one</p>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+        <summary>Source code in <code>FEMpy/Constitutive/Iso1D.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
 <span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
@@ -1849,18 +1793,8 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="normal">155</span>
 <span class="normal">156</span>
 <span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStressStrainSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
+<span class="normal">158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStressStrainSens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one</span>
-
-
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1874,7 +1808,7 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    sens : numPoints x numStrains x numStates x numDim array</span>
 <span class="sd">        Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">isoPlaneStressStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">iso1DStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1885,7 +1819,7 @@ sensitivity of the strains to the state gradient at each one</p>
 
 
 
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeStresses" class="doc doc-heading">
+<h2 id="FEMpy.Constitutive.Iso1D.Iso1D.computeStresses" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">computeStresses</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
@@ -1948,8 +1882,14 @@ sensitivity of the strains to the state gradient at each one</p>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+        <summary>Source code in <code>FEMpy/Constitutive/Iso1D.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
@@ -1960,13 +1900,7 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="normal">138</span>
 <span class="normal">139</span>
 <span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStresses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
+<span class="normal">141</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStresses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given the strains and design variables at a bunch of points, compute the stresses at each one</span>
 
 
@@ -1983,7 +1917,7 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    numPoints x numStresses array</span>
 <span class="sd">        Stress components at each point</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">isoPlaneStressStress</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">iso1DStress</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1994,7 +1928,7 @@ sensitivity of the strains to the state gradient at each one</p>
 
 
 
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.computeVolumeScaling" class="doc doc-heading">
+<h2 id="FEMpy.Constitutive.Iso1D.Iso1D.computeVolumeScaling" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">computeVolumeScaling</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
@@ -2058,8 +1992,16 @@ sensitivity of the strains to the state gradient at each one</p>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
+        <summary>Source code in <code>FEMpy/Constitutive/Iso1D.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
 <span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
@@ -2068,15 +2010,7 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="normal">174</span>
 <span class="normal">175</span>
 <span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeVolumeScaling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
+<span class="normal">177</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeVolumeScaling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one</span>
 
 <span class="sd">    For this 2D model, the volume scaling is just the thickness</span>
@@ -2093,7 +2027,7 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    numPoints length array</span>
 <span class="sd">        Volume scaling parameter at each point</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">dvs</span><span class="p">[</span><span class="s2">&quot;Thickness&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">dvs</span><span class="p">[</span><span class="s2">&quot;Area&quot;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -2104,7 +2038,7 @@ sensitivity of the strains to the state gradient at each one</p>
 
 
 
-<h2 id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress.getFunction" class="doc doc-heading">
+<h2 id="FEMpy.Constitutive.Iso1D.Iso1D.getFunction" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">getFunction</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
 
 </h2>
@@ -2162,8 +2096,16 @@ dvs is a dictionary of numPoints length arrays</p></td>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">187</span>
+        <summary>Source code in <code>FEMpy/Constitutive/Iso1D.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
 <span class="normal">188</span>
 <span class="normal">189</span>
 <span class="normal">190</span>
@@ -2195,11 +2137,7 @@ dvs is a dictionary of numPoints length arrays</p></td>
 <span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">getFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="normal">219</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">getFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a function that can be computed for this constitutive model</span>
 
 <span class="sd">    Parameters</span>
@@ -2228,12 +2166,16 @@ dvs is a dictionary of numPoints length arrays</p></td>
         <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span>
 
-    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;von-mises-stress&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;strain&quot;</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">computeStrains</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;stress&quot;</span><span class="p">:</span>
 
         <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">):</span>
             <span class="n">strains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">computeStrains</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span>
-            <span class="n">stresses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">computeStresses</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">vonMises2DPlaneStress</span><span class="p">(</span><span class="n">stresses</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">iso1DStress</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">func</span>
 </code></pre></div></td></tr></table></div>
@@ -2274,7 +2216,7 @@ dvs is a dictionary of numPoints length arrays</p></td>
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../Iso1D/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Isotropic 1D Elasticity" rel="prev">
+        <a href="../ConstitutiveModel/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Constitutive Model Base Class" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -2283,20 +2225,20 @@ dvs is a dictionary of numPoints length arrays</p></td>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Isotropic 1D Elasticity
+              Constitutive Model Base Class
             </div>
           </div>
         </a>
       
       
         
-        <a href="../IsoPlaneStrain/" class="md-footer__link md-footer__link--next" aria-label="Next: Isotropic Plane Strain" rel="next">
+        <a href="../IsoPlaneStress/" class="md-footer__link md-footer__link--next" aria-label="Next: Isotropic Plane Stress" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Isotropic Plane Strain
+              Isotropic Plane Stress
             </div>
           </div>
           <div class="md-footer__button md-icon">
