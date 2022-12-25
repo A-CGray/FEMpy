@@ -31,22 +31,27 @@ test_params = []
 
 # Create a unit test for each mesh file in the Examples mesh folder
 currentDir = os.path.dirname(os.path.realpath(__file__))
-meshDir = "../Examples/Meshes/"
+meshDir = "TestMeshes"
 meshDir = os.path.join(currentDir, meshDir)
-# TODO: Fix the reference values for these tests
-# test_params.append(
-#     {"meshFileName": os.path.join(meshDir, "WingboxL3.bdf"), "numPoints": 23158, "numElements": 24128, "numDim": 3}
-# )
 test_params.append(
     {"meshFileName": os.path.join(meshDir, "Plate.bdf"), "numPoints": 4225, "numElements": 4096, "numDim": 2}
 )
-# test_params.append(
-#     {"meshFileName": os.path.join(meshDir, "GMSHTest.msh"), "numPoints": 3622, "numElements": 798, "numDim": 2}
-# )
-# test_params.append(
-#     {"meshFileName": os.path.join(meshDir, "LBracket.msh"), "numPoints": 9, "numElements": 798, "numDim": 2}
-# )
-
+test_params.append(
+    {
+        "meshFileName": os.path.join(meshDir, "LBracket.msh"),
+        "numPoints": 853,
+        "numElements": {"triangle": 1402, "line": 98},
+        "numDim": 2,
+    }
+)
+test_params.append(
+    {
+        "meshFileName": os.path.join(meshDir, "LBracket-Order2.msh"),
+        "numPoints": 3107,
+        "numElements": {"triangle6": 1402, "line3": 98},
+        "numDim": 2,
+    }
+)
 
 # --- Create constitutive model, 7000 series Aluminium ---
 E = 71.7e9
@@ -70,6 +75,12 @@ class MeshReadTest(unittest.TestCase):
         """Test that the mesh file was read in correctly"""
         self.assertEqual(self.model.numNodes, self.numPoints)
         self.assertEqual(self.model.numDim, self.numDim)
+        if isinstance(self.numElements, int):
+            self.assertEqual(self.model.numElements, self.numElements)
+        elif isinstance(self.numElements, dict):
+            for elName, elNum in self.numElements.items():
+                self.assertTrue(elName in self.model.elements)
+                self.assertEqual(self.model.elements[elName]["numElements"], elNum)
 
 
 class ModelTest(unittest.TestCase):

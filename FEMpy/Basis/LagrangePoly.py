@@ -46,7 +46,6 @@ def LagrangePoly1d(x, n):
     for m in range(n):
         for i in list(range(m)) + list(range(m + 1, n)):
             N[:, m] *= (xp - xi[i]) / (xi[m] - xi[i])
-    # print("computing lagrange shape funcs")
     return N
 
 
@@ -358,19 +357,39 @@ def LagrangePolyTriDeriv(x, y, n):
 
 
 if __name__ == "__main__":
-    import time
+    import timeit
 
     x = np.array([np.linspace(-1.0, 1.0, 4)])
     y = -np.ones_like(x)
+    z = -np.ones_like(y)
+    setupString = """
+import numpy as np
+x = np.array([np.linspace(-1.0, 1.0, 4)])
+y = -np.ones_like(x)
+z = -np.ones_like(y)
+    """
     # Call functions so they get jit compiled and we can check their output
     print(LagrangePoly1d(x, 3), "\n")
     print(LagrangePoly1dDeriv(x, 3), "\n")
     print(LagrangePoly2d(x, y, 3), "\n")
-    print(LagrangePoly2dDeriv(x, y, 3), "\n\n\n")
-    startTime = time.time()
-    for _ in range(1000):
-        LagrangePoly1d(x, 3)
-        LagrangePoly1dDeriv(x, 3)
-        LagrangePoly2d(x, y, 3)
-        LagrangePoly2dDeriv(x, y, 3)
-    print(time.time() - startTime)
+    print(LagrangePoly2dDeriv(x, y, 3), "\n")
+    print(LagrangePoly3d(x, y, z, 3), "\n")
+    print(LagrangePoly3dDeriv(x, y, z, 3), "\n\n\n")
+
+    time1d = timeit.timeit("LagrangePoly1d(x, 3)", setup=setupString)
+    print(f"{time1d=}")
+
+    time1dDeriv = timeit.timeit("LagrangePoly1dDeriv(x, 3)", setup=setupString)
+    print(f"{time1dDeriv=}")
+
+    time2d = timeit.timeit("LagrangePoly2d(x, y, 3)", setup=setupString)
+    print(f"{time2d=}")
+
+    time2dDeriv = timeit.timeit("LagrangePoly2dDeriv(x, y, 3)", setup=setupString)
+    print(f"{time2dDeriv=}")
+
+    time3d = timeit.timeit("LagrangePoly3d(x, y, z 3)", setup=setupString)
+    print(f"{time3d=}")
+
+    time3dDeriv = timeit.timeit("LagrangePoly3dDeriv(x, y, z 3)", setup=setupString)
+    print(f"{time3dDeriv=}")
