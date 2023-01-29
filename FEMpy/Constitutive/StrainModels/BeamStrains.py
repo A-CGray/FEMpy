@@ -59,8 +59,6 @@ def timoshenkoStrain(u, UPrime):
 def timoshenkoStrainUPrimeSens(UPrime):
     """Compute the derivative of Timoshenko beam strains with respect to the displacement gradients
 
-    _extended_summary_
-
     Parameters
     ----------
     UPrime: numPoints x 2 x 1 array
@@ -78,8 +76,6 @@ def timoshenkoStrainUPrimeSens(UPrime):
 @njit(cache=True, fastmath=True, parallel=True)
 def timoshenkoStrainUSens(u):
     """Compute the derivative of Timoshenko beam strains with respect to the displacements
-
-    _extended_summary_
 
     Parameters
     ----------
