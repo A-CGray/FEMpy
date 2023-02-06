@@ -14,8 +14,14 @@
       
         <link rel="canonical" href="https://a-cgray.github.io/FEMpy/Elements/Element/">
       
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../Line1D/">
+      
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.11">
     
     
       
@@ -23,11 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.975780f9.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.0d440cfe.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
-        
       
       
 
@@ -127,8 +132,6 @@
       <form class="md-header__option" data-md-component="palette">
         
           
-          
-          
           <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
@@ -136,8 +139,6 @@
             </label>
           
         
-          
-          
           
           <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
           
@@ -178,7 +179,7 @@
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -354,17 +355,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
       
       
       
-      
-        <label class="md-nav__link" for="__nav_2">
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
           Elements
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Elements" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Elements
@@ -380,7 +382,7 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
         
@@ -744,17 +746,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3">
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
           Constitutive Models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Constitutive Models" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Constitutive Models
@@ -1159,10 +1162,9 @@
                 
                   
 
-  <a href="https://github.com/A-CGray/FEMpy/edit/master/docs/Elements/Element.md" title="Edit this page" class="md-content__button md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
-  </a>
+  
+  
+
 
 
 <h1 id="element-base-class">Element Base Class</h1>
@@ -2065,10 +2067,10 @@
 <span class="normal">914</span>
 <span class="normal">915</span>
 <span class="normal">916</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Element</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;The base class from which all other elements are derived.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The base class from which all other elements are derived.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numNodes</span><span class="p">,</span> <span class="n">numDim</span><span class="p">,</span> <span class="n">quadratureOrder</span><span class="p">,</span> <span class="n">numStates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Instantiate an element object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate an element object</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2117,7 +2119,7 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">computeShapeFunctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the shape function values at a given set of parametric coordinates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the shape function values at a given set of parametric coordinates</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2133,7 +2135,7 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">computeShapeFunctionGradients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates</span>
 
 
 
@@ -2151,7 +2153,7 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">getIntegrationPointWeights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the integration point weights for a given quadrature order on this element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the integration point weights for a given quadrature order on this element</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2167,7 +2169,7 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">getIntegrationPointCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the integration point parameteric coordinates for a given quadrature order on this element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the integration point parameteric coordinates for a given quadrature order on this element</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2183,7 +2185,7 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">getReferenceElementCoordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2196,7 +2198,7 @@
     <span class="c1"># Implemented methods</span>
     <span class="c1"># ==============================================================================</span>
     <span class="k">def</span> <span class="nf">computeFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">elementDVs</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">elementReductionType</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element</span>
 
 
 
@@ -2309,7 +2311,7 @@
         <span class="k">return</span> <span class="n">values</span>
 
     <span class="k">def</span> <span class="nf">_computeFunctionEvaluationQuantities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">quantities</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute a series of values that are used for evaluating functions at multiple points over multiple elements</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute a series of values that are used for evaluating functions at multiple points over multiple elements</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2404,7 +2406,7 @@
         <span class="k">return</span> <span class="n">outputs</span>
 
     <span class="k">def</span> <span class="nf">computeResiduals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">constitutiveModel</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the local residual for a series of elements</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the local residual for a series of elements</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2460,7 +2462,7 @@
         <span class="k">return</span> <span class="n">R</span>
 
     <span class="k">def</span> <span class="nf">computeResidualJacobians</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">constitutiveModel</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given node coordinates and states, design variable values, and a constitutive model, compute the residual Jacobian for a bunch of elements</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given node coordinates and states, design variable values, and a constitutive model, compute the residual Jacobian for a bunch of elements</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2522,7 +2524,7 @@
         <span class="k">return</span> <span class="n">dRdq</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">numElements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDOF</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDOF</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">computeStates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given nodal DOF, compute the state at given parametric coordinates within the element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given nodal DOF, compute the state at given parametric coordinates within the element</span>
 
 <span class="sd">        This function is vectorised both across multiple elements, and multiple points within each element,</span>
 <span class="sd">        but the parametric coordinates are assumed to be the same across all elements</span>
@@ -2550,7 +2552,7 @@
         <span class="k">return</span> <span class="n">_interpolationProduct</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">computeCoordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given nodal coordinates, compute the real coordinates at given parametric coordinates within the element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given nodal coordinates, compute the real coordinates at given parametric coordinates within the element</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2569,7 +2571,7 @@
         <span class="k">return</span> <span class="n">_interpolationProduct</span><span class="p">(</span><span class="n">N</span><span class="p">[:,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span><span class="p">],</span> <span class="n">nodeCoords</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">computeJacobians</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the Jacobian at a set of parametric coordinates within a set of elements</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the Jacobian at a set of parametric coordinates within a set of elements</span>
 
 <span class="sd">        This function is vectorised both across multiple elements, and multiple points within each element,</span>
 <span class="sd">        but the parametric coordinates are assumed to be the same across all elements</span>
@@ -2600,7 +2602,7 @@
         <span class="k">return</span> <span class="n">Jac</span>
 
     <span class="k">def</span> <span class="nf">computeStateGradients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given nodal DOF, compute the gradient of the state at given parametric coordinates within the element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given nodal DOF, compute the gradient of the state at given parametric coordinates within the element</span>
 
 <span class="sd">        The gradient of the state at each point in each element is a numStates x numDim array.</span>
 
@@ -2641,7 +2643,7 @@
     <span class="c1"># Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element</span>
 
     <span class="k">def</span> <span class="nf">getClosestPoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Given real coordinates of a point, find the parametric coordinates of the closest point on a series of</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given real coordinates of a point, find the parametric coordinates of the closest point on a series of</span>
 <span class="sd">        elements to that point</span>
 
 <span class="sd">        Computing the closest point is an optimization problem of the form:</span>
@@ -2692,7 +2694,7 @@
         <span class="k">return</span> <span class="n">closestParamCoords</span><span class="p">,</span> <span class="n">closestDistances</span>
 
     <span class="k">def</span> <span class="nf">_getClosestPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">paramCoordBounds</span><span class="p">,</span> <span class="n">paramCoordLinearConstraints</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Find the closest point on a single element to a given point</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the closest point on a single element to a given point</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2749,7 +2751,7 @@
         <span class="k">return</span> <span class="n">sol</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">fun</span>
 
     <span class="k">def</span> <span class="nf">getRandomElementCoordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute random node coordinates for an element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute random node coordinates for an element</span>
 
 <span class="sd">        The random node coordinates are computed by taking the reference element coordinates and then applying:</span>
 <span class="sd">        - Random perturbations to each node</span>
@@ -2798,7 +2800,7 @@
     <span class="c1"># ==============================================================================</span>
 
     <span class="k">def</span> <span class="nf">getRandParamCoord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a random set of parametric coordinates within the element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a random set of parametric coordinates within the element</span>
 
 <span class="sd">        By default this method assumes the the valid parametric coordinates are between -1 and 1 in each direction. If this is not the case for a particular element then that element should reimplemnt this method.</span>
 
@@ -2815,7 +2817,7 @@
         <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">testShapeFunctionDerivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test the implementation of the shape function derivatives using the complex-step method</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the implementation of the shape function derivatives using the complex-step method</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2836,7 +2838,7 @@
         <span class="k">return</span> <span class="n">dN</span> <span class="o">-</span> <span class="n">dNApprox</span>
 
     <span class="k">def</span> <span class="nf">testShapeFunctionSum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test the basic property that shape function values should sum to 1 everywhere within an element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the basic property that shape function values should sum to 1 everywhere within an element</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2851,7 +2853,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">testInterpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate that, when the element geometry matches the reference element exactly, the parametric and real coordinates are the same</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that, when the element geometry matches the reference element exactly, the parametric and real coordinates are the same</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2870,7 +2872,7 @@
         <span class="k">return</span> <span class="n">error</span>
 
     <span class="k">def</span> <span class="nf">testIdentityJacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validate that, when the element geometry matches the reference element exactly, the mapping Jacobian is the identity matrix everywhere.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that, when the element geometry matches the reference element exactly, the mapping Jacobian is the identity matrix everywhere.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2890,7 +2892,7 @@
         <span class="k">return</span> <span class="n">Jacs</span> <span class="o">-</span> <span class="n">expectedJacs</span>
 
     <span class="k">def</span> <span class="nf">testStateGradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test that the state gradient is correctly reconstructed within the element</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test that the state gradient is correctly reconstructed within the element</span>
 
 <span class="sd">        This test works by generating random node coordinates, then computing the states at each node using the</span>
 <span class="sd">        following equation:</span>
@@ -2927,7 +2929,7 @@
         <span class="k">return</span> <span class="n">stateGradient</span> <span class="o">-</span> <span class="n">ExpectedStateGradients</span>
 
     <span class="k">def</span> <span class="nf">testGetClosestPoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test the getClosestPoints method</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test the getClosestPoints method</span>
 
 <span class="sd">        This test works by generating a set of random parametric coordinates, converting them to real coordinates, and</span>
 <span class="sd">        then checking that the parametric coordinates returned by getClosestPoints match the original random values.</span>
@@ -3324,7 +3326,7 @@
 <span class="normal">75</span>
 <span class="normal">76</span>
 <span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numNodes</span><span class="p">,</span> <span class="n">numDim</span><span class="p">,</span> <span class="n">quadratureOrder</span><span class="p">,</span> <span class="n">numStates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Instantiate an element object</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Instantiate an element object</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -3440,7 +3442,7 @@
 <span class="normal">532</span>
 <span class="normal">533</span>
 <span class="normal">534</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeCoordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Given nodal coordinates, compute the real coordinates at given parametric coordinates within the element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given nodal coordinates, compute the real coordinates at given parametric coordinates within the element</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -3684,7 +3686,7 @@ dvs is an n x numDVs array of design variable values</p></td>
 <span class="normal">272</span>
 <span class="normal">273</span>
 <span class="normal">274</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">elementDVs</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">elementReductionType</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element</span>
 
 
 
@@ -3901,7 +3903,7 @@ but the parametric coordinates are assumed to be the same across all elements</p
 <span class="normal">563</span>
 <span class="normal">564</span>
 <span class="normal">565</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeJacobians</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the Jacobian at a set of parametric coordinates within a set of elements</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the Jacobian at a set of parametric coordinates within a set of elements</span>
 
 <span class="sd">    This function is vectorised both across multiple elements, and multiple points within each element,</span>
 <span class="sd">    but the parametric coordinates are assumed to be the same across all elements</span>
@@ -4085,7 +4087,7 @@ but the parametric coordinates are assumed to be the same across all elements</p
 <span class="normal">485</span>
 <span class="normal">486</span>
 <span class="normal">487</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeResidualJacobians</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">constitutiveModel</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Given node coordinates and states, design variable values, and a constitutive model, compute the residual Jacobian for a bunch of elements</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given node coordinates and states, design variable values, and a constitutive model, compute the residual Jacobian for a bunch of elements</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -4294,7 +4296,7 @@ but the parametric coordinates are assumed to be the same across all elements</p
 <span class="normal">423</span>
 <span class="normal">424</span>
 <span class="normal">425</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeResiduals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">constitutiveModel</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the local residual for a series of elements</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the local residual for a series of elements</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -4434,7 +4436,7 @@ but the parametric coordinates are assumed to be the same across all elements</p
 <span class="normal">114</span>
 <span class="normal">115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
 <span class="k">def</span> <span class="nf">computeShapeFunctionGradients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates</span>
 
 
 
@@ -4533,7 +4535,7 @@ but the parametric coordinates are assumed to be the same across all elements</p
 <span class="normal">96</span>
 <span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
 <span class="k">def</span> <span class="nf">computeShapeFunctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the shape function values at a given set of parametric coordinates</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the shape function values at a given set of parametric coordinates</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -4672,7 +4674,7 @@ but the parametric coordinates are assumed to be the same across all elements</p
 <span class="normal">602</span>
 <span class="normal">603</span>
 <span class="normal">604</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStateGradients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Given nodal DOF, compute the gradient of the state at given parametric coordinates within the element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given nodal DOF, compute the gradient of the state at given parametric coordinates within the element</span>
 
 <span class="sd">    The gradient of the state at each point in each element is a numStates x numDim array.</span>
 
@@ -4812,7 +4814,7 @@ but the parametric coordinates are assumed to be the same across all elements</p
 <span class="normal">513</span>
 <span class="normal">514</span>
 <span class="normal">515</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">computeStates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Given nodal DOF, compute the state at given parametric coordinates within the element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given nodal DOF, compute the state at given parametric coordinates within the element</span>
 
 <span class="sd">    This function is vectorised both across multiple elements, and multiple points within each element,</span>
 <span class="sd">    but the parametric coordinates are assumed to be the same across all elements</span>
@@ -4976,7 +4978,7 @@ coordinates that encode the bounds of the element.</p>
 <span class="normal">655</span>
 <span class="normal">656</span>
 <span class="normal">657</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">getClosestPoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Given real coordinates of a point, find the parametric coordinates of the closest point on a series of</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given real coordinates of a point, find the parametric coordinates of the closest point on a series of</span>
 <span class="sd">    elements to that point</span>
 
 <span class="sd">    Computing the closest point is an optimization problem of the form:</span>
@@ -5109,7 +5111,7 @@ coordinates that encode the bounds of the element.</p>
 <span class="normal">146</span>
 <span class="normal">147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
 <span class="k">def</span> <span class="nf">getIntegrationPointCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the integration point parameteric coordinates for a given quadrature order on this element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the integration point parameteric coordinates for a given quadrature order on this element</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -5206,7 +5208,7 @@ coordinates that encode the bounds of the element.</p>
 <span class="normal">130</span>
 <span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
 <span class="k">def</span> <span class="nf">getIntegrationPointWeights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the integration point weights for a given quadrature order on this element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the integration point weights for a given quadrature order on this element</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -5293,7 +5295,7 @@ case a new one is created for this call</p></td>
 <span class="normal">778</span>
 <span class="normal">779</span>
 <span class="normal">780</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">getRandParamCoord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get a random set of parametric coordinates within the element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a random set of parametric coordinates within the element</span>
 
 <span class="sd">    By default this method assumes the the valid parametric coordinates are between -1 and 1 in each direction. If this is not the case for a particular element then that element should reimplemnt this method.</span>
 
@@ -5404,7 +5406,7 @@ case a new one is created for this call</p></td>
 <span class="normal">757</span>
 <span class="normal">758</span>
 <span class="normal">759</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">getRandomElementCoordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute random node coordinates for an element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute random node coordinates for an element</span>
 
 <span class="sd">    The random node coordinates are computed by taking the reference element coordinates and then applying:</span>
 <span class="sd">    - Random perturbations to each node</span>
@@ -5502,7 +5504,7 @@ case a new one is created for this call</p></td>
 <span class="normal">157</span>
 <span class="normal">158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
 <span class="k">def</span> <span class="nf">getReferenceElementCoordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -5592,7 +5594,7 @@ case a new one is created for this call</p></td>
 <span class="normal">914</span>
 <span class="normal">915</span>
 <span class="normal">916</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">testGetClosestPoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Test the getClosestPoints method</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test the getClosestPoints method</span>
 
 <span class="sd">    This test works by generating a set of random parametric coordinates, converting them to real coordinates, and</span>
 <span class="sd">    then checking that the parametric coordinates returned by getClosestPoints match the original random values.</span>
@@ -5690,7 +5692,7 @@ case a new one is created for this call</p></td>
 <span class="normal">853</span>
 <span class="normal">854</span>
 <span class="normal">855</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">testIdentityJacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate that, when the element geometry matches the reference element exactly, the mapping Jacobian is the identity matrix everywhere.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate that, when the element geometry matches the reference element exactly, the mapping Jacobian is the identity matrix everywhere.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -5783,7 +5785,7 @@ case a new one is created for this call</p></td>
 <span class="normal">833</span>
 <span class="normal">834</span>
 <span class="normal">835</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">testInterpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate that, when the element geometry matches the reference element exactly, the parametric and real coordinates are the same</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate that, when the element geometry matches the reference element exactly, the parametric and real coordinates are the same</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -5877,7 +5879,7 @@ case a new one is created for this call</p></td>
 <span class="normal">799</span>
 <span class="normal">800</span>
 <span class="normal">801</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">testShapeFunctionDerivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Test the implementation of the shape function derivatives using the complex-step method</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test the implementation of the shape function derivatives using the complex-step method</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -5967,7 +5969,7 @@ case a new one is created for this call</p></td>
 <span class="normal">814</span>
 <span class="normal">815</span>
 <span class="normal">816</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">testShapeFunctionSum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Test the basic property that shape function values should sum to 1 everywhere within an element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test the basic property that shape function values should sum to 1 everywhere within an element</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -6078,7 +6080,7 @@ case a new one is created for this call</p></td>
 <span class="normal">890</span>
 <span class="normal">891</span>
 <span class="normal">892</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">testStateGradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Test that the state gradient is correctly reconstructed within the element</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test that the state gradient is correctly reconstructed within the element</span>
 
 <span class="sd">    This test works by generating random node coordinates, then computing the states at each node using the</span>
 <span class="sd">    following equation:</span>
@@ -6147,42 +6149,6 @@ case a new one is created for this call</p></td>
       
         <footer class="md-footer">
   
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Home
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../Line1D/" class="md-footer__link md-footer__link--next" aria-label="Next: 1D Line" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              1D Line
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
@@ -6204,10 +6170,10 @@ case a new one is created for this call</p></td>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.db81ec45.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      <script src="../../assets/javascripts/bundle.6df46069.min.js"></script>
       
         <script src="../../js/flowchart-loader.js"></script>
       
@@ -6227,7 +6193,6 @@ case a new one is created for this call</p></td>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
-    
     
   </body>
 </html>
