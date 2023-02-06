@@ -12,7 +12,6 @@ FEMpy Model class unit tests
 # Standard Python modules
 # ==============================================================================
 import unittest
-import os
 import numpy as np
 
 # ==============================================================================
