@@ -15,5 +15,5 @@ jobs:
     - name: Download flake8 config
       run: wget https://raw.githubusercontent.com/mdolab/.github/master/.flake8;
     - uses: pre-commit/action@v3.0.0
-    - uses: pre-commit-ci/lite-action@v1.0.0
+    - uses: pre-commit-ci/lite-action@v1.0.1
       if: always()

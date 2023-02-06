@@ -14,8 +14,6 @@ nxn mesh of 2D quad elements, comparing the run time for each
 # ==============================================================================
 # Standard Python modules
 # ==============================================================================
-import time
-import unittest
 
 # ==============================================================================
 # External Python modules
@@ -88,7 +86,7 @@ if __name__ == "__main__":
 
     # run problem
     for i in range(len(numEl)):
-        for j in range(2):
+        for j in range(numReps):
             nodeCoords, times = solve_problem(numEl[i])
 
             numNodes = np.shape(nodeCoords)[0]

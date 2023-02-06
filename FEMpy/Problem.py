@@ -333,9 +333,18 @@ class FEMpyProblem(BaseSolver):
             if globalReductionType.lower() == "max":
                 reductionFunc = np.max
             if globalReductionType.lower() == "ksmax":
-                reductionFunc = lambda values: ksAgg(values, "max")
+
+                def ksMax(values):
+                    return ksAgg(values, "max")
+
+                reductionFunc = ksMax()
+
             if globalReductionType.lower() == "ksmin":
-                reductionFunc = lambda values: ksAgg(values, "min")
+
+                def ksMin(values):
+                    return ksAgg(values, "min")
+
+                reductionFunc = ksMin()
 
             globalValues = np.zeros(len(self.model.elements))
             for i, elType in enumerate(functionValues):
