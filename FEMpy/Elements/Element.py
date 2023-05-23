@@ -232,7 +232,6 @@ class Element:
 
             # Simple numpy reductions
             if elementReductionType.lower() in ["sum", "mean", "min", "max"]:
-
                 if elementReductionType.lower() == "sum":
                     reductFunc = np.sum
 

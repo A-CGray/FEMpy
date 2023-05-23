@@ -239,7 +239,6 @@ def scatterLocalResiduals(localResiduals, connectivity, globalResidual):
 
 
 if __name__ == "__main__":
-
     rows = np.array([0, 0, 1, 2], dtype=np.int64)
     cols = np.array([1, 2, 2, 0], dtype=np.int64)
     values = np.array([1, 0.5, 2, 3])
