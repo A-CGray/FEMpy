@@ -21,7 +21,7 @@
         <link rel="next" href="../IsoPlaneStrain/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -856,8 +856,8 @@
 
 <a id="FEMpy.Constitutive.IsoPlaneStress.IsoPlaneStress"></a>
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code><span title="FEMpy.Constitutive.ConstitutiveModel">ConstitutiveModel</span></code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="FEMpy.Constitutive.ConstitutiveModel">ConstitutiveModel</span></code></p>
 
   
       <p>A constitutive model for the 2D isotropic plane stress equations</p>
@@ -865,10 +865,9 @@
 <p>ConstitutiveModel :
     The base class for FEMpy constitutive models</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
 <span class="normal"> 29</span>
 <span class="normal"> 30</span>
 <span class="normal"> 31</span>
@@ -1268,7 +1267,7 @@
 
         <span class="k">return</span> <span class="n">func</span>
 </code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
@@ -1339,6 +1338,7 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
@@ -1352,6 +1352,8 @@
   <div class="doc doc-contents ">
   
       <p>Create an isotropic plane stress constitutive model</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1369,7 +1371,11 @@
           <td>
                 <code>float</code>
           </td>
-          <td><p>Elastic Modulus</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Elastic Modulus</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1379,7 +1385,11 @@
           <td>
                 <code>float</code>
           </td>
-          <td><p>Poisson's ratio</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Poisson's ratio</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1389,7 +1399,11 @@
           <td>
                 <code>float</code>
           </td>
-          <td><p>Density</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Density</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1399,7 +1413,11 @@
           <td>
                 <code>float</code>
           </td>
-          <td><p>Thickness, this will be used as the initial thickness value for all elements but can be changed later by calling setDesignVariables in the model</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Thickness, this will be used as the initial thickness value for all elements but can be changed later by calling setDesignVariables in the model</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1407,9 +1425,13 @@
         <tr>
           <td><code>linear</code></td>
           <td>
-                <code>bool, optional</code>
+                <code>bool</code>
           </td>
-          <td><p>Whether to use the linear kinematic equations for strains, by default True</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether to use the linear kinematic equations for strains, by default True</p>
+            </div>
+          </td>
           <td>
                 <code>True</code>
           </td>
@@ -1417,9 +1439,9 @@
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
@@ -1505,10 +1527,11 @@
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">numDim</span><span class="p">,</span> <span class="n">stateNames</span><span class="p">,</span> <span class="n">strainNames</span><span class="p">,</span> <span class="n">stressNames</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">functionNames</span><span class="p">,</span> <span class="n">linear</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1524,6 +1547,8 @@
   
       <p>Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
 sensitivity of the strains to the state gradient at each one</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1541,7 +1566,11 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numStates array</code>
           </td>
-          <td><p>State values at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>State values at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1551,7 +1580,11 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numStates x numDim array</code>
           </td>
-          <td><p>State gradients at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>State gradients at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1561,7 +1594,11 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numDim array</code>
           </td>
-          <td><p>Coordinates of each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Coordinates of each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1571,13 +1608,19 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>dict of arrays of length numPoints</code>
           </td>
-          <td><p>Design variable values at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Design variable values at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -1592,14 +1635,18 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numStrains x numStates x numDim array</code>
           </td>
-          <td><p>Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
 <span class="normal">109</span>
@@ -1645,10 +1692,11 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">strain2DSens</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1663,6 +1711,8 @@ sensitivity of the strains to the state gradient at each one</p>
   <div class="doc doc-contents ">
   
       <p>Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the strains at each one</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1680,7 +1730,11 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numStates array</code>
           </td>
-          <td><p>State values at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>State values at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1690,7 +1744,11 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numStates x numDim array</code>
           </td>
-          <td><p>State gradients at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>State gradients at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1700,7 +1758,11 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numDim array</code>
           </td>
-          <td><p>Coordinates of each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Coordinates of each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1710,13 +1772,19 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>dict of arrays of length numPoints</code>
           </td>
-          <td><p>Design variable values at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Design variable values at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -1731,14 +1799,18 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numStrains array</code>
           </td>
-          <td><p>Strain components at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Strain components at each point</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 83</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 83</span>
 <span class="normal"> 84</span>
 <span class="normal"> 85</span>
 <span class="normal"> 86</span>
@@ -1782,10 +1854,11 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">strain2D</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1800,6 +1873,8 @@ sensitivity of the strains to the state gradient at each one</p>
   <div class="doc doc-contents ">
   
       <p>Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1817,7 +1892,11 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numStrains array</code>
           </td>
-          <td><p>Strain components at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Strain components at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1827,13 +1906,19 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>dict of arrays of length numPoints</code>
           </td>
-          <td><p>Design variable values at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Design variable values at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -1848,14 +1933,18 @@ sensitivity of the strains to the state gradient at each one</p>
 <td><code>sens</code></td>          <td>
                 <code>numPoints x numStrains x numStates x numDim array</code>
           </td>
-          <td><p>Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
 <span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
@@ -1891,10 +1980,11 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">isoPlaneStressStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1909,6 +1999,8 @@ sensitivity of the strains to the state gradient at each one</p>
   <div class="doc doc-contents ">
   
       <p>Given the strains and design variables at a bunch of points, compute the stresses at each one</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1926,7 +2018,11 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numStrains array</code>
           </td>
-          <td><p>Strain components at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Strain components at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -1936,13 +2032,19 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>dict of arrays of length numPoints</code>
           </td>
-          <td><p>Design variable values at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Design variable values at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -1957,14 +2059,18 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numStresses array</code>
           </td>
-          <td><p>Stress components at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Stress components at each point</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
@@ -2000,10 +2106,11 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">isoPlaneStressStress</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -2019,6 +2126,8 @@ sensitivity of the strains to the state gradient at each one</p>
   
       <p>Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one</p>
 <p>For this 2D model, the volume scaling is just the thickness</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -2036,7 +2145,11 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints x numDim array</code>
           </td>
-          <td><p>Coordinates of each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Coordinates of each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2046,13 +2159,19 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>dict of arrays of length numPoints</code>
           </td>
-          <td><p>Design variable values at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Design variable values at each point</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2067,14 +2186,18 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>numPoints length array</code>
           </td>
-          <td><p>Volume scaling parameter at each point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Volume scaling parameter at each point</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
 <span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
@@ -2110,10 +2233,11 @@ sensitivity of the strains to the state gradient at each one</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">dvs</span><span class="p">[</span><span class="s2">&quot;Thickness&quot;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -2128,6 +2252,8 @@ sensitivity of the strains to the state gradient at each one</p>
   <div class="doc doc-contents ">
   
       <p>Return a function that can be computed for this constitutive model</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -2145,13 +2271,19 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>str</code>
           </td>
-          <td><p>Name of the function to compute</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Name of the function to compute</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2166,19 +2298,23 @@ sensitivity of the strains to the state gradient at each one</p>
           <td>
                 <code>callable</code>
           </td>
-          <td><p>A function that can be called to compute the desired function at a bunch of points with the signature, f(states, stateGradients, coords, dvs)
+          <td>
+            <div class="doc-md-description">
+              <p>A function that can be called to compute the desired function at a bunch of points with the signature, f(states, stateGradients, coords, dvs)
 where:
 states is a numPoints x numStates array
 stateGradients is a numPoints x numStates x numDim array
 coords is a numPoints x numDim array
-dvs is a dictionary of numPoints length arrays</p></td>
+dvs is a dictionary of numPoints length arrays</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">187</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStress.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">187</span>
 <span class="normal">188</span>
 <span class="normal">189</span>
 <span class="normal">190</span>
@@ -2260,7 +2396,7 @@ dvs is a dictionary of numPoints length arrays</p></td>
 
     <span class="k">return</span> <span class="n">func</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -2314,28 +2450,46 @@ dvs is a dictionary of numPoints length arrays</p></td>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.b4d07000.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
-        <script src="../../js/flowchart-loader.js"></script>
+        
+          <script src="../../js/flowchart-loader.js"></script>
+        
       
-        <script src="../../js/details.js"></script>
+        
+          <script src="../../js/details.js"></script>
+        
       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
+        
       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        
       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script>
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script>
+        
       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.8.0/flowchart.min.js"></script>
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.8.0/flowchart.min.js"></script>
+        
       
-        <script src="../../javascripts/mathjax.js"></script>
+        
+          <script src="../../javascripts/mathjax.js"></script>
+        
       
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
       
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
       
     
   </body>

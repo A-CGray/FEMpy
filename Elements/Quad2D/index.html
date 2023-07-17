@@ -21,7 +21,7 @@
         <link rel="next" href="../Tri2D/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.26e3688c.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -842,8 +842,8 @@
 
 <a id="FEMpy.Elements.QuadElement2D.QuadElement2D"></a>
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code><span title="FEMpy.Elements.Element">Element</span></code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="FEMpy.Elements.Element">Element</span></code></p>
 
   
       <p>An "arbitrary order" 2d quadrilateral finite element</p>
@@ -855,10 +855,9 @@ elements.</p>
 <p>Element : FEMpy.Elements.Element
     The FEMpy element base class</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
 <span class="normal"> 29</span>
 <span class="normal"> 30</span>
 <span class="normal"> 31</span>
@@ -1176,7 +1175,7 @@ elements.</p>
         <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
@@ -1247,6 +1246,7 @@ elements.</p>
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
@@ -1260,6 +1260,8 @@ elements.</p>
   <div class="doc doc-contents ">
   
       <p>Create a new 2d quadrilateral finite element object</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1275,10 +1277,14 @@ elements.</p>
         <tr>
           <td><code>order</code></td>
           <td>
-                <code>int, optional</code>
+                <code>int</code>
           </td>
-          <td><p>Element order, a first order quad has 4 nodes, 2<sup>nd</sup> order 9, 3<sup>rd</sup> order 16 etc, currently only orders 1-3 are
-supported, by default 1</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Element order, a first order quad has 4 nodes, 2<sup>nd</sup> order 9, 3<sup>rd</sup> order 16 etc, currently only orders 1-3 are
+supported, by default 1</p>
+            </div>
+          </td>
           <td>
                 <code>1</code>
           </td>
@@ -1286,9 +1292,13 @@ supported, by default 1</p></td>
         <tr>
           <td><code>numStates</code></td>
           <td>
-                <code>int, optional</code>
+                <code>int</code>
           </td>
-          <td><p>Number of states in the underlying PDE, by default 2</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Number of states in the underlying PDE, by default 2</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -1296,16 +1306,22 @@ supported, by default 1</p></td>
         <tr>
           <td><code>quadratureOrder</code></td>
           <td>
-                <code>int, optional</code>
+                <code>int</code>
           </td>
-          <td><p>Quadrature order to use for numerical integration, by default None, in which case a valid order for the
-chosen element order is used</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Quadrature order to use for numerical integration, by default None, in which case a valid order for the
+chosen element order is used</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Raises:</strong></p>
   <table>
@@ -1320,14 +1336,18 @@ chosen element order is used</p></td>
           <td>
                 <code>ValueError</code>
           </td>
-          <td><p>Raises error if order is not 1, 2 or 3</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Raises error if order is not 1, 2 or 3</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
@@ -1389,10 +1409,11 @@ chosen element order is used</p></td>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getNodeReordering</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1407,6 +1428,8 @@ chosen element order is used</p></td>
   <div class="doc doc-contents ">
   
       <p>Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1424,13 +1447,19 @@ chosen element order is used</p></td>
           <td>
                 <code>numPoint x numDim array</code>
           </td>
-          <td><p>Array of parametric point coordinates to evaluate shape function gradients at</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Array of parametric point coordinates to evaluate shape function gradients at</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -1445,15 +1474,19 @@ chosen element order is used</p></td>
 <td><code>NGrad</code></td>          <td>
                 <code>numPoint x numDim x numNodes array</code>
           </td>
-          <td><p>Shape function gradient values, NGrad[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
-parametric coordinate</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Shape function gradient values, NGrad[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
+parametric coordinate</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
 <span class="normal"> 95</span>
 <span class="normal"> 96</span>
 <span class="normal"> 97</span>
@@ -1489,10 +1522,11 @@ parametric coordinate</p></td>
     <span class="n">NPrimeParam</span> <span class="o">=</span> <span class="n">LP</span><span class="o">.</span><span class="n">LagrangePoly2dDeriv</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">NPrimeParam</span><span class="p">[:,</span> <span class="p">:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1507,6 +1541,8 @@ parametric coordinate</p></td>
   <div class="doc doc-contents ">
   
       <p>Compute the shape function values at a given set of parametric coordinates</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1524,13 +1560,19 @@ parametric coordinate</p></td>
           <td>
                 <code>numPoint x numDim array</code>
           </td>
-          <td><p>Array of parametric point coordinates to evaluate shape functions at</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Array of parametric point coordinates to evaluate shape functions at</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -1545,14 +1587,18 @@ parametric coordinate</p></td>
 <td><code>N</code></td>          <td>
                 <code>numPoint x numNodes array</code>
           </td>
-          <td><p>Array of shape function values at the given parametric coordinates, N[i][j] is the value of the jth shape function at the ith parametric point</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Array of shape function values at the given parametric coordinates, N[i][j] is the value of the jth shape function at the ith parametric point</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
 <span class="normal">79</span>
 <span class="normal">80</span>
 <span class="normal">81</span>
@@ -1582,10 +1628,11 @@ parametric coordinate</p></td>
     <span class="n">N</span> <span class="o">=</span> <span class="n">LP</span><span class="o">.</span><span class="n">LagrangePoly2d</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">N</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1600,6 +1647,8 @@ parametric coordinate</p></td>
   <div class="doc doc-contents ">
   
       <p>Compute the integration point parameteric coordinates for a given quadrature order on this element</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1617,13 +1666,19 @@ parametric coordinate</p></td>
           <td>
                 <code>int</code>
           </td>
-          <td><p>Integration order</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Integration order</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -1638,14 +1693,18 @@ parametric coordinate</p></td>
           <td>
                 <code>numIntpoint x numDim array</code>
           </td>
-          <td><p>Integration point coordinates</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Integration point coordinates</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
@@ -1677,10 +1736,11 @@ parametric coordinate</p></td>
         <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadratureOrder</span>
     <span class="k">return</span> <span class="n">getGaussQuadPoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1695,6 +1755,8 @@ parametric coordinate</p></td>
   <div class="doc doc-contents ">
   
       <p>Compute the integration point weights for a given quadrature order on this element</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -1712,13 +1774,19 @@ parametric coordinate</p></td>
           <td>
                 <code>int</code>
           </td>
-          <td><p>Integration order</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Integration order</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -1733,14 +1801,18 @@ parametric coordinate</p></td>
           <td>
                 <code>array of length numIntpoint</code>
           </td>
-          <td><p>Integration point weights</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Integration point weights</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
@@ -1772,10 +1844,11 @@ parametric coordinate</p></td>
         <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadratureOrder</span>
     <span class="k">return</span> <span class="n">getGaussQuadWeights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1792,6 +1865,8 @@ parametric coordinate</p></td>
       <p>Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined</p>
 <p>For the quad element, the nodes of the reference element are simply in a order+1 x order+1 grid over the range [-1, 1] in both x and y, reordered as described by _getNodeReordering</p>
 
+
+
   <p><strong>Returns:</strong></p>
   <table>
     <thead>
@@ -1805,14 +1880,18 @@ parametric coordinate</p></td>
           <td>
                 <code>numNodes x numDim array</code>
           </td>
-          <td><p>Element node coordinates</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Element node coordinates</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">147</span>
+          <details class="quote">
+            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">147</span>
 <span class="normal">148</span>
 <span class="normal">149</span>
 <span class="normal">150</span>
@@ -1838,7 +1917,7 @@ parametric coordinate</p></td>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span><span class="p">]))</span><span class="o">.</span><span class="n">T</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -1892,28 +1971,46 @@ parametric coordinate</p></td>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.b4d07000.min.js"></script>
+      <script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
-        <script src="../../js/flowchart-loader.js"></script>
+        
+          <script src="../../js/flowchart-loader.js"></script>
+        
       
-        <script src="../../js/details.js"></script>
+        
+          <script src="../../js/details.js"></script>
+        
       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
+        
       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        
       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script>
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sequence-diagrams/1.0.6/sequence-diagram-min.js"></script>
+        
       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.8.0/flowchart.min.js"></script>
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.8.0/flowchart.min.js"></script>
+        
       
-        <script src="../../javascripts/mathjax.js"></script>
+        
+          <script src="../../javascripts/mathjax.js"></script>
+        
       
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        
       
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
       
     
   </body>
