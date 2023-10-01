@@ -28,8 +28,6 @@ from FEMpy.Constitutive.StressModels import iso1DStress, iso1DStressStrainSens
 class Iso1D(ConstitutiveModel):
     """Constitutive model for an axial bar
 
-    _extended_summary_
-
     Inherits
     ----------
     ConstitutiveModel : FEMpy.Constitutive.ConstitutiveModel
@@ -76,7 +74,6 @@ class Iso1D(ConstitutiveModel):
 
     def computeStrains(self, states, stateGradients, coords, dvs):
         """Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the strains at each one
-
 
 
         Parameters

@@ -23,6 +23,7 @@ from numba import njit
 # ==============================================================================
 
 
+@njit(cache=True, fastmath=True, parallel=True)
 def timoshenkoStress(strains, E, I, A, G, k):
     """Compute the generalised stresses for a Timoshenko beam from the generalised strains
 
@@ -52,6 +53,7 @@ def timoshenkoStress(strains, E, I, A, G, k):
     return stress
 
 
+@njit(cache=True, fastmath=True, parallel=True)
 def timoshenkoStressStrainSens(strains, E, I, A, G, k):
     """Compute the sensitivity of the generalised stresses for a Timoshenko beam with respect to the generalised strains
 

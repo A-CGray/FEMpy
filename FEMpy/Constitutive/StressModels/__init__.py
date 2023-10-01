@@ -9,3 +9,4 @@ from .IsoStress import (
     iso3DStressStrainSens,
 )
 from .VonMises import *
+from .BeamStresses import *
