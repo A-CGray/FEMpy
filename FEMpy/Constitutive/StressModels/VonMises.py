@@ -86,6 +86,4 @@ def vonMises3D(stresses):
     s12 = stresses[:, 3]
     s13 = stresses[:, 4]
     s23 = stresses[:, 5]
-    return np.sqrt(
-        0.5 * ((s11 - s22) ** 2 + (s22 - s33) ** 2 + (s33 - s11) ** 2) + 3 * (s12**2 + s13**2 + s23**2)
-    )
+    return np.sqrt(0.5 * ((s11 - s22) ** 2 + (s22 - s33) ** 2 + (s33 - s11) ** 2) + 3 * (s12**2 + s13**2 + s23**2))
