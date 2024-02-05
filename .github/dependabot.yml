@@ -4,7 +4,7 @@
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
-registries: "*" # Give dependabot access to secrets so that codecov uploads work
+registries: "*"  # Give dependabot access to secrets so that codecov uploads work
 updates:
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/" # Location of package manifests
