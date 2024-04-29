@@ -10,10 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - python-version: "3.9"
-          - python-version: "3.10"
-          - python-version: "3.11"
+        python-version: ["3.10", "3.11", "3.12"]
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
@@ -32,15 +29,14 @@ jobs:
       run: testflo -n 1 -v .
 
     - name: Generate coverage report
-      if: ${{ matrix.python-version == 3.10}}
+      if: ${{ matrix.python-version == 3.12}}
       run: |
-        export NUMBA_DISABLE_JIT=1
-        testflo -n 1 -v --coverage --coverpkg FEMpy .
-        coverage xml
-
-    - name: Upload coverage to Codecov
-      if: ${{ matrix.python-version == 3.10}}
-      uses: codecov/codecov-action@v4
+          export NUMBA_DISABLE_JIT=1
+          testflo -n 1 -v --coverage --coverpkg FEMpy .
+          coverage xml
+    - name: Upload coverage reports to Codecov
+      if: ${{ matrix.python-version == 3.12}}
+      uses: codecov/codecov-action@v4.3.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
