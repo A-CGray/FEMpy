@@ -32,8 +32,7 @@ jobs:
       if: ${{ matrix.python-version == 3.12}}
       run: |
           export NUMBA_DISABLE_JIT=1
-          coverage run --source=great -m pytest tests
-          coverage report
+          testflo -n 1 -v --coverage --coverpkg FEMpy .
           coverage xml
     - name: Upload coverage reports to Codecov
       if: ${{ matrix.python-version == 3.12}}
