@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.20">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -189,7 +189,7 @@
       
     </form>
     <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
             Initializing search
@@ -1311,19 +1311,19 @@
 
 
 <a id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain"></a>
-  <div class="doc doc-contents first">
-          <p class="doc doc-class-bases">
-            Bases: <code><span title="FEMpy.Constitutive.ConstitutiveModel">ConstitutiveModel</span></code></p>
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="FEMpy.Constitutive.ConstitutiveModel">ConstitutiveModel</span></code></p>
 
-  
+
       <p>A constitutive model for the 2D isotropic plane strain equations</p>
 <h3 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain--inherits">Inherits</h3>
 <p>ConstitutiveModel : <em>type</em>
     The base class for FEMpy constitutive models</p>
 
-            <details class="quote">
-              <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
+              <details class="quote">
+                <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
 <span class="normal"> 29</span>
 <span class="normal"> 30</span>
 <span class="normal"> 31</span>
@@ -1721,12 +1721,11 @@
 
         <span class="k">return</span> <span class="n">func</span>
 </code></pre></div></td></tr></table></div>
-            </details>
+              </details>
 
-  
+
 
   <div class="doc doc-children">
-
 
 
 
@@ -1739,15 +1738,14 @@
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.__init__" class="doc doc-heading">
-          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Create an isotropic plane stress constitutive model</p>
 <h4 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.__init__--parameters">Parameters</h4>
 <p>E : float
@@ -1761,9 +1759,9 @@ t : float
 linear : bool, optional
     Whether to use the linear kinematic equations for strains, by default True</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
@@ -1849,24 +1847,22 @@ linear : bool, optional
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">numDim</span><span class="p">,</span> <span class="n">stateNames</span><span class="p">,</span> <span class="n">strainNames</span><span class="p">,</span> <span class="n">stressNames</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">functionNames</span><span class="p">,</span> <span class="n">linear</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeStrainStateGradSens" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStrainStateGradSens</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeStrainStateGradSens</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
 sensitivity of the strains to the state gradient at each one</p>
 <h4 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeStrainStateGradSens--parameters">Parameters</h4>
@@ -1882,9 +1878,9 @@ dvs : dict of arrays of length numPoints
 <p>numPoints x numStrains x numStates x numDim array
     Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
 <span class="normal">109</span>
@@ -1930,24 +1926,22 @@ dvs : dict of arrays of length numPoints
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">strain2DSens</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeStrains" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStrains</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeStrains</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the strains at each one</p>
 <h4 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeStrains--parameters">Parameters</h4>
 <p>states : numPoints x numStates array
@@ -1962,9 +1956,9 @@ dvs : dict of arrays of length numPoints
 <p>numPoints x numStrains array
     Strain components at each point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 83</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 83</span>
 <span class="normal"> 84</span>
 <span class="normal"> 85</span>
 <span class="normal"> 86</span>
@@ -2008,24 +2002,22 @@ dvs : dict of arrays of length numPoints
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">strain2D</span><span class="p">(</span><span class="n">UPrime</span><span class="o">=</span><span class="n">stateGradients</span><span class="p">,</span> <span class="n">nonlinear</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeStressStrainSens" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one</p>
 <h4 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeStressStrainSens--parameters">Parameters</h4>
 <p>strains : numPoints x numStrains array
@@ -2036,9 +2028,9 @@ dvs : dict of arrays of length numPoints
 <p>sens : numPoints x numStrains x numStates x numDim array
     Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
 <span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
@@ -2074,24 +2066,22 @@ dvs : dict of arrays of length numPoints
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">isoPlaneStrainStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeStresses" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStresses</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeStresses</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the strains and design variables at a bunch of points, compute the stresses at each one</p>
 <h4 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeStresses--parameters">Parameters</h4>
 <p>strains : numPoints x numStrains array
@@ -2102,9 +2092,9 @@ dvs : dict of arrays of length numPoints
 <p>numPoints x numStresses array
     Stress components at each point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
@@ -2140,24 +2130,22 @@ dvs : dict of arrays of length numPoints
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">isoPlaneStrainStress</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeVolumeScaling" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeVolumeScaling</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeVolumeScaling</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one</p>
 <p>For this 2D model, the volume scaling is just the thickness</p>
 <h4 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.computeVolumeScaling--parameters">Parameters</h4>
@@ -2169,9 +2157,9 @@ dvs : dict of arrays of length numPoints
 <p>numPoints length array
     Volume scaling parameter at each point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
 <span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
@@ -2207,24 +2195,22 @@ dvs : dict of arrays of length numPoints
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">dvs</span><span class="p">[</span><span class="s2">&quot;Thickness&quot;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.getFunction" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getFunction</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">getFunction</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Return a function that can be computed for this constitutive model</p>
 <h4 id="FEMpy.Constitutive.IsoPlaneStrain.IsoPlaneStrain.getFunction--parameters">Parameters</h4>
 <p>name : str
@@ -2238,9 +2224,9 @@ dvs : dict of arrays of length numPoints
     coords is a numPoints x numDim array
     dvs is a dictionary of numPoints length arrays</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">187</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/IsoPlaneStrain.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">187</span>
 <span class="normal">188</span>
 <span class="normal">189</span>
 <span class="normal">190</span>
@@ -2320,8 +2306,8 @@ dvs : dict of arrays of length numPoints
 
     <span class="k">return</span> <span class="n">func</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
 
@@ -2329,8 +2315,7 @@ dvs : dict of arrays of length numPoints
 
   </div>
 
-  </div>
-
+    </div>
 
 </div>
 
@@ -2388,7 +2373,7 @@ dvs : dict of arrays of length numPoints
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.dd8806f2.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>
       
         <script src="../../js/flowchart-loader.js"></script>
       

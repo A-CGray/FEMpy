@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.20">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -189,7 +189,7 @@
       
     </form>
     <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
             Initializing search
@@ -2091,14 +2091,14 @@
 
 
 <a id="FEMpy.Elements.Element.Element"></a>
-  <div class="doc doc-contents first">
+    <div class="doc doc-contents first">
 
-  
+
       <p>The base class from which all other elements are derived.</p>
 
-            <details class="quote">
-              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 32</span>
+              <details class="quote">
+                <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 32</span>
 <span class="normal"> 33</span>
 <span class="normal"> 34</span>
 <span class="normal"> 35</span>
@@ -3866,12 +3866,11 @@
             <span class="n">error</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span> <span class="o">-</span> <span class="n">paramCoords</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">error</span>
 </code></pre></div></td></tr></table></div>
-            </details>
+              </details>
 
-  
+
 
   <div class="doc doc-children">
-
 
 
 
@@ -3884,15 +3883,14 @@
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.__init__" class="doc doc-heading">
-          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">numNodes</span><span class="p">,</span> <span class="n">numDim</span><span class="p">,</span> <span class="n">quadratureOrder</span><span class="p">,</span> <span class="n">numStates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">numNodes</span><span class="p">,</span> <span class="n">numDim</span><span class="p">,</span> <span class="n">quadratureOrder</span><span class="p">,</span> <span class="n">numStates</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Instantiate an element object</p>
 <h4 id="FEMpy.Elements.Element.Element.__init__--parameters">Parameters</h4>
 <p>numNodes : int
@@ -3904,9 +3902,9 @@ quadratureOrder : int
 numStates : int, optional
     Number of states in the underlying PDE, a.k.a the number of DOF per node, by default uses numDim</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
@@ -3992,24 +3990,22 @@ numStates : int, optional
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sorry, FEMpy doesn&#39;t support </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="si">}</span><span class="s2">-dimensional problems&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.computeCoordinates" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeCoordinates</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeCoordinates</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given nodal coordinates, compute the real coordinates at given parametric coordinates within the element</p>
 <h4 id="FEMpy.Elements.Element.Element.computeCoordinates--parameters">Parameters</h4>
 <p>paramCoords : numPoint x numDim array
@@ -4017,9 +4013,9 @@ numStates : int, optional
 nodeCoords : numElements x numNodes x numDim array
     Node coordinates for each element</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">516</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">516</span>
 <span class="normal">517</span>
 <span class="normal">518</span>
 <span class="normal">519</span>
@@ -4055,24 +4051,22 @@ nodeCoords : numElements x numNodes x numDim array
     <span class="c1">#     product[ii] = N[:, : self.numNodes] @ nodeStates[ii]</span>
     <span class="k">return</span> <span class="n">_interpolationProduct</span><span class="p">(</span><span class="n">N</span><span class="p">[:,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">numNodes</span><span class="p">],</span> <span class="n">nodeCoords</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.computeFunction" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeFunction</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">elementDVs</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">elementReductionType</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeFunction</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">elementDVs</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">elementReductionType</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given a function that can depend on true coordinates, the state, state gradients and some design variables, compute the value of that function over the element</p>
 <h4 id="FEMpy.Elements.Element.Element.computeFunction--parameters">Parameters</h4>
 <p>nodeCoords : numElements x numNodes x numDim array
@@ -4100,9 +4094,9 @@ elementReductionType : <em>type</em>
 <p>values : numElements array
     Value of the function for each element</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">163</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">163</span>
 <span class="normal">164</span>
 <span class="normal">165</span>
 <span class="normal">166</span>
@@ -4324,24 +4318,22 @@ elementReductionType : <em>type</em>
 
     <span class="k">return</span> <span class="n">values</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.computeJacobians" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeJacobians</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeJacobians</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the Jacobian at a set of parametric coordinates within a set of elements</p>
 <p>This function is vectorised both across multiple elements, and multiple points within each element,
 but the parametric coordinates are assumed to be the same across all elements</p>
@@ -4354,9 +4346,9 @@ nodeCoords : numElements x numNodes x numDim array
 <p>Jac : numElements x numPoints x numDim x numDim array
     The Jacobians at each point in each element</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">535</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">535</span>
 <span class="normal">536</span>
 <span class="normal">537</span>
 <span class="normal">538</span>
@@ -4416,24 +4408,22 @@ nodeCoords : numElements x numNodes x numDim array
     <span class="n">_computeNPrimeCoordProduct</span><span class="p">(</span><span class="n">NPrimeParam</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">Jac</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Jac</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.computeResidualJacobians" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeResidualJacobians</span><span class="p">(</span><span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">constitutiveModel</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeResidualJacobians</span><span class="p">(</span><span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">constitutiveModel</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given node coordinates and states, design variable values, and a constitutive model, compute the residual Jacobian for a bunch of elements</p>
 <h4 id="FEMpy.Elements.Element.Element.computeResidualJacobians--parameters">Parameters</h4>
 <p>nodeCoords : numElements x numNodes x numDim array
@@ -4448,9 +4438,9 @@ constitutiveModel : FEMpy constitutive model object
 <p>numElement x (numNodes * numStates) x (numNodes * numStates) array
     The local residual Jacobian matrix for each element</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">426</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">426</span>
 <span class="normal">427</span>
 <span class="normal">428</span>
 <span class="normal">429</span>
@@ -4572,24 +4562,22 @@ constitutiveModel : FEMpy constitutive model object
 
     <span class="k">return</span> <span class="n">dRdq</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">numElements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDOF</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDOF</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.computeResiduals" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeResiduals</span><span class="p">(</span><span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">constitutiveModel</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeResiduals</span><span class="p">(</span><span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">constitutiveModel</span><span class="p">,</span> <span class="n">intOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the local residual for a series of elements</p>
 <h4 id="FEMpy.Elements.Element.Element.computeResiduals--parameters">Parameters</h4>
 <p>nodeCoords : numElements x numNodes x numDim array
@@ -4604,9 +4592,9 @@ constitutiveModel : FEMpy constitutive model object
 <p>numElement x numNodes x numStates array
     The local residuals for each element</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">370</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">370</span>
 <span class="normal">371</span>
 <span class="normal">372</span>
 <span class="normal">373</span>
@@ -4716,19 +4704,17 @@ constitutiveModel : FEMpy constitutive model object
     <span class="n">_integrate</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">pointQuantities</span><span class="p">[</span><span class="s2">&quot;JacDet&quot;</span><span class="p">],</span> <span class="n">intPointWeights</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">R</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.computeShapeFunctionGradients" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeShapeFunctionGradients</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">computeShapeFunctionGradients</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -4736,8 +4722,8 @@ constitutiveModel : FEMpy constitutive model object
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates</p>
 <h4 id="FEMpy.Elements.Element.Element.computeShapeFunctionGradients--parameters">Parameters</h4>
 <p>paramCoords : numPoint x numDim array
@@ -4746,9 +4732,9 @@ constitutiveModel : FEMpy constitutive model object
 <p>NPrimeParam: numPoint x numDim x numNodes array
     Shape function gradient values, NPrimeParam[i][j][k] is the derivative of the kth shape function at the ith point w.r.t the jth parametric coordinate</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 99</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
@@ -4782,19 +4768,17 @@ constitutiveModel : FEMpy constitutive model object
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.computeShapeFunctions" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeShapeFunctions</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">computeShapeFunctions</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -4802,8 +4786,8 @@ constitutiveModel : FEMpy constitutive model object
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the shape function values at a given set of parametric coordinates</p>
 <h4 id="FEMpy.Elements.Element.Element.computeShapeFunctions--parameters">Parameters</h4>
 <p>paramCoords : numPoint x numDim array
@@ -4812,9 +4796,9 @@ constitutiveModel : FEMpy constitutive model object
 <p>N: numPoint x numNodes array
     Array of shape function values at the given parametric coordinates, N[i][j] is the value of the jth shape function at the ith parametric point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">83</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">83</span>
 <span class="normal">84</span>
 <span class="normal">85</span>
 <span class="normal">86</span>
@@ -4844,24 +4828,22 @@ constitutiveModel : FEMpy constitutive model object
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.computeStateGradients" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStateGradients</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeStateGradients</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given nodal DOF, compute the gradient of the state at given parametric coordinates within the element</p>
 <p>The gradient of the state at each point in each element is a numStates x numDim array.</p>
 <p>This function is vectorised both across multiple elements, and multiple points within each element,
@@ -4878,9 +4860,9 @@ nodeCoords : numElements x numNodes x numDim array
     The gradient of the states at each point in each element, stateGradient[i, j, k, l] is the value of
     <span class="arithmatex">\(du_k/dx_l\)</span> at the <span class="arithmatex">\(j^{th}\)</span> point in the <span class="arithmatex">\(i^{th}\)</span> element</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">566</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">566</span>
 <span class="normal">567</span>
 <span class="normal">568</span>
 <span class="normal">569</span>
@@ -4956,24 +4938,22 @@ nodeCoords : numElements x numNodes x numDim array
     <span class="n">_computeUPrimeProduct</span><span class="p">(</span><span class="n">JacInv</span><span class="p">,</span> <span class="n">NPrimeParam</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">nodeStates</span><span class="p">),</span> <span class="n">UPrime</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">UPrime</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.computeStates" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStates</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeStates</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given nodal DOF, compute the state at given parametric coordinates within the element</p>
 <p>This function is vectorised both across multiple elements, and multiple points within each element,
 but the parametric coordinates are assumed to be the same across all elements</p>
@@ -4986,9 +4966,9 @@ nodeStates : numElements x numNodes x numStates array
 <p>states : numElements x numPoint x numStates array
     State values at the given parametric coordinates for each element</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">488</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">488</span>
 <span class="normal">489</span>
 <span class="normal">490</span>
 <span class="normal">491</span>
@@ -5042,24 +5022,22 @@ nodeStates : numElements x numNodes x numStates array
     <span class="c1">#     product[ii] = N @ nodeStates[ii]</span>
     <span class="k">return</span> <span class="n">_interpolationProduct</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">nodeStates</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.getClosestPoints" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getClosestPoints</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">getClosestPoints</span><span class="p">(</span><span class="n">nodeCoords</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given real coordinates of a point, find the parametric coordinates of the closest point on a series of
 elements to that point</p>
 <p>Computing the closest point is an optimization problem of the form:</p>
@@ -5080,9 +5058,9 @@ point : array of length numDim
 closestDistances : numElements array
     The distances from the closest point in each element to the target point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">607</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">607</span>
 <span class="normal">608</span>
 <span class="normal">609</span>
 <span class="normal">610</span>
@@ -5182,19 +5160,17 @@ closestDistances : numElements array
 
     <span class="k">return</span> <span class="n">closestParamCoords</span><span class="p">,</span> <span class="n">closestDistances</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.getIntegrationPointCoords" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getIntegrationPointCoords</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">getIntegrationPointCoords</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -5202,8 +5178,8 @@ closestDistances : numElements array
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the integration point parameteric coordinates for a given quadrature order on this element</p>
 <h4 id="FEMpy.Elements.Element.Element.getIntegrationPointCoords--parameters">Parameters</h4>
 <p>order : int, optional
@@ -5212,9 +5188,9 @@ closestDistances : numElements array
 <p>numIntpoint x numDim array
     Integration point coordinates</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">133</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
 <span class="normal">136</span>
@@ -5244,19 +5220,17 @@ closestDistances : numElements array
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.getIntegrationPointWeights" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getIntegrationPointWeights</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">getIntegrationPointWeights</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -5264,8 +5238,8 @@ closestDistances : numElements array
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the integration point weights for a given quadrature order on this element</p>
 <h4 id="FEMpy.Elements.Element.Element.getIntegrationPointWeights--parameters">Parameters</h4>
 <p>order : int, optional
@@ -5274,9 +5248,9 @@ closestDistances : numElements array
 <p>array of length numIntpoint
     Integration point weights</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">117</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">117</span>
 <span class="normal">118</span>
 <span class="normal">119</span>
 <span class="normal">120</span>
@@ -5306,24 +5280,22 @@ closestDistances : numElements array
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.getRandParamCoord" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getRandParamCoord</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">getRandParamCoord</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Get a random set of parametric coordinates within the element</p>
 <p>By default this method assumes the the valid parametric coordinates are between -1 and 1 in each direction. If this is not the case for a particular element then that element should reimplemnt this method.</p>
 <h4 id="FEMpy.Elements.Element.Element.getRandParamCoord--parameters">Parameters</h4>
@@ -5333,9 +5305,9 @@ rng : numpy random Generator, optional
     Random number generator to use, useful for creating consistent test behaviour, by default None, in which
     case a new one is created for this call</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">764</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">764</span>
 <span class="normal">765</span>
 <span class="normal">766</span>
 <span class="normal">767</span>
@@ -5367,24 +5339,22 @@ rng : numpy random Generator, optional
         <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.getRandomElementCoordinates" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getRandomElementCoordinates</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">getRandomElementCoordinates</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute random node coordinates for an element</p>
 <p>The random node coordinates are computed by taking the reference element coordinates and then applying:
 - Random perturbations to each node
@@ -5396,9 +5366,9 @@ rng : numpy random Generator, optional
     Random number generator to use, useful for creating consistent test behaviour, by default None, in which
     case a new one is created for this call</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">715</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">715</span>
 <span class="normal">716</span>
 <span class="normal">717</span>
 <span class="normal">718</span>
@@ -5486,19 +5456,17 @@ rng : numpy random Generator, optional
 
     <span class="k">return</span> <span class="n">coords</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.getReferenceElementCoordinates" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getReferenceElementCoordinates</span><span class="p">()</span></code>
-  
+            <code class="highlight language-python"><span class="n">getReferenceElementCoordinates</span><span class="p">()</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -5506,16 +5474,16 @@ rng : numpy random Generator, optional
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined</p>
 <h4 id="FEMpy.Elements.Element.Element.getReferenceElementCoordinates--returns">Returns</h4>
 <p>numNodes x numDim array
     Element node coordinates</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
 <span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
@@ -5535,24 +5503,22 @@ rng : numpy random Generator, optional
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.testGetClosestPoints" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">testGetClosestPoints</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">testGetClosestPoints</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Test the getClosestPoints method</p>
 <p>This test works by generating a set of random parametric coordinates, converting them to real coordinates, and
 then checking that the parametric coordinates returned by getClosestPoints match the original random values.</p>
@@ -5563,9 +5529,9 @@ rng : numpy random Generator, optional
     Random number generator to use, useful for creating consistent test behaviour, by default None, in which
     case a new one is created for this call</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">893</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">893</span>
 <span class="normal">894</span>
 <span class="normal">895</span>
 <span class="normal">896</span>
@@ -5611,24 +5577,22 @@ rng : numpy random Generator, optional
         <span class="n">error</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span> <span class="o">-</span> <span class="n">paramCoords</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">error</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.testIdentityJacobian" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">testIdentityJacobian</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">testIdentityJacobian</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Validate that, when the element geometry matches the reference element exactly, the mapping Jacobian is the identity matrix everywhere.</p>
 <h4 id="FEMpy.Elements.Element.Element.testIdentityJacobian--parameters">Parameters</h4>
 <p>n : int, optional
@@ -5637,9 +5601,9 @@ rng : numpy random Generator, optional
     Random number generator to use, useful for creating consistent test behaviour, by default None, in which
     case a new one is created for this call</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">836</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">836</span>
 <span class="normal">837</span>
 <span class="normal">838</span>
 <span class="normal">839</span>
@@ -5677,24 +5641,22 @@ rng : numpy random Generator, optional
     <span class="n">Jacs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">computeJacobians</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">,</span> <span class="n">nodeCoords</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Jacs</span> <span class="o">-</span> <span class="n">expectedJacs</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.testInterpolation" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">testInterpolation</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">testInterpolation</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Validate that, when the element geometry matches the reference element exactly, the parametric and real coordinates are the same</p>
 <h4 id="FEMpy.Elements.Element.Element.testInterpolation--parameters">Parameters</h4>
 <p>n : int, optional
@@ -5703,9 +5665,9 @@ rng : numpy random Generator, optional
     Random number generator to use, useful for creating consistent test behaviour, by default None, in which
     case a new one is created for this call</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">817</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">817</span>
 <span class="normal">818</span>
 <span class="normal">819</span>
 <span class="normal">820</span>
@@ -5741,24 +5703,22 @@ rng : numpy random Generator, optional
     <span class="n">error</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">paramCoords</span>
     <span class="k">return</span> <span class="n">error</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.testShapeFunctionDerivatives" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">testShapeFunctionDerivatives</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">testShapeFunctionDerivatives</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Test the implementation of the shape function derivatives using the complex-step method</p>
 <h4 id="FEMpy.Elements.Element.Element.testShapeFunctionDerivatives--parameters">Parameters</h4>
 <p>n : int, optional
@@ -5767,9 +5727,9 @@ rng : numpy random Generator, optional
     Random number generator to use, useful for creating consistent test behaviour, by default None, in which
     case a new one is created for this call</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">781</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">781</span>
 <span class="normal">782</span>
 <span class="normal">783</span>
 <span class="normal">784</span>
@@ -5809,24 +5769,22 @@ rng : numpy random Generator, optional
         <span class="n">dNApprox</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">1e200</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">computeShapeFunctions</span><span class="p">(</span><span class="n">coordPert</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">dN</span> <span class="o">-</span> <span class="n">dNApprox</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.testShapeFunctionSum" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">testShapeFunctionSum</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">testShapeFunctionSum</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Test the basic property that shape function values should sum to 1 everywhere within an element</p>
 <h4 id="FEMpy.Elements.Element.Element.testShapeFunctionSum--parameters">Parameters</h4>
 <p>n : int, optional
@@ -5835,9 +5793,9 @@ rng : numpy random Generator, optional
     Random number generator to use, useful for creating consistent test behaviour, by default None, in which
     case a new one is created for this call</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">802</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">802</span>
 <span class="normal">803</span>
 <span class="normal">804</span>
 <span class="normal">805</span>
@@ -5865,24 +5823,22 @@ rng : numpy random Generator, optional
     <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">computeShapeFunctions</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.Element.Element.testStateGradient" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">testStateGradient</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">testStateGradient</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Test that the state gradient is correctly reconstructed within the element</p>
 <p>This test works by generating random node coordinates, then computing the states at each node using the
 following equation:</p>
@@ -5896,9 +5852,9 @@ rng : numpy random Generator, optional
     Random number generator to use, useful for creating consistent test behaviour, by default None, in which
     case a new one is created for this call</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">856</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/Element.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">856</span>
 <span class="normal">857</span>
 <span class="normal">858</span>
 <span class="normal">859</span>
@@ -5970,8 +5926,8 @@ rng : numpy random Generator, optional
 
     <span class="k">return</span> <span class="n">stateGradient</span> <span class="o">-</span> <span class="n">ExpectedStateGradients</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
 
@@ -5979,8 +5935,7 @@ rng : numpy random Generator, optional
 
   </div>
 
-  </div>
-
+    </div>
 
 </div>
 
@@ -6038,7 +5993,7 @@ rng : numpy random Generator, optional
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.dd8806f2.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>
       
         <script src="../../js/flowchart-loader.js"></script>
       

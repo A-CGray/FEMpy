@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.20">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -189,7 +189,7 @@
       
     </form>
     <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
             Initializing search
@@ -1413,9 +1413,9 @@
 
 
 <a id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel"></a>
-  <div class="doc doc-contents first">
+    <div class="doc doc-contents first">
 
-  
+
       <p>The base class for all FEMpy constitutive models</p>
 <p>The constitutive model defines the underlying PDE being solved. Currently, this base class is defined for
 solid mechanics problems, but in future it may be extended for other PDE types.</p>
@@ -1443,9 +1443,9 @@ solid mechanics problems, but in future it may be extended for other PDE types.<
 </li>
 </ul>
 
-            <details class="quote">
-              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 27</span>
+              <details class="quote">
+                <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 27</span>
 <span class="normal"> 28</span>
 <span class="normal"> 29</span>
 <span class="normal"> 30</span>
@@ -2069,12 +2069,11 @@ solid mechanics problems, but in future it may be extended for other PDE types.<
 
         <span class="k">return</span> <span class="n">Jacobians</span>
 </code></pre></div></td></tr></table></div>
-            </details>
+              </details>
 
-  
+
 
   <div class="doc doc-children">
-
 
 
 
@@ -2087,15 +2086,14 @@ solid mechanics problems, but in future it may be extended for other PDE types.<
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.__init__" class="doc doc-heading">
-          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">numDim</span><span class="p">,</span> <span class="n">stateNames</span><span class="p">,</span> <span class="n">strainNames</span><span class="p">,</span> <span class="n">stressNames</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">functionNames</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">numDim</span><span class="p">,</span> <span class="n">stateNames</span><span class="p">,</span> <span class="n">strainNames</span><span class="p">,</span> <span class="n">stressNames</span><span class="p">,</span> <span class="n">designVars</span><span class="p">,</span> <span class="n">functionNames</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p><em>summary</em></p>
 <h4 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.__init__--parameters">Parameters</h4>
 <p>numDim : int
@@ -2115,9 +2113,9 @@ functionNames : list of str
 linear : bool, optional
     Whether the constitutive model is linear or not, a.k.a whether the weak residual is a linear function of the states/state gradients, by default True</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">55</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">55</span>
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
@@ -2203,19 +2201,17 @@ linear : bool, optional
 
     <span class="bp">self</span><span class="o">.</span><span class="n">isLinear</span> <span class="o">=</span> <span class="n">linear</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeStrainStateGradSens" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStrainStateGradSens</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">computeStrainStateGradSens</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -2223,8 +2219,8 @@ linear : bool, optional
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
 sensitivity of the strains to the state gradient at each one</p>
 <h4 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeStrainStateGradSens--parameters">Parameters</h4>
@@ -2240,9 +2236,9 @@ dvs : dictionary of len(numpoints) array
 <p>numPoints x numStrains x numStates x numDim array
     Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">126</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
 <span class="normal">129</span>
@@ -2290,19 +2286,17 @@ dvs : dictionary of len(numpoints) array
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeStrains" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStrains</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">computeStrains</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -2310,8 +2304,8 @@ dvs : dictionary of len(numpoints) array
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the strains at each one</p>
 <h4 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeStrains--parameters">Parameters</h4>
 <p>states : numPoints x numStates array
@@ -2326,9 +2320,9 @@ dvs : dictionary of len(numpoints) array
 <p>numPoints x numStrains array
     Strain components at each point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">102</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">102</span>
 <span class="normal">103</span>
 <span class="normal">104</span>
 <span class="normal">105</span>
@@ -2374,19 +2368,17 @@ dvs : dictionary of len(numpoints) array
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeStressStrainSens" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">computeStressStrainSens</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -2394,8 +2386,8 @@ dvs : dictionary of len(numpoints) array
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the strains and design variables at a bunch of points, compute the sensitivity of the stresses to the strains at each one</p>
 <h4 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeStressStrainSens--parameters">Parameters</h4>
 <p>strains : numPoints x numStrains array
@@ -2406,9 +2398,9 @@ dvs : dictionary of len(numpoints) array
 <p>sens : numPoints x numStrains x numStates x numDim array
     Strain sensitivities, sens[i,j,k,l] is the sensitivity of strain component j at point i to state gradient du_k/dx_l</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">171</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">171</span>
 <span class="normal">172</span>
 <span class="normal">173</span>
 <span class="normal">174</span>
@@ -2446,19 +2438,17 @@ dvs : dictionary of len(numpoints) array
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeStresses" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeStresses</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">computeStresses</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -2466,8 +2456,8 @@ dvs : dictionary of len(numpoints) array
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the strains and design variables at a bunch of points, compute the stresses at each one</p>
 <h4 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeStresses--parameters">Parameters</h4>
 <p>strains : numPoints x numStrains array
@@ -2478,9 +2468,9 @@ dvs : dictionary of len(numpoints) array
 <p>numPoints x numStresses array
     Stress components at each point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">151</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">151</span>
 <span class="normal">152</span>
 <span class="normal">153</span>
 <span class="normal">154</span>
@@ -2518,19 +2508,17 @@ dvs : dictionary of len(numpoints) array
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeVolumeScaling" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeVolumeScaling</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">computeVolumeScaling</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -2538,8 +2526,8 @@ dvs : dictionary of len(numpoints) array
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the coordinates and design variables at a bunch of points, compute the volume scaling parameter at each one</p>
 <p>The volume scaling parameter is used to scale functions that are integrated over the element to get a true
 volume integral. For example, in a 2D plane stress model, we need to multiply by the thickness of the element
@@ -2554,9 +2542,9 @@ dvs : dictionary of len(numpoints) array
 <p>numPoints length array
     Volume scaling parameter at each point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">191</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">191</span>
 <span class="normal">192</span>
 <span class="normal">193</span>
 <span class="normal">194</span>
@@ -2600,24 +2588,22 @@ dvs : dictionary of len(numpoints) array
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeWeakResidualJacobian" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeWeakResidualJacobian</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeWeakResidualJacobian</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the
 weak residual jacobian integrand</p>
 <p><span class="arithmatex">\(j = (d\epsilon/du')^T \times d\sigma/d\epsilon \times d\epsilon/du'\)</span></p>
@@ -2640,9 +2626,9 @@ dvs : dictionary of len(numpoints) array
 <p>Jacobians : numPoints x numDim x numStates x numStates x numDim array
     The sensibility of the weak residual integrand components to the state gradients at each point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">286</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">286</span>
 <span class="normal">287</span>
 <span class="normal">288</span>
 <span class="normal">289</span>
@@ -2748,24 +2734,22 @@ dvs : dictionary of len(numpoints) array
 
     <span class="k">return</span> <span class="n">Jacobians</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.computeWeakResiduals" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeWeakResiduals</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeWeakResiduals</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">stateGradients</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">dvs</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Given the coordinates, state value, state gradient, and design variables at a bunch of points, compute the weak residual integrand</p>
 <p>For a solid mechanics problem, the weak residual, derived from the virtual work principle is:</p>
 <p><span class="arithmatex">\(R = \int r dV = \int (du'/dq)^T  (d\epsilon/du')^T  \sigma  \theta d\Omega\)</span></p>
@@ -2791,9 +2775,9 @@ dvs : dictionary of len(numpoints) array
 <p>residuals : numPoints x self.numDim x self.numStates array
     Weak residual integrand at each point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">240</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">240</span>
 <span class="normal">241</span>
 <span class="normal">242</span>
 <span class="normal">243</span>
@@ -2879,19 +2863,17 @@ dvs : dictionary of len(numpoints) array
     <span class="n">_computeWeakResidualProduct</span><span class="p">(</span><span class="n">strainSens</span><span class="p">,</span> <span class="n">stress</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">residuals</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">residuals</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.getFunction" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getFunction</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
-  
+            <code class="highlight language-python"><span class="n">getFunction</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
+
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
@@ -2899,8 +2881,8 @@ dvs : dictionary of len(numpoints) array
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Return a function that can be computed for this constitutive model</p>
 <h4 id="FEMpy.Constitutive.ConstitutiveModel.ConstitutiveModel.getFunction--parameters">Parameters</h4>
 <p>name : str
@@ -2915,9 +2897,9 @@ dvs : dictionary of len(numpoints) array
 - dvs is a dictionary of numPoints length arrays
 </code></pre></div>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">214</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Constitutive/ConstitutiveModel.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">214</span>
 <span class="normal">215</span>
 <span class="normal">216</span>
 <span class="normal">217</span>
@@ -2961,8 +2943,8 @@ dvs : dictionary of len(numpoints) array
 
     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
 
@@ -2970,8 +2952,7 @@ dvs : dictionary of len(numpoints) array
 
   </div>
 
-  </div>
-
+    </div>
 
 </div>
 
@@ -3029,7 +3010,7 @@ dvs : dictionary of len(numpoints) array
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.dd8806f2.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>
       
         <script src="../../js/flowchart-loader.js"></script>
       

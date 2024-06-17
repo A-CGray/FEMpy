@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.20">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -189,7 +189,7 @@
       
     </form>
     <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
             Initializing search
@@ -1245,11 +1245,11 @@
 
 
 <a id="FEMpy.Elements.QuadElement2D.QuadElement2D"></a>
-  <div class="doc doc-contents first">
-          <p class="doc doc-class-bases">
-            Bases: <code><span title="FEMpy.Elements.Element">Element</span></code></p>
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="FEMpy.Elements.Element">Element</span></code></p>
 
-  
+
       <p>An "arbitrary order" 2d quadrilateral finite element</p>
 <p>Arbitrary order is in quotes at the moment because although the shape functions can in theory be computed for an
 arbitrary with the current LagrangePoly implementation, I have not figured out how to element the node reordering
@@ -1259,9 +1259,9 @@ elements.</p>
 <p>Element : FEMpy.Elements.Element
     The FEMpy element base class</p>
 
-            <details class="quote">
-              <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
+              <details class="quote">
+                <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 28</span>
 <span class="normal"> 29</span>
 <span class="normal"> 30</span>
 <span class="normal"> 31</span>
@@ -1579,12 +1579,11 @@ elements.</p>
         <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
-            </details>
+              </details>
 
-  
+
 
   <div class="doc doc-children">
-
 
 
 
@@ -1597,15 +1596,14 @@ elements.</p>
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.QuadElement2D.QuadElement2D.__init__" class="doc doc-heading">
-          <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">numStates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quadratureOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">numStates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quadratureOrder</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Create a new 2d quadrilateral finite element object</p>
 <h4 id="FEMpy.Elements.QuadElement2D.QuadElement2D.__init__--parameters">Parameters</h4>
 <p>order : int, optional
@@ -1620,9 +1618,9 @@ quadratureOrder : int, optional
 <p>ValueError
     Raises error if order is not 1, 2 or 3</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
@@ -1684,24 +1682,22 @@ quadratureOrder : int, optional
 
     <span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getNodeReordering</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.QuadElement2D.QuadElement2D.computeShapeFunctionGradients" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeShapeFunctionGradients</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeShapeFunctionGradients</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the derivatives of the shape functions with respect to the parametric coordinates at a given set of parametric coordinates</p>
 <h4 id="FEMpy.Elements.QuadElement2D.QuadElement2D.computeShapeFunctionGradients--parameters">Parameters</h4>
 <p>paramCoords : numPoint x numDim array
@@ -1711,9 +1707,9 @@ quadratureOrder : int, optional
     Shape function gradient values, NGrad[i][j][k] is the value of the kth shape function at the ith point w.r.t the kth
     parametric coordinate</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
 <span class="normal"> 95</span>
 <span class="normal"> 96</span>
 <span class="normal"> 97</span>
@@ -1749,24 +1745,22 @@ quadratureOrder : int, optional
     <span class="n">NPrimeParam</span> <span class="o">=</span> <span class="n">LP</span><span class="o">.</span><span class="n">LagrangePoly2dDeriv</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">NPrimeParam</span><span class="p">[:,</span> <span class="p">:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.QuadElement2D.QuadElement2D.computeShapeFunctions" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">computeShapeFunctions</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">computeShapeFunctions</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the shape function values at a given set of parametric coordinates</p>
 <h4 id="FEMpy.Elements.QuadElement2D.QuadElement2D.computeShapeFunctions--parameters">Parameters</h4>
 <p>paramCoords : numPoint x numDim array
@@ -1775,9 +1769,9 @@ quadratureOrder : int, optional
 <p>N: numPoint x numNodes array
     Array of shape function values at the given parametric coordinates, N[i][j] is the value of the jth shape function at the ith parametric point</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
 <span class="normal">79</span>
 <span class="normal">80</span>
 <span class="normal">81</span>
@@ -1807,24 +1801,22 @@ quadratureOrder : int, optional
     <span class="n">N</span> <span class="o">=</span> <span class="n">LP</span><span class="o">.</span><span class="n">LagrangePoly2d</span><span class="p">(</span><span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">paramCoords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">N</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.QuadElement2D.QuadElement2D.getIntegrationPointCoords" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getIntegrationPointCoords</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">getIntegrationPointCoords</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the integration point parameteric coordinates for a given quadrature order on this element</p>
 <h4 id="FEMpy.Elements.QuadElement2D.QuadElement2D.getIntegrationPointCoords--parameters">Parameters</h4>
 <p>order : int
@@ -1833,9 +1825,9 @@ quadratureOrder : int, optional
 <p>numIntpoint x numDim array
     Integration point coordinates</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
@@ -1867,24 +1859,22 @@ quadratureOrder : int, optional
         <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadratureOrder</span>
     <span class="k">return</span> <span class="n">getGaussQuadPoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.QuadElement2D.QuadElement2D.getIntegrationPointWeights" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getIntegrationPointWeights</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">getIntegrationPointWeights</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Compute the integration point weights for a given quadrature order on this element</p>
 <h4 id="FEMpy.Elements.QuadElement2D.QuadElement2D.getIntegrationPointWeights--parameters">Parameters</h4>
 <p>order : int
@@ -1893,9 +1883,9 @@ quadratureOrder : int, optional
 <p>array of length numIntpoint
     Integration point weights</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
@@ -1927,33 +1917,31 @@ quadratureOrder : int, optional
         <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quadratureOrder</span>
     <span class="k">return</span> <span class="n">getGaussQuadWeights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numDim</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
-
 
 <div class="doc doc-object doc-function">
 
 
-
 <h2 id="FEMpy.Elements.QuadElement2D.QuadElement2D.getReferenceElementCoordinates" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">getReferenceElementCoordinates</span><span class="p">()</span></code>
+            <code class="highlight language-python"><span class="n">getReferenceElementCoordinates</span><span class="p">()</span></code>
 
 </h2>
 
 
-  <div class="doc doc-contents ">
-  
+    <div class="doc doc-contents ">
+
       <p>Get the node coordinates for the reference element, a.k.a the element on which the shape functions are defined</p>
 <p>For the quad element, the nodes of the reference element are simply in a order+1 x order+1 grid over the range [-1, 1] in both x and y, reordered as described by _getNodeReordering</p>
 <h4 id="FEMpy.Elements.QuadElement2D.QuadElement2D.getReferenceElementCoordinates--returns">Returns</h4>
 <p>numNodes x numDim array
     Element node coordinates</p>
 
-          <details class="quote">
-            <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">147</span>
+            <details class="quote">
+              <summary>Source code in <code>FEMpy/Elements/QuadElement2D.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">147</span>
 <span class="normal">148</span>
 <span class="normal">149</span>
 <span class="normal">150</span>
@@ -1979,8 +1967,8 @@ quadratureOrder : int, optional
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">shapeFuncToNodeOrder</span><span class="p">]))</span><span class="o">.</span><span class="n">T</span>
 </code></pre></div></td></tr></table></div>
-          </details>
-  </div>
+            </details>
+    </div>
 
 </div>
 
@@ -1988,8 +1976,7 @@ quadratureOrder : int, optional
 
   </div>
 
-  </div>
-
+    </div>
 
 </div>
 
@@ -2047,7 +2034,7 @@ quadratureOrder : int, optional
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.dd8806f2.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>
       
         <script src="../../js/flowchart-loader.js"></script>
       
