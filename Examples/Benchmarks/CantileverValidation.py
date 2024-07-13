@@ -56,7 +56,6 @@ if __name__ == "__main__":
     numDOF = []
     meshSize = []
     for refine in refineVal:
-
         # create constitutive model
         con = fp.Constitutive.IsoPlaneStrain(E=70e9, nu=0.0, t=1.0, rho=2700.0)
 

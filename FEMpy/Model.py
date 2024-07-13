@@ -12,7 +12,6 @@ that the user interfaces with to read in a mesh and setup a finite element model
 # ==============================================================================
 # Standard Python modules
 # ==============================================================================
-import os
 from typing import Iterable, Union, Optional, Dict, Any
 import copy
 import warnings
@@ -22,7 +21,6 @@ import warnings
 # ==============================================================================
 import meshio
 import numpy as np
-from numba import njit
 from baseclasses.solvers import BaseSolver
 
 # ==============================================================================

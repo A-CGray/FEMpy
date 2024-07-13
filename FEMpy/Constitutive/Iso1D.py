@@ -199,18 +199,24 @@ class Iso1D(ConstitutiveModel):
 
         if name.lower() == "mass":
 
-            def func(states, stateGradients, coords, dvs):
+            def massFunc(states, stateGradients, coords, dvs):
                 return np.ones(states.shape[0]) * self.rho
+
+            func = massFunc
 
         if name.lower() == "strain":
 
-            def func(states, stateGradients, coords, dvs):
+            def strainFunc(states, stateGradients, coords, dvs):
                 return self.computeStrains(states, stateGradients, coords, dvs).flatten()
+
+            func = strainFunc
 
         if name.lower() == "stress":
 
-            def func(states, stateGradients, coords, dvs):
+            def stressFunc(states, stateGradients, coords, dvs):
                 strains = self.computeStrains(states, stateGradients, coords, dvs)
                 return iso1DStress(strains, E=self.E).flatten()
+
+            func = stressFunc
 
         return func

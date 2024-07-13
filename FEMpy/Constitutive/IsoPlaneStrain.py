@@ -202,7 +202,6 @@ class IsoPlaneStrain(ConstitutiveModel):
             coords is a numPoints x numDim array
             dvs is a dictionary of numPoints length arrays
         """
-        lowerCaseFuncNames = [func.lower() for func in self.functionNames]
         if name.lower() not in self.lowerCaseFuncNames:
             raise ValueError(
                 f"{name} is not a valid function name for this constitutive model, valid choices are {self.functionNames}"
@@ -210,14 +209,18 @@ class IsoPlaneStrain(ConstitutiveModel):
 
         if name.lower() == "mass":
 
-            def func(states, stateGradients, coords, dvs):
+            def massFunc(states, stateGradients, coords, dvs):
                 return np.ones(states.shape[0]) * self.rho
+
+            func = massFunc
 
         if name.lower() == "von-mises-stress":
 
-            def func(states, stateGradients, coords, dvs):
+            def vmStressFunc(states, stateGradients, coords, dvs):
                 strains = self.computeStrains(states, stateGradients, coords, dvs)
                 stresses = self.computeStresses(strains, dvs)
                 return vonMises2DPlaneStrain(stresses, self.nu)
+
+            func = vmStressFunc
 
         return func

@@ -13,7 +13,6 @@ Element unit tests
 # ==============================================================================
 import unittest
 from parameterized import parameterized_class
-import time
 
 # ==============================================================================
 # External Python modules
