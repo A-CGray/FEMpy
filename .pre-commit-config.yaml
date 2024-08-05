@@ -12,13 +12,13 @@ repos:
     -   id: check-merge-conflict
     -   id: debug-statements
 -   repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 24.8.0
     hooks:
       - id: black
         language_version: python3
         args: ["-l", "120", "--target-version", "py38", "--target-version", "py39", "--target-version", "py310"]
 -   repo: https://github.com/PyCQA/flake8
-    rev: 7.0.0
+    rev: 7.1.1
     hooks:
     - id: flake8
 -   repo: https://github.com/econchick/interrogate
