@@ -33,7 +33,7 @@ test_params = []
 for func in ["det", "inv"]:
     for size in [2, 3]:
         for method in ["numpy", "numba"]:
-            test_params.append({"func": func, "size": size, "method": method, "func": func})
+            test_params.append({"func": func, "size": size, "method": method})
 
 
 def nameFunc(testcase_func, param_num, params):

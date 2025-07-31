@@ -121,10 +121,10 @@ def convertBCDictToLists(bcDict):
     Examples
     --------
     >>> BCDict = {
-    ...        "BC1Name": {"DOF": [0, 1, 2], "Value": [0, 0, 0]},
-    ...        "BC2Name": {"DOF": [13, 46, 1385], "Value": [1.0, 1.0, -1.0]},
-    ...        "BC3Name": {"DOF": [837, 25], "Value": [1.0, 1.0]},
-    ...    }
+    ...     "BC1Name": {"DOF": [0, 1, 2], "Value": [0, 0, 0]},
+    ...     "BC2Name": {"DOF": [13, 46, 1385], "Value": [1.0, 1.0, -1.0]},
+    ...     "BC3Name": {"DOF": [837, 25], "Value": [1.0, 1.0]},
+    ... }
     ... convertBCDictToLists(BCDict)
     ([0, 1, 2, 13, 46, 1385, 837, 25], [0, 0, 0, 1.0, 1.0, -1.0, 1.0, 1.0])
 
