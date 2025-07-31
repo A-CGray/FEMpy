@@ -401,7 +401,7 @@ def _computeWeakJacobianProduct(strainSens, stressSens, scale, jacs):
             strainSens,
             scale,
             optimize=["einsum_path", (1, 3), (0, 2), (0, 1)],
-            out = jacs
+            out=jacs,
         )
 
     # points = p

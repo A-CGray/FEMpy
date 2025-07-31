@@ -125,7 +125,7 @@ class FEMpyModel(BaseSolver):
         for elType in self.connectivity:
             elObject = self._getElementObject(elType)
             if elObject is None:
-                warnings.warn(f"Element type {elType} is not supported by FEMpy and will be ignored")
+                warnings.warn(f"Element type {elType} is not supported by FEMpy and will be ignored", stacklevel=2)
             else:
                 self.elements[elType] = {}
                 self.elements[elType]["connectivity"] = self.connectivity[elType]
@@ -192,18 +192,18 @@ class FEMpyModel(BaseSolver):
         if nodeValues:  # if dictionary is not empty
             for varName in nodeValues:
                 # check arrays are correct length
-                assert (
-                    nodeValues[varName].shape[0] == self.numNodes
-                ), f"nodeValues array for variable '{varName}' must be length of number of nodes"
+                assert nodeValues[varName].shape[0] == self.numNodes, (
+                    f"nodeValues array for variable '{varName}' must be length of number of nodes"
+                )
 
         elementData = {}
         if elementValues:  # if dictionary is not empty
             for elType in elementValues:
                 for varName in elementValues[elType]:
                     # first, check arrays are the correct length
-                    assert (
-                        elementValues[elType][varName].shape[0] == self.elements[elType]["numElements"]
-                    ), f"elementValues array of element type '{elType}' for variable '{varName}' must be length number of '{elType}' elements"
+                    assert elementValues[elType][varName].shape[0] == self.elements[elType]["numElements"], (
+                        f"elementValues array of element type '{elType}' for variable '{varName}' must be length number of '{elType}' elements"
+                    )
 
                     # store values in meshio element data format
                     if varName in elementData:
