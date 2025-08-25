@@ -200,6 +200,7 @@ class TriElement2D(Element):
         """Generate a set of random parametric coordinates
         For a tri element we need u and v in range [0,1] and u + v <= 1, we can generate these points by generating
         random points in a square on the domain [0,1] and then reflecting any points outside the triangle to the inside.
+
         Parameters
         ----------
         n : int, optional
