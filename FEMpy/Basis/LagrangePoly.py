@@ -225,6 +225,7 @@ def LagrangePolyTri(x, y, n):
         y coordinates of points to compute polynomial values at, should be between 0 and 1
     n : int
         Polynomial/element order
+
     Returns
     -------
     N : nP x (n+1)*(n+2)/2 array
@@ -294,6 +295,7 @@ def LagrangePolyTriDeriv(x, y, n):
         y coordinates of points to compute polynomial values at, should be between 0 and 1s
     n : int
         Number of Lagrange polynomials, in 2d, there are n nodes in each direction, giving n^2, n-1 order polynomials
+
     Returns
     -------
     dNdx : nP x 2 x (n+1)*(n+2)/2 array
