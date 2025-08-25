@@ -12,8 +12,8 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-python@v5
-    - name: Download flake8 config
-      run: wget https://raw.githubusercontent.com/mdolab/.github/master/.flake8;
+    - name: Download ruff config
+      run: wget https://raw.githubusercontent.com/mdolab/.github/master/ruff.toml;
     - uses: pre-commit/action@v3.0.1
     - uses: pre-commit-ci/lite-action@v1.1.0
       if: always()
