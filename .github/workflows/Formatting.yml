@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
     - name: Download ruff config
       run: wget https://raw.githubusercontent.com/mdolab/.github/master/ruff.toml;
     - uses: pre-commit/action@v3.0.1
